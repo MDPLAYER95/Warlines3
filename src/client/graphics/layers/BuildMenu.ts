@@ -34,6 +34,7 @@ import {
 import { renderNumber } from "../../Utils";
 import { TransformHandler } from "../TransformHandler";
 import { Layer } from "./Layer";
+import { mineIconWhite } from "./MineIconAssets";
 
 export interface BuildItemDisplay {
   unitType: UnitType;
@@ -107,6 +108,13 @@ export const buildTable: BuildItemDisplay[][] = [
       icon: cityIcon,
       description: "build_menu.desc.city",
       key: "unit_type.city",
+      countable: true,
+    },
+    {
+      unitType: UnitType.Mine,
+      icon: mineIconWhite,
+      description: "build_menu.desc.mine",
+      key: "unit_type.mine",
       countable: true,
     },
     {
