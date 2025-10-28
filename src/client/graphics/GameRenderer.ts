@@ -1,4 +1,5 @@
 import { EventBus } from "../../core/EventBus";
+import { UnitType } from "../../core/game/Game";
 import { GameView } from "../../core/game/GameView";
 import { UserSettings } from "../../core/game/UserSettings";
 import { GameStartingModal } from "../GameStartingModal";
@@ -8,6 +9,10 @@ import { UIState } from "./UIState";
 import { AdTimer } from "./layers/AdTimer";
 import { AlertFrame } from "./layers/AlertFrame";
 import { BuildMenu } from "./layers/BuildMenu";
+import {
+  CentralBankModal,
+  OpenCentralBankModalEvent,
+} from "./layers/CentralBankModal";
 import { ChatDisplay } from "./layers/ChatDisplay";
 import { ChatModal } from "./layers/ChatModal";
 import { ControlPanel } from "./layers/ControlPanel";
@@ -168,6 +173,16 @@ export function createRenderer(
   unitDisplay.eventBus = eventBus;
   unitDisplay.uiState = uiState;
 
+  const centralBankModal = document.querySelector(
+    "central-bank-modal",
+  ) as CentralBankModal;
+  if (!(centralBankModal instanceof CentralBankModal)) {
+    console.error("CentralBankModal element not found in the DOM");
+  } else {
+    centralBankModal.game = game;
+    centralBankModal.eventBus = eventBus;
+  }
+
   const playerPanel = document.querySelector("player-panel") as PlayerPanel;
   if (!(playerPanel instanceof PlayerPanel)) {
     console.error("player panel not found");
@@ -294,6 +309,47 @@ export class GameRenderer {
     this.context = context;
   }
 
+  private handleDoubleClick = (event: MouseEvent) => {
+    const myPlayer = this.game.myPlayer();
+    if (!myPlayer || !myPlayer.isAlive()) {
+      return;
+    }
+
+    const worldCell = this.transformHandler.screenToWorldCoordinates(
+      event.clientX,
+      event.clientY,
+    );
+
+    if (!this.game.isValidCoord(worldCell.x, worldCell.y)) {
+      return;
+    }
+
+    const tileRef = this.game.ref(worldCell.x, worldCell.y);
+    const banks = myPlayer
+      .units(UnitType.CentralBank)
+      .filter((unit) => unit.isActive());
+    if (banks.length === 0) {
+      return;
+    }
+
+    const MAX_TILE_DISTANCE = 2;
+    let closestBank: (typeof banks)[number] | undefined;
+    let closestDistance = Number.POSITIVE_INFINITY;
+    for (const unit of banks) {
+      const distance = this.game.manhattanDist(unit.tile(), tileRef);
+      if (distance < closestDistance) {
+        closestBank = unit;
+        closestDistance = distance;
+      }
+    }
+
+    if (!closestBank || closestDistance > MAX_TILE_DISTANCE) {
+      return;
+    }
+
+    this.eventBus.emit(new OpenCentralBankModalEvent(closestBank.id()));
+  };
+
   initialize() {
     this.eventBus.on(RedrawGraphicsEvent, () => this.redraw());
     this.layers.forEach((l) => l.init?.());
@@ -304,6 +360,8 @@ export class GameRenderer {
 
     //show whole map on startup
     this.transformHandler.centerAll(0.9);
+
+    this.canvas.addEventListener("dblclick", this.handleDoubleClick);
 
     let rafId = requestAnimationFrame(() => this.renderGame());
     this.canvas.addEventListener("contextlost", () => {

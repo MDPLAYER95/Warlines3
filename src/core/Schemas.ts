@@ -46,7 +46,8 @@ export type Intent =
   | EmbargoAllIntent
   | UpgradeStructureIntent
   | DeleteUnitIntent
-  | KickPlayerIntent;
+  | KickPlayerIntent
+  | CentralBankMintIntent;
 
 export type AttackIntent = z.infer<typeof AttackIntentSchema>;
 export type CancelAttackIntent = z.infer<typeof CancelAttackIntentSchema>;
@@ -78,6 +79,7 @@ export type AllianceExtensionIntent = z.infer<
 >;
 export type DeleteUnitIntent = z.infer<typeof DeleteUnitIntentSchema>;
 export type KickPlayerIntent = z.infer<typeof KickPlayerIntentSchema>;
+export type CentralBankMintIntent = z.infer<typeof CentralBankMintIntentSchema>;
 
 export type Turn = z.infer<typeof TurnSchema>;
 export type GameConfig = z.infer<typeof GameConfigSchema>;
@@ -328,6 +330,12 @@ export const DeleteUnitIntentSchema = BaseIntentSchema.extend({
   unitId: z.number(),
 });
 
+export const CentralBankMintIntentSchema = BaseIntentSchema.extend({
+  type: z.literal("central_bank_mint"),
+  unitId: z.number(),
+  amount: z.number().nonnegative(),
+});
+
 export const QuickChatIntentSchema = BaseIntentSchema.extend({
   type: z.literal("quick_chat"),
   recipient: ID,
@@ -368,6 +376,7 @@ const IntentSchema = z.discriminatedUnion("type", [
   AllianceExtensionIntentSchema,
   DeleteUnitIntentSchema,
   KickPlayerIntentSchema,
+  CentralBankMintIntentSchema,
 ]);
 
 //
