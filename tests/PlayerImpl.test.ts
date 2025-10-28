@@ -107,4 +107,16 @@ describe("PlayerImpl", () => {
     }
     expect(other.canSendAllianceRequest(player)).toBe(false);
   });
+
+  test("Player cannot construct more than one Central Bank", () => {
+    const firstTile = game.ref(12, 12);
+    const secondTile = game.ref(30, 30);
+    player.addGold(2_000_000n);
+    player.conquer(firstTile);
+    player.conquer(secondTile);
+
+    player.buildUnit(UnitType.CentralBank, firstTile, {});
+
+    expect(player.canBuild(UnitType.CentralBank, secondTile)).toBe(false);
+  });
 });

@@ -14,6 +14,8 @@ export function structureSpawnTileValue(
   const structureSpacing = borderSpacing * 2;
   switch (type) {
     case UnitType.City:
+    case UnitType.Mine:
+    case UnitType.CentralBank:
     case UnitType.Factory:
     case UnitType.MissileSilo: {
       return (tile) => {
@@ -106,6 +108,8 @@ export function structureSpawnTileValue(
       for (const unit of player.units()) {
         switch (unit.type()) {
           case UnitType.City:
+          case UnitType.Mine:
+          case UnitType.CentralBank:
           case UnitType.Factory:
           case UnitType.MissileSilo:
           case UnitType.Port:

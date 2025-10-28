@@ -15,6 +15,7 @@ interface TeamEntry {
   totalLaunchers: string;
   totalWarShips: string;
   totalCities: string;
+  totalMines: string;
   totalScoreSort: number;
   players: PlayerView[];
 }
@@ -70,6 +71,8 @@ export class TeamStats extends LitElement implements Layer {
         let totalLaunchers = 0;
         let totalWarShips = 0;
         let totalCities = 0;
+        let totalMines = 0;
+        let totalCentralBanks = 0;
 
         for (const p of teamPlayers) {
           if (p.isAlive()) {
@@ -80,6 +83,8 @@ export class TeamStats extends LitElement implements Layer {
             totalSAMs += p.totalUnitLevels(UnitType.SAMLauncher);
             totalWarShips += p.totalUnitLevels(UnitType.Warship);
             totalCities += p.totalUnitLevels(UnitType.City);
+            totalMines += p.totalUnitLevels(UnitType.Mine);
+            totalCentralBanks += p.totalUnitLevels(UnitType.CentralBank);
           }
         }
 
@@ -99,6 +104,8 @@ export class TeamStats extends LitElement implements Layer {
           totalSAMs: renderNumber(totalSAMs),
           totalWarShips: renderNumber(totalWarShips),
           totalCities: renderNumber(totalCities),
+          totalMines: renderNumber(totalMines),
+          totalCentralBanks: renderNumber(totalCentralBanks),
         };
       })
       .sort((a, b) => b.totalScoreSort - a.totalScoreSort);
@@ -122,7 +129,7 @@ export class TeamStats extends LitElement implements Layer {
       >
         <div
           class="grid w-full"
-          style="grid-template-columns: repeat(${this.showUnits ? 5 : 4}, 1fr);"
+          style="grid-template-columns: repeat(${this.showUnits ? 7 : 4}, 1fr);"
         >
           <!-- Header -->
           <div class="contents font-bold bg-slate-700/50">
@@ -142,6 +149,12 @@ export class TeamStats extends LitElement implements Layer {
                   </div>
                   <div class="py-1.5 text-center border-b border-slate-500">
                     ${translateText("leaderboard.cities")}
+                  </div>
+                  <div class="py-1.5 text-center border-b border-slate-500">
+                    ${translateText("leaderboard.mines")}
+                  </div>
+                  <div class="py-1.5 text-center border-b border-slate-500">
+                    ${translateText("leaderboard.central_banks")}
                   </div>
                 `
               : html`
@@ -178,6 +191,12 @@ export class TeamStats extends LitElement implements Layer {
                     </div>
                     <div class="py-1.5 border-b border-slate-500">
                       ${team.totalCities}
+                    </div>
+                    <div class="py-1.5 border-b border-slate-500">
+                      ${team.totalMines}
+                    </div>
+                    <div class="py-1.5 border-b border-slate-500">
+                      ${team.totalCentralBanks}
                     </div>
                   </div>
                 `
