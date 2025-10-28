@@ -17,6 +17,7 @@ import { ToggleStructureEvent } from "../../InputHandler";
 import { renderNumber, translateText } from "../../Utils";
 import { UIState } from "../UIState";
 import { Layer } from "./Layer";
+import { mineIconWhite } from "./MineIconAssets";
 
 @customElement("unit-display")
 export class UnitDisplay extends LitElement implements Layer {
@@ -26,6 +27,7 @@ export class UnitDisplay extends LitElement implements Layer {
   private playerActions: PlayerActions | null = null;
   private keybinds: Record<string, { value: string; key: string }> = {};
   private _cities = 0;
+  private _mines = 0;
   private _warships = 0;
   private _factories = 0;
   private _missileSilo = 0;
@@ -53,6 +55,7 @@ export class UnitDisplay extends LitElement implements Layer {
 
     this.allDisabled =
       config.isUnitDisabled(UnitType.City) &&
+      config.isUnitDisabled(UnitType.Mine) &&
       config.isUnitDisabled(UnitType.Factory) &&
       config.isUnitDisabled(UnitType.Port) &&
       config.isUnitDisabled(UnitType.DefensePost) &&
@@ -102,6 +105,7 @@ export class UnitDisplay extends LitElement implements Layer {
     });
     if (!player) return;
     this._cities = player.totalUnitLevels(UnitType.City);
+    this._mines = player.totalUnitLevels(UnitType.Mine);
     this._missileSilo = player.totalUnitLevels(UnitType.MissileSilo);
     this._port = player.totalUnitLevels(UnitType.Port);
     this._defensePost = player.totalUnitLevels(UnitType.DefensePost);
@@ -137,6 +141,13 @@ export class UnitDisplay extends LitElement implements Layer {
               UnitType.City,
               "city",
               this.keybinds["buildCity"]?.key ?? "1",
+            )}
+            ${this.renderUnitItem(
+              mineIconWhite,
+              this._mines,
+              UnitType.Mine,
+              "mine",
+              this.keybinds["buildMine"]?.key ?? "M",
             )}
             ${this.renderUnitItem(
               factoryIcon,

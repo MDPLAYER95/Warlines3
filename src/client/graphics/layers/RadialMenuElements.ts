@@ -326,6 +326,7 @@ function getAllEnabledUnits(myPlayer: boolean, config: Config): Set<UnitType> {
 
   if (myPlayer) {
     addStructureIfEnabled(UnitType.City);
+    addStructureIfEnabled(UnitType.Mine);
     addStructureIfEnabled(UnitType.DefensePost);
     addStructureIfEnabled(UnitType.Port);
     addStructureIfEnabled(UnitType.MissileSilo);

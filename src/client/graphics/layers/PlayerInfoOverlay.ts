@@ -30,6 +30,7 @@ import {
 } from "../../Utils";
 import { TransformHandler } from "../TransformHandler";
 import { Layer } from "./Layer";
+import { mineIconWhite } from "./MineIconAssets";
 import { CloseRadialMenuEvent } from "./RadialMenu";
 
 function euclideanDistWorld(
@@ -363,6 +364,12 @@ export class PlayerInfoOverlay extends LitElement implements Layer {
                   UnitType.City,
                   cityIcon,
                   "player_info_overlay.cities",
+                )}
+                ${this.displayUnitCount(
+                  player,
+                  UnitType.Mine,
+                  mineIconWhite,
+                  "player_info_overlay.mines",
                 )}
                 ${this.displayUnitCount(
                   player,
