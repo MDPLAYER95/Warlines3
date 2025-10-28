@@ -10,9 +10,13 @@ import factoryIcon from "../../../../resources/images/FactoryUnit.png";
 import missileSiloIcon from "../../../../resources/images/MissileSiloUnit.png";
 import SAMMissileIcon from "../../../../resources/images/SamLauncherUnit.png";
 import shieldIcon from "../../../../resources/images/ShieldIcon.png";
+import bankStructureSprite from "./BankStructureAsset";
+import { mineIconColor } from "./MineIconAssets";
 
 export const STRUCTURE_SHAPES: Partial<Record<UnitType, ShapeType>> = {
   [UnitType.City]: "circle",
+  [UnitType.Mine]: "circle",
+  [UnitType.CentralBank]: "circle",
   [UnitType.Port]: "pentagon",
   [UnitType.Factory]: "circle",
   [UnitType.DefensePost]: "octagon",
@@ -58,6 +62,8 @@ export class SpriteFactory {
     { iconPath: string; image: HTMLImageElement | null }
   > = new Map([
     [UnitType.City, { iconPath: cityIcon, image: null }],
+    [UnitType.Mine, { iconPath: mineIconColor, image: null }],
+    [UnitType.CentralBank, { iconPath: bankStructureSprite, image: null }],
     [UnitType.Factory, { iconPath: factoryIcon, image: null }],
     [UnitType.DefensePost, { iconPath: shieldIcon, image: null }],
     [UnitType.Port, { iconPath: anchorIcon, image: null }],

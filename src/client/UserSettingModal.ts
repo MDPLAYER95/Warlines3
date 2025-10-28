@@ -450,6 +450,24 @@ export class UserSettingModal extends LitElement {
       ></setting-keybind>
 
       <setting-keybind
+        action="buildMine"
+        label=${translateText("user_setting.build_mine")}
+        description=${translateText("user_setting.build_mine_desc")}
+        defaultKey="KeyM"
+        .value=${this.keybinds["buildMine"]?.key ?? ""}
+        @change=${this.handleKeybindChange}
+      ></setting-keybind>
+
+      <setting-keybind
+        action="buildCentralBank"
+        label=${translateText("user_setting.build_central_bank")}
+        description=${translateText("user_setting.build_central_bank_desc")}
+        defaultKey="KeyN"
+        .value=${this.keybinds["buildCentralBank"]?.key ?? ""}
+        @change=${this.handleKeybindChange}
+      ></setting-keybind>
+
+      <setting-keybind
         action="buildFactory"
         label=${translateText("user_setting.build_factory")}
         description=${translateText("user_setting.build_factory_desc")}
