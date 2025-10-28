@@ -266,6 +266,22 @@ export class DefaultConfig implements Config {
     return this._serverConfig;
   }
 
+  turnIntervalMs(): number {
+    return this._serverConfig.turnIntervalMs();
+  }
+
+  centralBankMaxPrints(): number {
+    return 3;
+  }
+
+  centralBankInflationPercent(): number {
+    return 20;
+  }
+
+  centralBankMintCapPercent(): number {
+    return 10;
+  }
+
   userSettings(): UserSettings {
     if (this._userSettings === null) {
       throw new Error("userSettings is null");
@@ -520,6 +536,20 @@ export class DefaultConfig implements Config {
           upgradable: true,
           canBuildTrainStation: true,
         };
+      case UnitType.Mine:
+        return {
+          cost: this.costWrapper(() => 1_000_000, UnitType.Mine),
+          territoryBound: true,
+          constructionDuration: this.instantBuild() ? 0 : 2 * 10,
+          upgradable: true,
+          canBuildTrainStation: true,
+        };
+      case UnitType.CentralBank:
+        return {
+          cost: this.costWrapper(() => 1_000_000, UnitType.CentralBank),
+          territoryBound: true,
+          constructionDuration: this.instantBuild() ? 0 : 2 * 10,
+        };
       case UnitType.Factory:
         return {
           cost: this.costWrapper(
@@ -563,7 +593,10 @@ export class DefaultConfig implements Config {
           acc + Math.min(p.unitsOwned(type), p.unitsConstructed(type)),
         0,
       );
-      return BigInt(costFn(numUnits));
+      const baseCost = BigInt(costFn(numUnits));
+      const inflationPercent = p.centralBankInflationPercent();
+      const multiplier = BigInt(100 + inflationPercent);
+      return (baseCost * multiplier) / 100n;
     };
   }
 
