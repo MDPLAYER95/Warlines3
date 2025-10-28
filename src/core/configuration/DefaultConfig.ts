@@ -520,6 +520,14 @@ export class DefaultConfig implements Config {
           upgradable: true,
           canBuildTrainStation: true,
         };
+      case UnitType.Mine:
+        return {
+          cost: this.costWrapper(() => 1_000_000, UnitType.Mine),
+          territoryBound: true,
+          constructionDuration: this.instantBuild() ? 0 : 2 * 10,
+          upgradable: true,
+          canBuildTrainStation: true,
+        };
       case UnitType.Factory:
         return {
           cost: this.costWrapper(

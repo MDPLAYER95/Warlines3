@@ -185,6 +185,7 @@ export enum UnitType {
   DefensePost = "Defense Post",
   SAMLauncher = "SAM Launcher",
   City = "City",
+  Mine = "Mine",
   MIRV = "MIRV",
   MIRVWarhead = "MIRV Warhead",
   Construction = "Construction",
@@ -199,6 +200,7 @@ export enum TrainType {
 
 const _structureTypes: ReadonlySet<UnitType> = new Set([
   UnitType.City,
+  UnitType.Mine,
   UnitType.Construction,
   UnitType.DefensePost,
   UnitType.SAMLauncher,
@@ -265,6 +267,8 @@ export interface UnitParamsMap {
   [UnitType.SAMLauncher]: Record<string, never>;
 
   [UnitType.City]: Record<string, never>;
+
+  [UnitType.Mine]: Record<string, never>;
 
   [UnitType.MIRV]: Record<string, never>;
 
