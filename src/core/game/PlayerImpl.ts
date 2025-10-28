@@ -69,6 +69,9 @@ export class PlayerImpl implements Player {
 
   private _gold: bigint;
   private _troops: bigint;
+  private _totalGoldEarned: bigint = 0n;
+  private centralBankPrints = 0;
+  private centralBankInflationSteps = 0;
 
   markedTraitorTick = -1;
 
@@ -138,7 +141,11 @@ export class PlayerImpl implements Player {
       isDisconnected: this.isDisconnected(),
       tilesOwned: this.numTilesOwned(),
       gold: this._gold,
+      totalGoldEarned: this._totalGoldEarned,
       troops: this.troops(),
+      centralBankPrintsUsed: this.centralBankPrints,
+      centralBankPrintsRemaining: this.centralBankPrintsRemaining(),
+      centralBankInflationPercent: this.centralBankInflationPercent(),
       allies: this.alliances().map((a) => a.other(this).smallID()),
       embargoes: new Set([...this.embargoes.keys()].map((p) => p.toString())),
       isTraitor: this.isTraitor(),
@@ -796,6 +803,9 @@ export class PlayerImpl implements Player {
   }
 
   addGold(toAdd: Gold, tile?: TileRef): void {
+    if (toAdd > 0n) {
+      this._totalGoldEarned += toAdd;
+    }
     this._gold += toAdd;
     if (tile) {
       this.mg.addUpdate({
@@ -815,6 +825,38 @@ export class PlayerImpl implements Player {
     const actualRemoved = minInt(this._gold, toRemove);
     this._gold -= actualRemoved;
     return actualRemoved;
+  }
+
+  totalGoldEarned(): Gold {
+    return this._totalGoldEarned;
+  }
+
+  centralBankPrintsUsed(): number {
+    return this.centralBankPrints;
+  }
+
+  centralBankPrintsRemaining(): number {
+    const maxPrints = this.mg.config().centralBankMaxPrints();
+    return Math.max(0, maxPrints - this.centralBankPrints);
+  }
+
+  centralBankInflationPercent(): number {
+    return (
+      this.centralBankInflationSteps *
+      this.mg.config().centralBankInflationPercent()
+    );
+  }
+
+  applyCentralBankMint(amount: Gold): void {
+    if (amount <= 0n) {
+      return;
+    }
+    if (this.centralBankPrintsRemaining() <= 0) {
+      return;
+    }
+    this.centralBankPrints += 1;
+    this.centralBankInflationSteps += 1;
+    this.addGold(amount);
   }
 
   troops(): number {
@@ -950,6 +992,18 @@ export class PlayerImpl implements Player {
     if (!this.isAlive() || this.gold() < cost) {
       return false;
     }
+    if (unitType === UnitType.CentralBank) {
+      const hasActiveBank = this.units(UnitType.CentralBank).some((unit) =>
+        unit.isActive(),
+      );
+      const constructingBank = this.units(UnitType.Construction).some(
+        (unit) =>
+          unit.isActive() && unit.constructionType() === UnitType.CentralBank,
+      );
+      if (hasActiveBank || constructingBank) {
+        return false;
+      }
+    }
     switch (unitType) {
       case UnitType.MIRV:
         if (!this.mg.hasOwner(targetTile)) {
@@ -978,6 +1032,8 @@ export class PlayerImpl implements Player {
       case UnitType.DefensePost:
       case UnitType.SAMLauncher:
       case UnitType.City:
+      case UnitType.Mine:
+      case UnitType.CentralBank:
       case UnitType.Factory:
       case UnitType.Construction:
         return this.landBasedStructureSpawn(targetTile, validTiles);
@@ -1119,7 +1175,10 @@ export class PlayerImpl implements Player {
   hash(): number {
     return (
       simpleHash(this.id()) * (this.troops() + this.numTilesOwned()) +
-      this._units.reduce((acc, unit) => acc + unit.hash(), 0)
+      this._units.reduce((acc, unit) => acc + unit.hash(), 0) +
+      Number(this._totalGoldEarned % 1_000_000_007n) +
+      this.centralBankPrints * 17 +
+      this.centralBankInflationSteps * 23
     );
   }
   toString(): string {
