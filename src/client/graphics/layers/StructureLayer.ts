@@ -7,6 +7,7 @@ import { Layer } from "./Layer";
 import cityIcon from "../../../../resources/images/buildings/cityAlt1.png";
 import factoryIcon from "../../../../resources/images/buildings/factoryAlt1.png";
 import shieldIcon from "../../../../resources/images/buildings/fortAlt3.png";
+import mineIcon from "../../../../resources/images/buildings/mine.png";
 import anchorIcon from "../../../../resources/images/buildings/port1.png";
 import missileSiloIcon from "../../../../resources/images/buildings/silo1.png";
 import SAMMissileIcon from "../../../../resources/images/buildings/silo4.png";
@@ -14,6 +15,7 @@ import { Cell, UnitType } from "../../../core/game/Game";
 import { euclDistFN, isometricDistFN } from "../../../core/game/GameMap";
 import { GameUpdateType } from "../../../core/game/GameUpdates";
 import { GameView, UnitView } from "../../../core/game/GameView";
+import bankStructureIcon from "./BankStructureAsset";
 
 const underConstructionColor = colord({ r: 150, g: 150, b: 150 });
 
@@ -46,6 +48,16 @@ export class StructureLayer implements Layer {
     },
     [UnitType.City]: {
       icon: cityIcon,
+      borderRadius: BASE_BORDER_RADIUS * RADIUS_SCALE_FACTOR,
+      territoryRadius: BASE_TERRITORY_RADIUS * RADIUS_SCALE_FACTOR,
+    },
+    [UnitType.Mine]: {
+      icon: mineIcon,
+      borderRadius: BASE_BORDER_RADIUS * RADIUS_SCALE_FACTOR,
+      territoryRadius: BASE_TERRITORY_RADIUS * RADIUS_SCALE_FACTOR,
+    },
+    [UnitType.CentralBank]: {
+      icon: bankStructureIcon,
       borderRadius: BASE_BORDER_RADIUS * RADIUS_SCALE_FACTOR,
       territoryRadius: BASE_TERRITORY_RADIUS * RADIUS_SCALE_FACTOR,
     },

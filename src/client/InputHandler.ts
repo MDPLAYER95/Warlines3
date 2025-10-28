@@ -115,6 +115,13 @@ export class AutoUpgradeEvent implements GameEvent {
   ) {}
 }
 
+export class DoubleClickEvent implements GameEvent {
+  constructor(
+    public readonly x: number,
+    public readonly y: number,
+  ) {}
+}
+
 export class InputHandler {
   private lastPointerX: number = 0;
   private lastPointerY: number = 0;
@@ -133,6 +140,10 @@ export class InputHandler {
   private moveInterval: NodeJS.Timeout | null = null;
   private activeKeys = new Set<string>();
   private keybinds: Record<string, string> = {};
+
+  private lastClickTime: number = 0;
+  private lastClickX: number = 0;
+  private lastClickY: number = 0;
 
   private readonly PAN_SPEED = 5;
   private readonly ZOOM_SPEED = 10;
@@ -183,6 +194,8 @@ export class InputHandler {
       modifierKey: "ControlLeft",
       altKey: "AltLeft",
       buildCity: "Digit1",
+      buildMine: "KeyM",
+      buildCentralBank: "KeyN",
       buildFactory: "Digit2",
       buildPort: "Digit3",
       buildDefensePost: "Digit4",
@@ -358,6 +371,11 @@ export class InputHandler {
         this.uiState.ghostStructure = UnitType.City;
       }
 
+      if (e.code === this.keybinds.buildMine) {
+        e.preventDefault();
+        this.uiState.ghostStructure = UnitType.Mine;
+      }
+
       if (e.code === this.keybinds.buildFactory) {
         e.preventDefault();
         this.uiState.ghostStructure = UnitType.Factory;
@@ -471,6 +489,22 @@ export class InputHandler {
         this.eventBus.emit(new ContextMenuEvent(event.clientX, event.clientY));
         event.preventDefault();
         return;
+      }
+
+      const now = performance.now();
+      const timeSinceLast = now - this.lastClickTime;
+      const pointerDelta =
+        Math.abs(event.clientX - this.lastClickX) +
+        Math.abs(event.clientY - this.lastClickY);
+      if (timeSinceLast < 350 && pointerDelta < 10) {
+        this.eventBus.emit(new DoubleClickEvent(event.clientX, event.clientY));
+        this.lastClickTime = 0;
+        this.lastClickX = 0;
+        this.lastClickY = 0;
+      } else {
+        this.lastClickTime = now;
+        this.lastClickX = event.clientX;
+        this.lastClickY = event.clientY;
       }
 
       if (!this.userSettings.leftClickOpensMenu() || event.shiftKey) {

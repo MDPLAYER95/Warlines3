@@ -185,6 +185,8 @@ export enum UnitType {
   DefensePost = "Defense Post",
   SAMLauncher = "SAM Launcher",
   City = "City",
+  Mine = "Mine",
+  CentralBank = "Central Bank",
   MIRV = "MIRV",
   MIRVWarhead = "MIRV Warhead",
   Construction = "Construction",
@@ -199,12 +201,14 @@ export enum TrainType {
 
 const _structureTypes: ReadonlySet<UnitType> = new Set([
   UnitType.City,
+  UnitType.Mine,
   UnitType.Construction,
   UnitType.DefensePost,
   UnitType.SAMLauncher,
   UnitType.MissileSilo,
   UnitType.Port,
   UnitType.Factory,
+  UnitType.CentralBank,
 ]);
 
 export function isStructureType(type: UnitType): boolean {
@@ -265,6 +269,10 @@ export interface UnitParamsMap {
   [UnitType.SAMLauncher]: Record<string, never>;
 
   [UnitType.City]: Record<string, never>;
+
+  [UnitType.Mine]: Record<string, never>;
+
+  [UnitType.CentralBank]: Record<string, never>;
 
   [UnitType.MIRV]: Record<string, never>;
 
@@ -556,6 +564,11 @@ export interface Player {
   gold(): Gold;
   addGold(toAdd: Gold, tile?: TileRef): void;
   removeGold(toRemove: Gold): Gold;
+  totalGoldEarned(): Gold;
+  centralBankPrintsUsed(): number;
+  centralBankPrintsRemaining(): number;
+  centralBankInflationPercent(): number;
+  applyCentralBankMint(amount: Gold): void;
   troops(): number;
   setTroops(troops: number): void;
   addTroops(troops: number): void;

@@ -157,6 +157,7 @@ export interface PlayerUpdate {
   isDisconnected: boolean;
   tilesOwned: number;
   gold: Gold;
+  totalGoldEarned: Gold;
   troops: number;
   allies: number[];
   embargoes: Set<PlayerID>;
@@ -171,6 +172,9 @@ export interface PlayerUpdate {
   hasSpawned: boolean;
   betrayals?: bigint;
   lastDeleteUnitTick: Tick;
+  centralBankPrintsUsed: number;
+  centralBankPrintsRemaining: number;
+  centralBankInflationPercent: number;
 }
 
 export interface AllianceView {

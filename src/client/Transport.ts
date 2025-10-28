@@ -117,6 +117,13 @@ export class SendDonateTroopsIntentEvent implements GameEvent {
   ) {}
 }
 
+export class SendCentralBankMintIntentEvent implements GameEvent {
+  constructor(
+    public readonly unitId: number,
+    public readonly amount: number,
+  ) {}
+}
+
 export class SendQuickChatEvent implements GameEvent {
   constructor(
     public readonly recipient: PlayerView,
@@ -225,6 +232,9 @@ export class Transport {
     );
     this.eventBus.on(SendDonateTroopsIntentEvent, (e) =>
       this.onSendDonateTroopIntent(e),
+    );
+    this.eventBus.on(SendCentralBankMintIntentEvent, (e) =>
+      this.onSendCentralBankMintIntent(e),
     );
     this.eventBus.on(SendQuickChatEvent, (e) => this.onSendQuickChatIntent(e));
     this.eventBus.on(SendEmbargoIntentEvent, (e) =>
@@ -513,6 +523,15 @@ export class Transport {
       clientID: this.lobbyConfig.clientID,
       recipient: event.recipient.id(),
       troops: event.troops,
+    });
+  }
+
+  private onSendCentralBankMintIntent(event: SendCentralBankMintIntentEvent) {
+    this.sendIntent({
+      type: "central_bank_mint",
+      clientID: this.lobbyConfig.clientID,
+      unitId: event.unitId,
+      amount: Number(event.amount ?? 0),
     });
   }
 

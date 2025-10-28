@@ -9,6 +9,7 @@ import { BreakAllianceExecution } from "./alliance/BreakAllianceExecution";
 import { AttackExecution } from "./AttackExecution";
 import { BoatRetreatExecution } from "./BoatRetreatExecution";
 import { BotSpawner } from "./BotSpawner";
+import { CentralBankMintExecution } from "./CentralBankMintExecution";
 import { ConstructionExecution } from "./ConstructionExecution";
 import { DeleteUnitExecution } from "./DeleteUnitExecution";
 import { DonateGoldExecution } from "./DonateGoldExecution";
@@ -105,6 +106,12 @@ export class Executor {
         return new EmbargoAllExecution(player, intent.action);
       case "build_unit":
         return new ConstructionExecution(player, intent.unit, intent.tile);
+      case "central_bank_mint":
+        return new CentralBankMintExecution(
+          player,
+          intent.unitId,
+          intent.amount,
+        );
       case "allianceExtension": {
         return new AllianceExtensionExecution(player, intent.recipient);
       }
