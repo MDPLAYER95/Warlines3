@@ -70,7 +70,7 @@ describe("Attack", () => {
       game.executeNextTick();
     }
 
-    (game.config() as TestConfig).setDefaultNukeSpeed(50);
+    (game.config() as unknown as TestConfig).setDefaultNukeSpeed(50);
   });
 
   test("Nuke reduce attacking troop counts", async () => {
