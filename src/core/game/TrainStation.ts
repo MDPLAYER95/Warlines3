@@ -66,6 +66,7 @@ export function createTrainStopHandlers(
 ): Partial<Record<UnitType, TrainStopHandler>> {
   return {
     [UnitType.City]: new CityStopHandler(),
+    [UnitType.Mine]: new CityStopHandler(),
     [UnitType.Port]: new PortStopHandler(random),
     [UnitType.Factory]: new FactoryStopHandler(),
   };

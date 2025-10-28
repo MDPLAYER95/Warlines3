@@ -28,11 +28,12 @@ describe("NukeExecution", () => {
       ],
     );
 
-    (game.config() as TestConfig).nukeMagnitudes = jest.fn(() => ({
+    (game.config() as unknown as TestConfig).nukeMagnitudes = jest.fn(() => ({
       inner: 10,
       outer: 10,
     }));
-    (game.config() as TestConfig).nukeAllianceBreakThreshold = jest.fn(() => 5);
+    (game.config() as unknown as TestConfig).nukeAllianceBreakThreshold =
+      jest.fn(() => 5);
 
     while (game.inSpawnPhase()) {
       game.executeNextTick();

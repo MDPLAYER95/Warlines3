@@ -266,6 +266,10 @@ export class DefaultConfig implements Config {
     return this._serverConfig;
   }
 
+  turnIntervalMs(): number {
+    return this._serverConfig.turnIntervalMs();
+  }
+
   userSettings(): UserSettings {
     if (this._userSettings === null) {
       throw new Error("userSettings is null");
@@ -515,6 +519,14 @@ export class DefaultConfig implements Config {
               Math.min(1_000_000, Math.pow(2, numUnits) * 125_000),
             UnitType.City,
           ),
+          territoryBound: true,
+          constructionDuration: this.instantBuild() ? 0 : 2 * 10,
+          upgradable: true,
+          canBuildTrainStation: true,
+        };
+      case UnitType.Mine:
+        return {
+          cost: this.costWrapper(() => 1_000_000, UnitType.Mine),
           territoryBound: true,
           constructionDuration: this.instantBuild() ? 0 : 2 * 10,
           upgradable: true,

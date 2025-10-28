@@ -183,6 +183,7 @@ export class InputHandler {
       modifierKey: "ControlLeft",
       altKey: "AltLeft",
       buildCity: "Digit1",
+      buildMine: "KeyM",
       buildFactory: "Digit2",
       buildPort: "Digit3",
       buildDefensePost: "Digit4",
@@ -356,6 +357,11 @@ export class InputHandler {
       if (e.code === this.keybinds.buildCity) {
         e.preventDefault();
         this.uiState.ghostStructure = UnitType.City;
+      }
+
+      if (e.code === this.keybinds.buildMine) {
+        e.preventDefault();
+        this.uiState.ghostStructure = UnitType.Mine;
       }
 
       if (e.code === this.keybinds.buildFactory) {

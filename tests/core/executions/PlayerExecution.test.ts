@@ -92,4 +92,41 @@ describe("PlayerExecution", () => {
     expect(city.owner()).toBe(otherPlayer);
     expect(city.isActive()).toBe(true);
   });
+
+  test("Mine generates additional gold when fully staffed", () => {
+    const tile = game.ref(40, 40);
+    player.conquer(tile);
+    player.buildUnit(UnitType.Mine, tile, {});
+
+    const maxTroops = Math.floor(game.config().maxTroops(player));
+    player.setTroops(maxTroops);
+
+    (
+      game.config() as unknown as { turnIntervalMs: () => number }
+    ).turnIntervalMs = () => 100;
+
+    const startingGold = player.gold();
+    executeTicks(game, 2);
+
+    const goldGained = player.gold() - startingGold;
+    expect(goldGained).toBe(1767n);
+  });
+
+  test("Mine does not yield gold without stationed troops", () => {
+    const tile = game.ref(60, 60);
+    player.conquer(tile);
+    player.buildUnit(UnitType.Mine, tile, {});
+
+    player.setTroops(0);
+
+    (
+      game.config() as unknown as { turnIntervalMs: () => number }
+    ).turnIntervalMs = () => 100;
+
+    const startingGold = player.gold();
+    executeTicks(game, 2);
+
+    const goldGained = player.gold() - startingGold;
+    expect(goldGained).toBe(100n);
+  });
 });

@@ -182,6 +182,7 @@ export class FxLayer implements Layer {
         break;
       case UnitType.DefensePost:
       case UnitType.City:
+      case UnitType.Mine:
       case UnitType.Port:
       case UnitType.MissileSilo:
       case UnitType.SAMLauncher:

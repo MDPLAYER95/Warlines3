@@ -29,6 +29,7 @@ export type BoatUnitType = UnitType.TradeShip | UnitType.TransportShip;
 
 export const otherUnits = [
   "city",
+  "mine",
   "defp",
   "port",
   "wshp",
@@ -40,6 +41,7 @@ export const OtherUnitSchema = z.enum(otherUnits);
 export type OtherUnit = z.infer<typeof OtherUnitSchema>;
 export type OtherUnitType =
   | UnitType.City
+  | UnitType.Mine
   | UnitType.DefensePost
   | UnitType.MissileSilo
   | UnitType.Port
@@ -49,6 +51,7 @@ export type OtherUnitType =
 
 export const unitTypeToOtherUnit = {
   [UnitType.City]: "city",
+  [UnitType.Mine]: "mine",
   [UnitType.DefensePost]: "defp",
   [UnitType.MissileSilo]: "silo",
   [UnitType.Port]: "port",

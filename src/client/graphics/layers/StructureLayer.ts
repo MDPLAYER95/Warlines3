@@ -14,6 +14,7 @@ import { Cell, UnitType } from "../../../core/game/Game";
 import { euclDistFN, isometricDistFN } from "../../../core/game/GameMap";
 import { GameUpdateType } from "../../../core/game/GameUpdates";
 import { GameView, UnitView } from "../../../core/game/GameView";
+import { mineIconColor } from "./MineIconAssets";
 
 const underConstructionColor = colord({ r: 150, g: 150, b: 150 });
 
@@ -46,6 +47,11 @@ export class StructureLayer implements Layer {
     },
     [UnitType.City]: {
       icon: cityIcon,
+      borderRadius: BASE_BORDER_RADIUS * RADIUS_SCALE_FACTOR,
+      territoryRadius: BASE_TERRITORY_RADIUS * RADIUS_SCALE_FACTOR,
+    },
+    [UnitType.Mine]: {
+      icon: mineIconColor,
       borderRadius: BASE_BORDER_RADIUS * RADIUS_SCALE_FACTOR,
       territoryRadius: BASE_TERRITORY_RADIUS * RADIUS_SCALE_FACTOR,
     },
