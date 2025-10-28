@@ -30,6 +30,13 @@ jest.mock("../../../src/client/graphics/layers/BuildMenu", () => {
         countable: true,
       },
       {
+        unitType: UnitType.Mine,
+        key: "unit_type.mine",
+        description: "unit_type.mine_desc",
+        icon: "mine-icon",
+        countable: true,
+      },
+      {
         unitType: UnitType.Factory,
         key: "unit_type.factory",
         description: "unit_type.factory_desc",
@@ -118,6 +125,7 @@ describe("RadialMenuElements", () => {
     mockPlayerActions = {
       buildableUnits: [
         { type: UnitType.City, canBuild: true },
+        { type: UnitType.Mine, canBuild: true },
         { type: UnitType.Factory, canBuild: true },
         { type: UnitType.AtomBomb, canBuild: true },
         { type: UnitType.Warship, canBuild: true },
@@ -209,7 +217,11 @@ describe("RadialMenuElements", () => {
 
       const subMenu = attackMenuElement.subMenu!(mockParams);
 
-      const constructionUnitTypes = [UnitType.City, UnitType.Factory];
+      const constructionUnitTypes = [
+        UnitType.City,
+        UnitType.Mine,
+        UnitType.Factory,
+      ];
       const returnedUnitTypes = subMenu.map((item) => {
         const unitTypeStr = item.id.replace("attack_", "");
         return Object.values(UnitType).find(
@@ -252,7 +264,11 @@ describe("RadialMenuElements", () => {
       expect(subMenu).toBeDefined();
       expect(subMenu.length).toBeGreaterThan(0);
 
-      const constructionUnitTypes = [UnitType.City, UnitType.Factory];
+      const constructionUnitTypes = [
+        UnitType.City,
+        UnitType.Mine,
+        UnitType.Factory,
+      ];
       const returnedUnitTypes = subMenu.map((item) => {
         const unitTypeStr = item.id.replace("build_", "");
         return Object.values(UnitType).find(
