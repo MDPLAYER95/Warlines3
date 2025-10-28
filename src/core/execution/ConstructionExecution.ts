@@ -8,9 +8,11 @@ import {
   UnitType,
 } from "../game/Game";
 import { TileRef } from "../game/GameMap";
+import { CentralBankExecution } from "./CentralBankExecution";
 import { CityExecution } from "./CityExecution";
 import { DefensePostExecution } from "./DefensePostExecution";
 import { FactoryExecution } from "./FactoryExecution";
+import { MineExecution } from "./MineExecution";
 import { MirvExecution } from "./MIRVExecution";
 import { MissileSiloExecution } from "./MissileSiloExecution";
 import { NukeExecution } from "./NukeExecution";
@@ -129,6 +131,12 @@ export class ConstructionExecution implements Execution {
         break;
       case UnitType.City:
         this.mg.addExecution(new CityExecution(player, this.tile));
+        break;
+      case UnitType.Mine:
+        this.mg.addExecution(new MineExecution(player, this.tile));
+        break;
+      case UnitType.CentralBank:
+        this.mg.addExecution(new CentralBankExecution(player, this.tile));
         break;
       case UnitType.Factory:
         this.mg.addExecution(new FactoryExecution(player, this.tile));
