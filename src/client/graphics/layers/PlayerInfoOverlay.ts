@@ -29,7 +29,9 @@ import {
   translateText,
 } from "../../Utils";
 import { TransformHandler } from "../TransformHandler";
+import { bankIconWhite } from "./BankIconAssets";
 import { Layer } from "./Layer";
+import { mineIconWhite } from "./MineIconAssets";
 import { CloseRadialMenuEvent } from "./RadialMenu";
 
 function euclideanDistWorld(
@@ -363,6 +365,18 @@ export class PlayerInfoOverlay extends LitElement implements Layer {
                   UnitType.City,
                   cityIcon,
                   "player_info_overlay.cities",
+                )}
+                ${this.displayUnitCount(
+                  player,
+                  UnitType.Mine,
+                  mineIconWhite,
+                  "player_info_overlay.mines",
+                )}
+                ${this.displayUnitCount(
+                  player,
+                  UnitType.CentralBank,
+                  bankIconWhite,
+                  "player_info_overlay.central_banks",
                 )}
                 ${this.displayUnitCount(
                   player,
