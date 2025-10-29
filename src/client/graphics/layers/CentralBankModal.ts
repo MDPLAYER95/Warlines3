@@ -199,7 +199,8 @@ export class CentralBankModal extends LitElement {
   render() {
     if (!this.isOpen) return null;
     const owner = this.getOwner();
-    if (!owner || owner !== this.game?.myPlayer()) {
+    const myPlayer = this.game?.myPlayer();
+    if (!owner || !myPlayer || owner.id() !== myPlayer.id()) {
       this.closeModal();
       return null;
     }
