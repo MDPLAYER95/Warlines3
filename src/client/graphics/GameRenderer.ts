@@ -1,13 +1,21 @@
 import { EventBus } from "../../core/EventBus";
+import { UnitType } from "../../core/game/Game";
 import { GameView } from "../../core/game/GameView";
 import { UserSettings } from "../../core/game/UserSettings";
 import { GameStartingModal } from "../GameStartingModal";
-import { RefreshGraphicsEvent as RedrawGraphicsEvent } from "../InputHandler";
+import {
+  DoubleClickEvent,
+  RefreshGraphicsEvent as RedrawGraphicsEvent,
+} from "../InputHandler";
 import { TransformHandler } from "./TransformHandler";
 import { UIState } from "./UIState";
 import { AdTimer } from "./layers/AdTimer";
 import { AlertFrame } from "./layers/AlertFrame";
 import { BuildMenu } from "./layers/BuildMenu";
+import {
+  CentralBankModal,
+  openCentralBankModal,
+} from "./layers/CentralBankModal";
 import { ChatDisplay } from "./layers/ChatDisplay";
 import { ChatModal } from "./layers/ChatModal";
 import { ControlPanel } from "./layers/ControlPanel";
@@ -168,6 +176,33 @@ export function createRenderer(
   unitDisplay.eventBus = eventBus;
   unitDisplay.uiState = uiState;
 
+  const centralBankModalElement = document.querySelector("central-bank-modal");
+  if (!centralBankModalElement) {
+    console.error("CentralBankModal element not found in the DOM");
+  } else {
+    const assignCentralBankModal = (modal: CentralBankModal) => {
+      modal.game = game;
+      modal.eventBus = eventBus;
+    };
+
+    if (centralBankModalElement instanceof CentralBankModal) {
+      assignCentralBankModal(centralBankModalElement);
+    } else {
+      customElements
+        .whenDefined("central-bank-modal")
+        .then(() => {
+          const upgraded = centralBankModalElement as CentralBankModal;
+          assignCentralBankModal(upgraded);
+        })
+        .catch((error) => {
+          console.error(
+            "Failed waiting for central-bank-modal definition",
+            error,
+          );
+        });
+    }
+  }
+
   const playerPanel = document.querySelector("player-panel") as PlayerPanel;
   if (!(playerPanel instanceof PlayerPanel)) {
     console.error("player panel not found");
@@ -294,6 +329,52 @@ export class GameRenderer {
     this.context = context;
   }
 
+  private handleDoubleClick = (event: DoubleClickEvent) => {
+    const myPlayer = this.game.myPlayer();
+    if (!myPlayer || !myPlayer.isAlive()) {
+      return;
+    }
+
+    const worldCell = this.transformHandler.screenToWorldCoordinates(
+      event.x,
+      event.y,
+    );
+
+    if (!this.game.isValidCoord(worldCell.x, worldCell.y)) {
+      return;
+    }
+
+    const tileRef = this.game.ref(worldCell.x, worldCell.y);
+    const banks = myPlayer
+      .units(UnitType.CentralBank)
+      .filter((unit) => unit.isActive());
+    if (banks.length === 0) {
+      return;
+    }
+
+    const MAX_TILE_DISTANCE = 2;
+    let closestBank: (typeof banks)[number] | undefined;
+    let closestDistance = Number.POSITIVE_INFINITY;
+    for (const unit of banks) {
+      const distance = this.game.manhattanDist(unit.tile(), tileRef);
+      if (distance < closestDistance) {
+        closestBank = unit;
+        closestDistance = distance;
+      }
+    }
+
+    if (!closestBank) {
+      closestBank = banks[0];
+      closestDistance = this.game.manhattanDist(closestBank.tile(), tileRef);
+    }
+
+    if (closestDistance > MAX_TILE_DISTANCE && banks.length > 1) {
+      return;
+    }
+
+    openCentralBankModal(this.eventBus, closestBank.id());
+  };
+
   initialize() {
     this.eventBus.on(RedrawGraphicsEvent, () => this.redraw());
     this.layers.forEach((l) => l.init?.());
@@ -304,6 +385,8 @@ export class GameRenderer {
 
     //show whole map on startup
     this.transformHandler.centerAll(0.9);
+
+    this.eventBus.on(DoubleClickEvent, this.handleDoubleClick);
 
     let rafId = requestAnimationFrame(() => this.renderGame());
     this.canvas.addEventListener("contextlost", () => {

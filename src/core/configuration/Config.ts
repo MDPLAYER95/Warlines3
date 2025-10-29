@@ -91,6 +91,10 @@ export interface Config {
   numSpawnPhaseTurns(): number;
   userSettings(): UserSettings;
   playerTeams(): TeamCountConfig;
+  turnIntervalMs(): number;
+  centralBankMaxPrints(): number;
+  centralBankInflationPercent(): number;
+  centralBankMintCapPercent(): number;
 
   startManpower(playerInfo: PlayerInfo): number;
   troopIncreaseRate(player: Player | PlayerView): number;
