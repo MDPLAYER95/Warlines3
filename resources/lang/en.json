@@ -105,6 +105,8 @@
     "build_desc": "Description",
     "build_city": "City",
     "build_city_desc": "Increases your max population. Useful when you can't expand your territory or you're about to hit your population limit.",
+    "build_mine": "Mine",
+    "build_mine_desc": "Produces gold each turn based on how close your troops are to their maximum capacity.",
     "build_factory": "Factory",
     "build_factory_desc": "Automatically builds railroads to nearby cities, ports and other factories, and can also link up with friendly neighbors. Trains spawn regularly and give you a fixed amount of gold for each building they visit along the route, with extra gold for visiting your neighbors' buildings.",
     "build_defense": "Defense Post",
@@ -290,6 +292,8 @@
   },
   "unit_type": {
     "city": "City",
+    "mine": "Mine",
+    "central_bank": "Central Bank",
     "defense_post": "Defense Post",
     "port": "Port",
     "warship": "Warship",
@@ -338,6 +342,10 @@
     "build_controls": "Build Controls",
     "build_city": "Build City",
     "build_city_desc": "Build a City under your cursor.",
+    "build_mine": "Build Mine",
+    "build_mine_desc": "Build a Mine under your cursor.",
+    "build_central_bank": "Build Central Bank",
+    "build_central_bank_desc": "Build the Central Bank under your cursor.",
     "build_factory": "Build Factory",
     "build_factory_desc": "Build a Factory under your cursor.",
     "build_defense_post": "Build Defense Post",
@@ -491,9 +499,23 @@
       "port": "Sends trade ships to generate gold",
       "defense_post": "Increases defenses of nearby borders",
       "city": "Increases max population",
+      "mine": "Generates gold faster as your troops approach their capacity",
+      "central_bank": "Prints currency at the cost of inflating future purchases",
       "factory": "Creates railroads and spawns trains"
     },
     "not_enough_money": "Not enough money"
+  },
+  "central_bank_modal": {
+    "title": "Central Bank",
+    "description": "Issue emergency currency up to 10% of your lifetime gold. Each print increases the cost of future purchases.",
+    "uses_remaining": "Prints remaining",
+    "total_earned": "Total gold earned",
+    "max_issue": "Maximum issue",
+    "inflation": "Inflation",
+    "slider_label": "Select the percentage of the maximum issue to mint",
+    "requested": "Requested amount",
+    "inflation_warning": "Each use permanently increases the cost of future units, ships, and structures by 20%.",
+    "confirm": "Mint currency"
   },
   "win_modal": {
     "support_openfront": "Support OpenFront!",
@@ -521,6 +543,8 @@
     "sams": "SAMs",
     "warships": "Warships",
     "cities": "Cities",
+    "mines": "Mines",
+    "central_banks": "Central Banks",
     "show_control": "Show Control",
     "show_units": "Show Units"
   },
@@ -536,6 +560,8 @@
     "gold": "Gold",
     "ports": "Ports",
     "cities": "Cities",
+    "mines": "Mines",
+    "central_banks": "Central Banks",
     "factories": "Factories",
     "missile_launchers": "Missile launchers",
     "sams": "SAMs",
@@ -618,7 +644,8 @@
     "send_alliance": "Send Alliance",
     "send_troops": "Send Troops",
     "send_gold": "Send Gold",
-    "emotes": "Emojis"
+    "emotes": "Emojis",
+    "open_central_bank": "Open Central Bank"
   },
   "send_troops_modal": {
     "title_with_name": "Send Troops to {name}",
@@ -747,6 +774,7 @@
     "steal": "Steal",
     "unit": {
       "city": "City",
+      "mine": "Mine",
       "port": "Port",
       "defp": "Defense Post",
       "saml": "SAM Launcher",

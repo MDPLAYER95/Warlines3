@@ -363,6 +363,22 @@ export class PlayerView {
     return this.data.gold;
   }
 
+  totalGoldEarned(): Gold {
+    return this.data.totalGoldEarned;
+  }
+
+  centralBankPrintsUsed(): number {
+    return this.data.centralBankPrintsUsed;
+  }
+
+  centralBankPrintsRemaining(): number {
+    return this.data.centralBankPrintsRemaining;
+  }
+
+  centralBankInflationPercent(): number {
+    return this.data.centralBankInflationPercent;
+  }
+
   troops(): number {
     return this.data.troops;
   }
