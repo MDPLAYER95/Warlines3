@@ -17,6 +17,7 @@ import {
   PlayerProfile,
   PlayerType,
   Relation,
+  UnitType,
 } from "../../../core/game/Game";
 import { TileRef } from "../../../core/game/GameMap";
 import { GameView, PlayerView } from "../../../core/game/GameView";
@@ -40,6 +41,8 @@ import {
   translateText,
 } from "../../Utils";
 import { UIState } from "../UIState";
+import { bankIconWhite } from "./BankIconAssets";
+import { openCentralBankModal } from "./CentralBankModal";
 import { ChatModal } from "./ChatModal";
 import { EmojiTable } from "./EmojiTable";
 import { Layer } from "./Layer";
@@ -196,6 +199,20 @@ export class PlayerPanel extends LitElement implements Layer {
     this.sendTarget = null;
     this.sendMode = "none";
   };
+
+  private handleOpenCentralBankClick(e: MouseEvent, myPlayer: PlayerView) {
+    e.stopPropagation();
+    const bank = myPlayer
+      .units(UnitType.CentralBank)
+      .find((unit) => unit.isActive());
+
+    if (!bank) {
+      return;
+    }
+
+    openCentralBankModal(this.eventBus ?? null, bank.id());
+    this.hide();
+  }
 
   private confirmSend = (
     e: CustomEvent<{ amount: number; closePanel?: boolean }>,
@@ -722,33 +739,50 @@ export class PlayerPanel extends LitElement implements Layer {
         </div>
 
         ${other === my
-          ? html`<div class="grid auto-cols-fr grid-flow-col gap-1">
-              ${actionButton({
-                onClick: (e: MouseEvent) => this.onStopTradingAllClick(e),
-                icon: stopTradingIcon,
-                iconAlt: "Stop Trading With All",
-                title: !this.actions?.canEmbargoAll
-                  ? `${translateText("player_panel.stop_trade_all")} - ${translateText("cooldown")}`
-                  : translateText("player_panel.stop_trade_all"),
-                label: !this.actions?.canEmbargoAll
-                  ? `${translateText("player_panel.stop_trade_all")} ⏳`
-                  : translateText("player_panel.stop_trade_all"),
-                type: "yellow",
-                disabled: !this.actions?.canEmbargoAll,
-              })}
-              ${actionButton({
-                onClick: (e: MouseEvent) => this.onStartTradingAllClick(e),
-                icon: startTradingIcon,
-                iconAlt: "Start Trading With All",
-                title: !this.actions?.canEmbargoAll
-                  ? `${translateText("player_panel.start_trade_all")} - ${translateText("cooldown")}`
-                  : translateText("player_panel.start_trade_all"),
-                label: !this.actions?.canEmbargoAll
-                  ? `${translateText("player_panel.start_trade_all")} ⏳`
-                  : translateText("player_panel.start_trade_all"),
-                type: "green",
-                disabled: !this.actions?.canEmbargoAll,
-              })}
+          ? html`<div class="flex flex-col gap-1">
+              <div class="grid auto-cols-fr grid-flow-col gap-1">
+                ${actionButton({
+                  onClick: (e: MouseEvent) => this.onStopTradingAllClick(e),
+                  icon: stopTradingIcon,
+                  iconAlt: "Stop Trading With All",
+                  title: !this.actions?.canEmbargoAll
+                    ? `${translateText("player_panel.stop_trade_all")} - ${translateText("cooldown")}`
+                    : translateText("player_panel.stop_trade_all"),
+                  label: !this.actions?.canEmbargoAll
+                    ? `${translateText("player_panel.stop_trade_all")} ⏳`
+                    : translateText("player_panel.stop_trade_all"),
+                  type: "yellow",
+                  disabled: !this.actions?.canEmbargoAll,
+                })}
+                ${actionButton({
+                  onClick: (e: MouseEvent) => this.onStartTradingAllClick(e),
+                  icon: startTradingIcon,
+                  iconAlt: "Start Trading With All",
+                  title: !this.actions?.canEmbargoAll
+                    ? `${translateText("player_panel.start_trade_all")} - ${translateText("cooldown")}`
+                    : translateText("player_panel.start_trade_all"),
+                  label: !this.actions?.canEmbargoAll
+                    ? `${translateText("player_panel.start_trade_all")} ⏳`
+                    : translateText("player_panel.start_trade_all"),
+                  type: "green",
+                  disabled: !this.actions?.canEmbargoAll,
+                })}
+              </div>
+              ${(() => {
+                const hasCentralBank = my
+                  .units(UnitType.CentralBank)
+                  .some((unit) => unit.isActive());
+                return actionButton({
+                  onClick: (e: MouseEvent) =>
+                    this.handleOpenCentralBankClick(e, my),
+                  icon: bankIconWhite,
+                  iconAlt: "Central Bank",
+                  title: translateText("player_panel.open_central_bank"),
+                  label: translateText("player_panel.open_central_bank"),
+                  type: "sky",
+                  disabled: !hasCentralBank,
+                });
+              })()}
             </div>`
           : ""}
       </div>
