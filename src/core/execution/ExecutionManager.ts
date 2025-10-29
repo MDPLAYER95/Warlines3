@@ -11,6 +11,7 @@ import { BoatRetreatExecution } from "./BoatRetreatExecution";
 import { BotSpawner } from "./BotSpawner";
 import { CentralBankMintExecution } from "./CentralBankMintExecution";
 import { ConstructionExecution } from "./ConstructionExecution";
+import { AssignDefensePostTroopsExecution } from "./DefensePostGarrisonExecution";
 import { DeleteUnitExecution } from "./DeleteUnitExecution";
 import { DonateGoldExecution } from "./DonateGoldExecution";
 import { DonateTroopsExecution } from "./DonateTroopExecution";
@@ -111,6 +112,12 @@ export class Executor {
           player,
           intent.unitId,
           intent.amount,
+        );
+      case "assign_defense_post_troops":
+        return new AssignDefensePostTroopsExecution(
+          player,
+          intent.unitId,
+          intent.troops,
         );
       case "allianceExtension": {
         return new AllianceExtensionExecution(player, intent.recipient);

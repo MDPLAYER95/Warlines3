@@ -19,6 +19,7 @@ import {
 import { ChatDisplay } from "./layers/ChatDisplay";
 import { ChatModal } from "./layers/ChatModal";
 import { ControlPanel } from "./layers/ControlPanel";
+import { DefensePostPanel } from "./layers/DefensePostPanel";
 import { EmojiTable } from "./layers/EmojiTable";
 import { EventsDisplay } from "./layers/EventsDisplay";
 import { FPSDisplay } from "./layers/FPSDisplay";
@@ -212,6 +213,16 @@ export function createRenderer(
   playerPanel.emojiTable = emojiTable;
   playerPanel.uiState = uiState;
 
+  const defensePostPanel = document.querySelector(
+    "defense-post-panel",
+  ) as DefensePostPanel;
+  if (!(defensePostPanel instanceof DefensePostPanel)) {
+    console.error("defense post panel not found");
+  }
+  defensePostPanel.game = game;
+  defensePostPanel.eventBus = eventBus;
+  defensePostPanel.uiState = uiState;
+
   const chatModal = document.querySelector("chat-modal") as ChatModal;
   if (!(chatModal instanceof ChatModal)) {
     console.error("chat modal not found");
@@ -294,6 +305,7 @@ export function createRenderer(
     settingsModal,
     teamStats,
     playerPanel,
+    defensePostPanel,
     headsUpMessage,
     multiTabModal,
     new AdTimer(game),
