@@ -159,6 +159,7 @@ export interface PlayerUpdate {
   gold: Gold;
   totalGoldEarned: Gold;
   troops: number;
+  garrisonedTroops: number;
   allies: number[];
   embargoes: Set<PlayerID>;
   isTraitor: boolean;

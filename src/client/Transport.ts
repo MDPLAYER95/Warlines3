@@ -132,6 +132,20 @@ export class SendQuickChatEvent implements GameEvent {
   ) {}
 }
 
+export class SendAssignDefensePostTroopsIntentEvent implements GameEvent {
+  constructor(
+    public readonly unitId: number,
+    public readonly troops: number,
+  ) {}
+}
+
+export class SendWithdrawDefensePostTroopsIntentEvent implements GameEvent {
+  constructor(
+    public readonly unitId: number,
+    public readonly troops: number,
+  ) {}
+}
+
 export class SendEmbargoIntentEvent implements GameEvent {
   constructor(
     public readonly target: PlayerView,
@@ -242,6 +256,12 @@ export class Transport {
     );
     this.eventBus.on(SendEmbargoAllIntentEvent, (e) =>
       this.onSendEmbargoAllIntent(e),
+    );
+    this.eventBus.on(SendAssignDefensePostTroopsIntentEvent, (e) =>
+      this.onAssignDefensePostTroopsIntent(e),
+    );
+    this.eventBus.on(SendWithdrawDefensePostTroopsIntentEvent, (e) =>
+      this.onWithdrawDefensePostTroopsIntent(e),
     );
     this.eventBus.on(BuildUnitIntentEvent, (e) => this.onBuildUnitIntent(e));
 
@@ -559,6 +579,28 @@ export class Transport {
       type: "embargo_all",
       clientID: this.lobbyConfig.clientID,
       action: event.action,
+    });
+  }
+
+  private onAssignDefensePostTroopsIntent(
+    event: SendAssignDefensePostTroopsIntentEvent,
+  ) {
+    this.sendIntent({
+      type: "assign_defense_post_troops",
+      clientID: this.lobbyConfig.clientID,
+      unitId: event.unitId,
+      troops: Math.max(0, Math.floor(event.troops)),
+    });
+  }
+
+  private onWithdrawDefensePostTroopsIntent(
+    event: SendWithdrawDefensePostTroopsIntentEvent,
+  ) {
+    this.sendIntent({
+      type: "withdraw_defense_post_troops",
+      clientID: this.lobbyConfig.clientID,
+      unitId: event.unitId,
+      troops: Math.max(0, Math.floor(event.troops)),
     });
   }
 
