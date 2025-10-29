@@ -1,5 +1,5 @@
 import { EventBus } from "../../core/EventBus";
-import { UnitType } from "../../core/game/Game";
+import { Cell, UnitType } from "../../core/game/Game";
 import { GameView } from "../../core/game/GameView";
 import { UserSettings } from "../../core/game/UserSettings";
 import { GameStartingModal } from "../GameStartingModal";
@@ -19,6 +19,7 @@ import {
 import { ChatDisplay } from "./layers/ChatDisplay";
 import { ChatModal } from "./layers/ChatModal";
 import { ControlPanel } from "./layers/ControlPanel";
+import { DefensePostPanel } from "./layers/DefensePostPanel";
 import { EmojiTable } from "./layers/EmojiTable";
 import { EventsDisplay } from "./layers/EventsDisplay";
 import { FPSDisplay } from "./layers/FPSDisplay";
@@ -212,6 +213,16 @@ export function createRenderer(
   playerPanel.emojiTable = emojiTable;
   playerPanel.uiState = uiState;
 
+  const defensePostPanel = document.querySelector(
+    "defense-post-panel",
+  ) as DefensePostPanel;
+  if (!(defensePostPanel instanceof DefensePostPanel)) {
+    console.error("defense post panel not found");
+  }
+  defensePostPanel.game = game;
+  defensePostPanel.eventBus = eventBus;
+  defensePostPanel.uiState = uiState;
+
   const chatModal = document.querySelector("chat-modal") as ChatModal;
   if (!(chatModal instanceof ChatModal)) {
     console.error("chat modal not found");
@@ -294,6 +305,7 @@ export function createRenderer(
     settingsModal,
     teamStats,
     playerPanel,
+    defensePostPanel,
     headsUpMessage,
     multiTabModal,
     new AdTimer(game),
@@ -352,27 +364,34 @@ export class GameRenderer {
       return;
     }
 
-    const MAX_TILE_DISTANCE = 2;
-    let closestBank: (typeof banks)[number] | undefined;
-    let closestDistance = Number.POSITIVE_INFINITY;
+    const directMatch = banks.find((unit) => unit.tile() === tileRef);
+    const scale = this.transformHandler.scale;
+    const baseRadius = 40;
+    const radius = Math.max(24, baseRadius / Math.max(1, scale));
+    const radiusSq = radius * radius;
+    let closest: { unit: (typeof banks)[number]; distSq: number } | undefined;
+
     for (const unit of banks) {
-      const distance = this.game.manhattanDist(unit.tile(), tileRef);
-      if (distance < closestDistance) {
-        closestBank = unit;
-        closestDistance = distance;
+      const tile = unit.tile();
+      const worldPos = new Cell(this.game.x(tile), this.game.y(tile));
+      const screenPos =
+        this.transformHandler.worldToScreenCoordinates(worldPos);
+      const dx = screenPos.x - event.x;
+      const dy = screenPos.y - event.y;
+      const distSq = dx * dx + dy * dy;
+      if (distSq <= radiusSq) {
+        if (closest === undefined || distSq < closest.distSq) {
+          closest = { unit, distSq };
+        }
       }
     }
 
-    if (!closestBank) {
-      closestBank = banks[0];
-      closestDistance = this.game.manhattanDist(closestBank.tile(), tileRef);
-    }
-
-    if (closestDistance > MAX_TILE_DISTANCE && banks.length > 1) {
+    const target = directMatch ?? closest?.unit;
+    if (!target) {
       return;
     }
 
-    openCentralBankModal(this.eventBus, closestBank.id());
+    openCentralBankModal(this.eventBus, target.id());
   };
 
   initialize() {
