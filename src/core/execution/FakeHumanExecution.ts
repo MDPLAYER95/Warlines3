@@ -407,6 +407,7 @@ export class FakeHumanExecution implements Execution {
   private handleUnits() {
     return (
       this.maybeSpawnStructure(UnitType.City, (num) => num) ||
+      this.maybeSpawnStructure(UnitType.Mine, (num) => num) ||
       this.maybeSpawnStructure(UnitType.Port, (num) => num) ||
       this.maybeSpawnWarship() ||
       this.maybeSpawnStructure(UnitType.Factory, (num) => num) ||
