@@ -119,14 +119,16 @@ export class CentralBankModal extends LitElement {
     }
   `;
 
-  createRenderRoot() {
-    return this;
-  }
-
   public openForUnit(unitId: number): void {
     this.unitId = unitId;
     this.sliderValue = 0;
     this.isOpen = true;
+    this.updateComplete.then(() => {
+      const slider = this.shadowRoot?.getElementById(
+        "bank-slider",
+      ) as HTMLInputElement | null;
+      slider?.focus();
+    });
   }
 
   private handleOpenEvent = (event: OpenCentralBankModalEvent) => {
@@ -196,10 +198,24 @@ export class CentralBankModal extends LitElement {
     this.closeModal();
   }
 
+  private onKeyDown = (event: KeyboardEvent) => {
+    if (!this.isOpen) {
+      return;
+    }
+    if (event.key === "Escape") {
+      event.stopPropagation();
+      this.closeModal();
+    } else if (event.key === "Enter") {
+      event.stopPropagation();
+      this.confirm();
+    }
+  };
+
   render() {
     if (!this.isOpen) return null;
     const owner = this.getOwner();
-    if (!owner || owner !== this.game?.myPlayer()) {
+    const myPlayer = this.game?.myPlayer();
+    if (!owner || !myPlayer || owner.id() !== myPlayer.id()) {
       this.closeModal();
       return null;
     }
@@ -211,11 +227,25 @@ export class CentralBankModal extends LitElement {
     const confirmDisabled =
       remaining <= 0 || max <= 0n || amount <= 0n || this.eventBus === null;
 
+    const titleId = "central-bank-modal-title";
+
     return html`
-      <div class="overlay" @click=${() => this.closeModal()}>
-        <div class="modal" @click=${(e: Event) => e.stopPropagation()}>
+      <div
+        class="overlay"
+        role="presentation"
+        @click=${() => this.closeModal()}
+      >
+        <div
+          class="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby=${titleId}
+          @click=${(e: Event) => e.stopPropagation()}
+          @keydown=${this.onKeyDown}
+          tabindex="-1"
+        >
           <div class="header">
-            <h2 class="text-lg font-semibold">
+            <h2 id=${titleId} class="text-lg font-semibold">
               ${translateText("central_bank_modal.title")}
             </h2>
             <button class="cancel" @click=${() => this.closeModal()}>
