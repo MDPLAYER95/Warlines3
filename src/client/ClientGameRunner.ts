@@ -12,7 +12,7 @@ import {
 import { createPartialGameRecord, replacer } from "../core/Util";
 import { ServerConfig } from "../core/configuration/Config";
 import { getConfig } from "../core/configuration/ConfigLoader";
-import { PlayerActions, UnitType } from "../core/game/Game";
+import { Cell, PlayerActions, UnitType } from "../core/game/Game";
 import { TileRef } from "../core/game/GameMap";
 import { GameMapLoader } from "../core/game/GameMapLoader";
 import {
@@ -22,7 +22,7 @@ import {
   HashUpdate,
   WinUpdate,
 } from "../core/game/GameUpdates";
-import { GameView, PlayerView } from "../core/game/GameView";
+import { GameView, PlayerView, UnitView } from "../core/game/GameView";
 import { loadTerrainMap, TerrainMapData } from "../core/game/TerrainMapLoader";
 import { UserSettings } from "../core/game/UserSettings";
 import { WorkerClient } from "../core/worker/WorkerClient";
@@ -47,6 +47,11 @@ import {
 } from "./Transport";
 import { createCanvas } from "./Utils";
 import { createRenderer, GameRenderer } from "./graphics/GameRenderer";
+import { openCentralBankModal } from "./graphics/layers/CentralBankModal";
+import {
+  HideDefensePostPanelEvent,
+  ShowDefensePostPanelEvent,
+} from "./graphics/layers/DefensePostPanel";
 import SoundManager from "./sound/SoundManager";
 
 export interface LobbyConfig {
@@ -417,6 +422,7 @@ export class ClientGameRunner {
     this.myPlayer.actions(tile).then((actions) => {
       if (this.myPlayer === null) return;
       if (actions.canAttack) {
+        this.eventBus.emit(new HideDefensePostPanelEvent());
         this.eventBus.emit(
           new SendAttackIntentEvent(
             this.gameView.owner(tile).id(),
@@ -424,7 +430,18 @@ export class ClientGameRunner {
           ),
         );
       } else if (this.canAutoBoat(actions, tile)) {
+        this.eventBus.emit(new HideDefensePostPanelEvent());
         this.sendBoatAttackIntent(tile);
+      } else {
+        const defensePanelShown = this.tryShowDefensePostPanel(tile);
+        if (defensePanelShown) {
+          return;
+        }
+
+        const bankModalShown = this.tryOpenCentralBankModal(tile);
+        if (!bankModalShown) {
+          this.eventBus.emit(new HideDefensePostPanelEvent());
+        }
       }
     });
   }
@@ -512,10 +529,149 @@ export class ClientGameRunner {
     }
 
     this.myPlayer.actions(tile).then((actions) => {
+      const panelShown = this.tryShowDefensePostPanel(tile);
+      if (panelShown) {
+        return;
+      }
+      this.eventBus.emit(new HideDefensePostPanelEvent());
       if (this.canBoatAttack(actions) !== false) {
         this.sendBoatAttackIntent(tile);
       }
     });
+  }
+
+  private tryShowDefensePostPanel(tileHint?: TileRef | null): boolean {
+    if (this.myPlayer === null) {
+      return false;
+    }
+    const defensePost = this.findDefensePostUnderCursor(tileHint);
+    if (defensePost === undefined) {
+      return false;
+    }
+
+    this.eventBus.emit(new ShowDefensePostPanelEvent(defensePost.id()));
+    return true;
+  }
+
+  private tryOpenCentralBankModal(tileHint?: TileRef | null): boolean {
+    if (this.myPlayer === null) {
+      return false;
+    }
+
+    const bank = this.findCentralBankUnderCursor(tileHint);
+    if (bank === undefined) {
+      return false;
+    }
+
+    this.eventBus.emit(new HideDefensePostPanelEvent());
+    openCentralBankModal(this.eventBus, bank.id());
+    return true;
+  }
+
+  private findDefensePostUnderCursor(
+    tileHint?: TileRef | null,
+  ): UnitView | undefined {
+    if (this.myPlayer === null) {
+      return undefined;
+    }
+
+    if (tileHint) {
+      const directMatch = this.gameView
+        .units(UnitType.DefensePost)
+        .find(
+          (unit) =>
+            unit.tile() === tileHint &&
+            unit.owner() === this.myPlayer &&
+            unit.isActive(),
+        );
+      if (directMatch !== undefined) {
+        return directMatch;
+      }
+    }
+
+    if (this.lastMousePosition === null) {
+      return undefined;
+    }
+
+    const pointer = this.lastMousePosition;
+    const scale = this.renderer.transformHandler.scale;
+    const baseRadius = 40;
+    const radius = Math.max(24, baseRadius / Math.max(1, scale));
+    const radiusSq = radius * radius;
+    let best: { unit: UnitView; distSq: number } | undefined;
+
+    for (const unit of this.gameView.units(UnitType.DefensePost)) {
+      if (!unit.isActive() || unit.owner() !== this.myPlayer) {
+        continue;
+      }
+      const tile = unit.tile();
+      const worldPos = new Cell(this.gameView.x(tile), this.gameView.y(tile));
+      const screenPos =
+        this.renderer.transformHandler.worldToScreenCoordinates(worldPos);
+      const dx = screenPos.x - pointer.x;
+      const dy = screenPos.y - pointer.y;
+      const distSq = dx * dx + dy * dy;
+      if (distSq <= radiusSq) {
+        if (best === undefined || distSq < best.distSq) {
+          best = { unit, distSq };
+        }
+      }
+    }
+
+    return best?.unit;
+  }
+
+  private findCentralBankUnderCursor(
+    tileHint?: TileRef | null,
+  ): UnitView | undefined {
+    if (this.myPlayer === null) {
+      return undefined;
+    }
+
+    if (tileHint) {
+      const directMatch = this.gameView
+        .units(UnitType.CentralBank)
+        .find(
+          (unit) =>
+            unit.tile() === tileHint &&
+            unit.owner() === this.myPlayer &&
+            unit.isActive(),
+        );
+      if (directMatch !== undefined) {
+        return directMatch;
+      }
+    }
+
+    if (this.lastMousePosition === null) {
+      return undefined;
+    }
+
+    const pointer = this.lastMousePosition;
+    const scale = this.renderer.transformHandler.scale;
+    const baseRadius = 40;
+    const radius = Math.max(24, baseRadius / Math.max(1, scale));
+    const radiusSq = radius * radius;
+    let best: { unit: UnitView; distSq: number } | undefined;
+
+    for (const unit of this.gameView.units(UnitType.CentralBank)) {
+      if (!unit.isActive() || unit.owner() !== this.myPlayer) {
+        continue;
+      }
+      const tile = unit.tile();
+      const worldPos = new Cell(this.gameView.x(tile), this.gameView.y(tile));
+      const screenPos =
+        this.renderer.transformHandler.worldToScreenCoordinates(worldPos);
+      const dx = screenPos.x - pointer.x;
+      const dy = screenPos.y - pointer.y;
+      const distSq = dx * dx + dy * dy;
+      if (distSq <= radiusSq) {
+        if (best === undefined || distSq < best.distSq) {
+          best = { unit, distSq };
+        }
+      }
+    }
+
+    return best?.unit;
   }
 
   private doGroundAttackUnderCursor(): void {

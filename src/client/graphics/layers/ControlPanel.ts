@@ -21,13 +21,19 @@ export class ControlPanel extends LitElement implements Layer {
   private attackRatio: number = 0.2;
 
   @state()
-  private _maxTroops: number;
+  private _maxTroops: number = 0;
 
   @state()
-  private troopRate: number;
+  private troopRate: number = 0;
 
   @state()
-  private _troops: number;
+  private _troops: number = 0;
+
+  @state()
+  private _garrisonedTroops: number = 0;
+
+  @state()
+  private _totalTroops: number = 0;
 
   @state()
   private _isVisible = false;
@@ -85,10 +91,14 @@ export class ControlPanel extends LitElement implements Layer {
       this.updateTroopIncrease();
     }
 
-    this._troops = player.troops();
+    const reserveTroops = player.troops();
+    const garrisonedTroops = player.garrisonedTroops();
+
+    this._troops = reserveTroops;
+    this._garrisonedTroops = garrisonedTroops;
+    this._totalTroops = reserveTroops + garrisonedTroops;
     this._maxTroops = this.game.config().maxTroops(player);
     this._gold = player.gold();
-    this._troops = player.troops();
     this.troopRate = this.game.config().troopIncreaseRate(player) * 10;
     this.requestUpdate();
   }
@@ -169,20 +179,32 @@ export class ControlPanel extends LitElement implements Layer {
         <div class="block bg-black/30 text-white mb-4 p-2 rounded">
           <div class="flex justify-between mb-1">
             <span class="font-bold"
-              >${translateText("control_panel.troops")}:</span
+              >${translateText("control_panel.total_troops")}:</span
             >
             <span translate="no"
-              >${renderTroops(this._troops)} / ${renderTroops(this._maxTroops)}
-              <span
-                class="${this._troopRateIsIncreasing
-                  ? "text-green-500"
-                  : "text-yellow-500"}"
-                translate="no"
-                >(+${renderTroops(this.troopRate)})</span
-              ></span
+              >${renderTroops(this._totalTroops)} /
+              ${renderTroops(this._maxTroops)}</span
             >
           </div>
-          <div class="flex justify-between">
+          <div class="flex justify-between text-xs sm:text-sm text-white/80">
+            <span>${translateText("control_panel.reserve")}:</span>
+            <span translate="no">${renderTroops(this._troops)}</span>
+          </div>
+          <div class="flex justify-between text-xs sm:text-sm text-white/80">
+            <span>${translateText("control_panel.garrison")}:</span>
+            <span translate="no">${renderTroops(this._garrisonedTroops)}</span>
+          </div>
+          <div class="flex justify-between text-xs sm:text-sm mt-1">
+            <span>${translateText("control_panel.regen")}:</span>
+            <span
+              class="${this._troopRateIsIncreasing
+                ? "text-green-500"
+                : "text-yellow-500"}"
+              translate="no"
+              >+${renderTroops(this.troopRate)}</span
+            >
+          </div>
+          <div class="flex justify-between mt-2">
             <span class="font-bold"
               >${translateText("control_panel.gold")}:</span
             >
@@ -194,9 +216,7 @@ export class ControlPanel extends LitElement implements Layer {
           <label class="block text-white mb-1" translate="no"
             >${translateText("control_panel.attack_ratio")}:
             ${(this.attackRatio * 100).toFixed(0)}%
-            (${renderTroops(
-              (this.game?.myPlayer()?.troops() ?? 0) * this.attackRatio,
-            )})</label
+            (${renderTroops(this._troops * this.attackRatio)})</label
           >
           <div class="relative h-8">
             <!-- Background track -->
