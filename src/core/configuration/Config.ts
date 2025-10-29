@@ -157,6 +157,13 @@ export interface Config {
   SiloCooldown(): number;
   defensePostDefenseBonus(): number;
   defensePostSpeedBonus(): number;
+  defensePostMaxGarrison(): number;
+  defensePostGarrisonBonuses(garrisonedTroops: number): {
+    defenseMultiplier: number;
+    speedMultiplier: number;
+    level: number;
+    capacityRatio: number;
+  };
   falloutDefenseModifier(percentOfFallout: number): number;
   difficultyModifier(difficulty: Difficulty): number;
   warshipPatrolRange(): number;
