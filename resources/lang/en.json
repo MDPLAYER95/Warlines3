@@ -616,8 +616,29 @@
   },
   "control_panel": {
     "gold": "Gold",
-    "troops": "Troops",
-    "attack_ratio": "Attack Ratio"
+    "attack_ratio": "Attack Ratio",
+    "total_troops": "Total troops",
+    "reserve": "Reserve",
+    "garrison": "Garrison",
+    "regen": "Regeneration"
+  },
+  "defense_post_panel": {
+    "heading": "Defense Post",
+    "close": "Close",
+    "garrison": "Garrison",
+    "reserve": "Reserve Available",
+    "level": "Garrison level",
+    "level_value": "Lv{level}/{max}",
+    "next_level_hint": "Next bonus at {percent}",
+    "max_level": "Maximum bonus active",
+    "effect": "Current Bonuses",
+    "defense_multiplier": "Defense ×{value}",
+    "speed_multiplier": "Speed ×{value}",
+    "effect_hint": "Defense reduces enemy damage while speed makes counter-capture progress faster.",
+    "note": "Assigned troops stay out of the automatic regeneration pool and cannot be manually withdrawn.",
+    "quick_fill": "Quick garrison",
+    "fill_to": "Set garrison to {percent}% capacity",
+    "fill_tooltip": "{percent}% • {troops}"
   },
   "player_panel": {
     "gold": "Gold",

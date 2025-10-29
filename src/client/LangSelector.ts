@@ -218,6 +218,7 @@ export class LangSelector extends LitElement {
       "game-starting-modal",
       "top-bar",
       "player-panel",
+      "defense-post-panel",
       "replay-panel",
       "help-modal",
       "settings-modal",
