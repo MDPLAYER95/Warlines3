@@ -41,6 +41,9 @@ export const ICON_SIZE = {
   cross: 20,
 };
 export const OFFSET_ZOOM_Y = 4;
+const DEFENSE_POST_LEVEL_COLORS = [
+  0x64748b, 0x38bdf8, 0x22c55e, 0xf59e0b, 0xef4444,
+];
 
 export type ShapeType =
   | "triangle"
@@ -139,6 +142,70 @@ export class SpriteFactory {
 
   // --- internal helpers ---
 
+  private createDefensePostBadge(level: number, ratio: number): PIXI.Container {
+    const container = new PIXI.Container();
+    const color =
+      DEFENSE_POST_LEVEL_COLORS[
+        Math.min(level, DEFENSE_POST_LEVEL_COLORS.length - 1)
+      ];
+    const width = 34;
+    const height = 18;
+    const background = new PIXI.Graphics();
+    background.beginFill(color, 0.9);
+    background.drawRoundedRect(-width / 2, -height, width, height, 6);
+    background.endFill();
+    container.addChild(background);
+
+    const label = new PIXI.BitmapText({
+      text: `L${level}`,
+      style: { fontFamily: "round_6x6_modified", fontSize: 12 },
+    });
+    label.anchor.set(0.5);
+    label.position.set(0, -height / 2 + 1);
+    container.addChild(label);
+
+    if (level < 4) {
+      const stageStart = level / 4;
+      const stageEnd = (level + 1) / 4;
+      const stageSpan = Math.max(stageEnd - stageStart, Number.EPSILON);
+      const progress = Math.max(
+        0,
+        Math.min(1, (ratio - stageStart) / stageSpan),
+      );
+      const barWidth = width - 8;
+      const barHeight = 3;
+      const barY = -4;
+
+      const barBackground = new PIXI.Graphics();
+      barBackground.beginFill(0xffffff, 0.25);
+      barBackground.drawRoundedRect(
+        -barWidth / 2,
+        barY,
+        barWidth,
+        barHeight,
+        1.5,
+      );
+      barBackground.endFill();
+      container.addChild(barBackground);
+
+      if (progress > 0) {
+        const barFill = new PIXI.Graphics();
+        barFill.beginFill(0xffffff, 0.95);
+        barFill.drawRoundedRect(
+          -barWidth / 2,
+          barY,
+          Math.max(0, progress * barWidth),
+          barHeight,
+          1.5,
+        );
+        barFill.endFill();
+        container.addChild(barFill);
+      }
+    }
+
+    return container;
+  }
+
   public createUnitContainer(
     unit: UnitView,
     options: { type?: "icon" | "dot" | "level"; stage: PIXI.Container },
@@ -186,6 +253,22 @@ export class SpriteFactory {
         text.position.y = Math.round(-ICON_SIZE[shape] / 2 - 2);
       }
       parentContainer.addChild(text);
+    }
+
+    if (
+      (type === "icon" || type === "level") &&
+      structureType === UnitType.DefensePost
+    ) {
+      const { level, capacityRatio } = this.game
+        .config()
+        .defensePostGarrisonBonuses(unit.defensePostGarrisonedTroops());
+      const badge = this.createDefensePostBadge(level, capacityRatio);
+      const shape = STRUCTURE_SHAPES[structureType];
+      if (shape !== undefined) {
+        badge.position.y = Math.round(-ICON_SIZE[shape] / 2 - 4);
+      }
+      badge.position.x = 0;
+      parentContainer.addChild(badge);
     }
 
     const posX = Math.round(screenPos.x);

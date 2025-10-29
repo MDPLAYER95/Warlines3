@@ -187,6 +187,10 @@ export class UnitImpl implements Unit {
 
   setOwner(newOwner: PlayerImpl): void {
     this.clearPendingDeletion();
+    if (this._type === UnitType.DefensePost && this._troops > 0) {
+      this._owner.addTroops(this._troops);
+      this._troops = 0;
+    }
     switch (this._type) {
       case UnitType.Warship:
       case UnitType.Port:
@@ -255,6 +259,10 @@ export class UnitImpl implements Unit {
   delete(displayMessage?: boolean, destroyer?: Player): void {
     if (!this.isActive()) {
       throw new Error(`cannot delete ${this} not active`);
+    }
+    if (this._type === UnitType.DefensePost && this._troops > 0) {
+      this._owner.addTroops(this._troops);
+      this._troops = 0;
     }
     this._owner._units = this._owner._units.filter((b) => b !== this);
     this._active = false;
