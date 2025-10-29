@@ -330,6 +330,33 @@ export class DefaultConfig implements Config {
     return 3;
   }
 
+  defensePostMaxGarrison(): number {
+    return 150_000;
+  }
+
+  defensePostGarrisonBonuses(garrisonedTroops: number): {
+    defenseMultiplier: number;
+    speedMultiplier: number;
+  } {
+    const cap = this.defensePostMaxGarrison();
+    if (cap <= 0) {
+      return { defenseMultiplier: 1, speedMultiplier: 1 };
+    }
+
+    const clamped = within(garrisonedTroops, 0, cap);
+    const normalized = clamped / cap;
+    // Smooth, capped curve that reaches 1 at full garrison and eases in quickly.
+    const curve = normalized === 0 ? 0 : 1 - Math.pow(1 - normalized, 3);
+
+    const defenseMax = Math.max(1, this.defensePostDefenseBonus());
+    const speedMax = Math.max(1, this.defensePostSpeedBonus());
+
+    return {
+      defenseMultiplier: 1 + (defenseMax - 1) * curve,
+      speedMultiplier: 1 + (speedMax - 1) * curve,
+    };
+  }
+
   playerTeams(): TeamCountConfig {
     return this._gameConfig.playerTeams ?? 0;
   }
@@ -692,17 +719,24 @@ export class DefaultConfig implements Config {
         throw new Error(`terrain type ${type} not supported`);
     }
     if (defender.isPlayer()) {
+      let defenseMultiplier = 1;
+      let speedMultiplier = 1;
       for (const dp of gm.nearbyUnits(
         tileToConquer,
         gm.config().defensePostRange(),
         UnitType.DefensePost,
       )) {
         if (dp.unit.owner() === defender) {
-          mag *= this.defensePostDefenseBonus();
-          speed *= this.defensePostSpeedBonus();
-          break;
+          const bonuses = this.defensePostGarrisonBonuses(dp.unit.troops());
+          defenseMultiplier = Math.max(
+            defenseMultiplier,
+            bonuses.defenseMultiplier,
+          );
+          speedMultiplier = Math.max(speedMultiplier, bonuses.speedMultiplier);
         }
       }
+      mag *= defenseMultiplier;
+      speed *= speedMultiplier;
     }
 
     if (gm.hasFallout(tileToConquer)) {
@@ -875,10 +909,21 @@ export class DefaultConfig implements Config {
   troopIncreaseRate(player: Player): number {
     const max = this.maxTroops(player);
 
-    let toAdd = 10 + Math.pow(player.troops(), 0.73) / 4;
+    const garrisonGetter = (
+      player as Player & { defensePostGarrisonedTroops?: () => number }
+    ).defensePostGarrisonedTroops;
+    const garrisoned =
+      typeof garrisonGetter === "function" ? garrisonGetter.call(player) : 0;
 
-    const ratio = 1 - player.troops() / max;
-    toAdd *= ratio;
+    const effectiveTroops = Math.min(
+      max,
+      Math.max(0, player.troops() + garrisoned),
+    );
+
+    let toAdd = 10 + Math.pow(effectiveTroops, 0.73) / 4;
+
+    const ratio = 1 - effectiveTroops / max;
+    toAdd *= Math.max(0, ratio);
 
     if (player.type() === PlayerType.Bot) {
       toAdd *= 0.6;
@@ -901,7 +946,10 @@ export class DefaultConfig implements Config {
       }
     }
 
-    return Math.min(player.troops() + toAdd, max) - player.troops();
+    const maxReserve = Math.max(0, max - Math.min(garrisoned, max));
+    const cappedTroops = Math.min(maxReserve, player.troops() + toAdd);
+
+    return Math.max(0, cappedTroops - player.troops());
   }
 
   goldAdditionRate(player: Player): Gold {

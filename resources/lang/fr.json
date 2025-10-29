@@ -557,6 +557,20 @@
     "troops": "Troupes",
     "attack_ratio": "Ratio d'attaque"
   },
+  "defense_post_panel": {
+    "heading": "Poste de défense",
+    "close": "Fermer",
+    "garrison": "Garnison",
+    "reserve": "Réserve disponible",
+    "effect": "Effets actuels",
+    "defense_multiplier": "Défense ×{value}",
+    "speed_multiplier": "Vitesse ×{value}",
+    "effect_hint": "La défense réduit les dégâts ennemis et la vitesse accélère la reprise des hexagones.",
+    "note": "Les troupes en garnison sont exclues de la régénération automatique.",
+    "quick_fill": "Garnison rapide",
+    "fill_to": "Mettre la garnison à {percent}% de la capacité",
+    "fill_tooltip": "{percent}% • {troops}"
+  },
   "player_panel": {
     "gold": "Or",
     "troops": "Troupes",

@@ -573,6 +573,7 @@ export interface Player {
   setTroops(troops: number): void;
   addTroops(troops: number): void;
   removeTroops(troops: number): number;
+  defensePostGarrisonedTroops(): number;
 
   // Units
   units(...types: UnitType[]): Unit[];

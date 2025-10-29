@@ -47,7 +47,9 @@ export type Intent =
   | UpgradeStructureIntent
   | DeleteUnitIntent
   | KickPlayerIntent
-  | CentralBankMintIntent;
+  | CentralBankMintIntent
+  | AssignDefensePostTroopsIntent
+  | WithdrawDefensePostTroopsIntent;
 
 export type AttackIntent = z.infer<typeof AttackIntentSchema>;
 export type CancelAttackIntent = z.infer<typeof CancelAttackIntentSchema>;
@@ -80,6 +82,12 @@ export type AllianceExtensionIntent = z.infer<
 export type DeleteUnitIntent = z.infer<typeof DeleteUnitIntentSchema>;
 export type KickPlayerIntent = z.infer<typeof KickPlayerIntentSchema>;
 export type CentralBankMintIntent = z.infer<typeof CentralBankMintIntentSchema>;
+export type AssignDefensePostTroopsIntent = z.infer<
+  typeof AssignDefensePostTroopsIntentSchema
+>;
+export type WithdrawDefensePostTroopsIntent = z.infer<
+  typeof WithdrawDefensePostTroopsIntentSchema
+>;
 
 export type Turn = z.infer<typeof TurnSchema>;
 export type GameConfig = z.infer<typeof GameConfigSchema>;
@@ -297,6 +305,18 @@ export const DonateTroopIntentSchema = BaseIntentSchema.extend({
   troops: z.number().nullable(),
 });
 
+export const AssignDefensePostTroopsIntentSchema = BaseIntentSchema.extend({
+  type: z.literal("assign_defense_post_troops"),
+  unitId: z.number(),
+  troops: z.number().nonnegative(),
+});
+
+export const WithdrawDefensePostTroopsIntentSchema = BaseIntentSchema.extend({
+  type: z.literal("withdraw_defense_post_troops"),
+  unitId: z.number(),
+  troops: z.number().nonnegative(),
+});
+
 export const BuildUnitIntentSchema = BaseIntentSchema.extend({
   type: z.literal("build_unit"),
   unit: z.enum(UnitType),
@@ -377,6 +397,8 @@ const IntentSchema = z.discriminatedUnion("type", [
   DeleteUnitIntentSchema,
   KickPlayerIntentSchema,
   CentralBankMintIntentSchema,
+  AssignDefensePostTroopsIntentSchema,
+  WithdrawDefensePostTroopsIntentSchema,
 ]);
 
 //
