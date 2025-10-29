@@ -619,6 +619,20 @@
     "troops": "Troops",
     "attack_ratio": "Attack Ratio"
   },
+  "defense_post_panel": {
+    "heading": "Defense Post",
+    "close": "Close",
+    "garrison": "Garrison",
+    "reserve": "Reserve Available",
+    "effect": "Current Bonuses",
+    "defense_multiplier": "Defense ×{value}",
+    "speed_multiplier": "Speed ×{value}",
+    "note": "Garrisoned troops stay out of the automatic regeneration pool.",
+    "assign_label": "Assign troops (cap {cap})",
+    "withdraw_label": "Withdraw troops (cap {cap})",
+    "assign": "Assign",
+    "withdraw": "Withdraw"
+  },
   "player_panel": {
     "gold": "Gold",
     "troops": "Troops",

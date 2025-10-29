@@ -47,6 +47,10 @@ import {
 } from "./Transport";
 import { createCanvas } from "./Utils";
 import { createRenderer, GameRenderer } from "./graphics/GameRenderer";
+import {
+  HideDefensePostPanelEvent,
+  ShowDefensePostPanelEvent,
+} from "./graphics/layers/DefensePostPanel";
 import SoundManager from "./sound/SoundManager";
 
 export interface LobbyConfig {
@@ -417,6 +421,7 @@ export class ClientGameRunner {
     this.myPlayer.actions(tile).then((actions) => {
       if (this.myPlayer === null) return;
       if (actions.canAttack) {
+        this.eventBus.emit(new HideDefensePostPanelEvent());
         this.eventBus.emit(
           new SendAttackIntentEvent(
             this.gameView.owner(tile).id(),
@@ -424,7 +429,10 @@ export class ClientGameRunner {
           ),
         );
       } else if (this.canAutoBoat(actions, tile)) {
+        this.eventBus.emit(new HideDefensePostPanelEvent());
         this.sendBoatAttackIntent(tile);
+      } else if (!this.tryShowDefensePostPanel(tile)) {
+        this.eventBus.emit(new HideDefensePostPanelEvent());
       }
     });
   }
@@ -513,9 +521,32 @@ export class ClientGameRunner {
 
     this.myPlayer.actions(tile).then((actions) => {
       if (this.canBoatAttack(actions) !== false) {
+        this.eventBus.emit(new HideDefensePostPanelEvent());
         this.sendBoatAttackIntent(tile);
+      } else if (!this.tryShowDefensePostPanel(tile)) {
+        this.eventBus.emit(new HideDefensePostPanelEvent());
       }
     });
+  }
+
+  private tryShowDefensePostPanel(tile: TileRef): boolean {
+    if (this.myPlayer === null) {
+      return false;
+    }
+    const defensePost = this.gameView
+      .units(UnitType.DefensePost)
+      .find(
+        (unit) =>
+          unit.tile() === tile &&
+          unit.owner() === this.myPlayer &&
+          unit.isActive(),
+      );
+    if (defensePost === undefined) {
+      return false;
+    }
+
+    this.eventBus.emit(new ShowDefensePostPanelEvent(defensePost.id()));
+    return true;
   }
 
   private doGroundAttackUnderCursor(): void {

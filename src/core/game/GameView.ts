@@ -97,6 +97,10 @@ export class UnitView {
   troops(): number {
     return this.data.troops;
   }
+
+  defensePostGarrisonedTroops(): number {
+    return this.data.garrisonedTroops ?? 0;
+  }
   retreating(): boolean {
     if (this.type() !== UnitType.TransportShip) {
       throw Error("Must be a transport ship");
