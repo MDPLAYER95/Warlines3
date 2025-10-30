@@ -243,16 +243,19 @@ export class NukeExecution implements Execution {
       const owner = this.mg.owner(tile);
       if (owner.isPlayer()) {
         owner.relinquish(tile);
-        owner.removeTroops(
-          this.mg
-            .config()
-            .nukeDeathFactor(
-              this.nukeType,
-              owner.troops(),
-              owner.numTilesOwned(),
-              maxTroops,
-            ),
-        );
+        const casualties = this.mg
+          .config()
+          .nukeDeathFactor(
+            this.nukeType,
+            owner.population(),
+            owner.numTilesOwned(),
+            maxTroops,
+          );
+        const soldierDeaths = owner.removeTroops(casualties);
+        const remainingDeaths = Math.max(0, casualties - soldierDeaths);
+        if (remainingDeaths > 0) {
+          owner.removeCivilians(Math.ceil(remainingDeaths));
+        }
         owner.outgoingAttacks().forEach((attack) => {
           const deaths =
             this.mg

@@ -216,7 +216,8 @@
     "sam_launcher": "Misil tierra-aire",
     "atom_bomb": "Bomba atómica",
     "hydrogen_bomb": "Bomba de hidrógeno",
-    "mirv": "MIRV"
+    "mirv": "MIRV",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Ajustes de Usuario",
@@ -260,7 +261,9 @@
     "move_right": "Mover Cámara a la Derecha",
     "move_right_desc": "Mueve la cámara hacia la derecha",
     "reset": "Restablecer",
-    "unbind": "Desvincular"
+    "unbind": "Desvincular",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Chat rápido",
@@ -345,7 +348,8 @@
       "warship": "Captura barcos comerciales y destruye barcos de guerra",
       "port": "Envía barcos comerciales para generar oro",
       "defense_post": "Aumenta las defensas de las fronteras cercanas",
-      "city": "Aumenta la población máxima"
+      "city": "Aumenta la población máxima",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Dinero insuficiente"
   },
@@ -382,7 +386,9 @@
     "sams": "SAMs",
     "warships": "Barcos de guerra",
     "health": "Vida",
-    "attitude": "Actitud"
+    "attitude": "Actitud",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "relation": {
     "hostile": "Hostil",
@@ -396,7 +402,14 @@
     "gold": "Oro",
     "troops": "Tropas",
     "workers": "Trabajadores",
-    "attack_ratio": "Ratio de ataque"
+    "attack_ratio": "Ratio de ataque",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "Oro",

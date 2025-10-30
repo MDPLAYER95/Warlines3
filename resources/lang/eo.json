@@ -275,7 +275,8 @@
     "atom_bomb": "Atombombo",
     "hydrogen_bomb": "Hidrogenbombo",
     "mirv": "MIRV",
-    "factory": "Fabriko"
+    "factory": "Fabriko",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Uzantparametroj",
@@ -360,7 +361,9 @@
     "terrain_enabled": "Terenvido ebligita",
     "terrain_disabled": "Terenvido malebligita",
     "exit_game_label": "Eliri la ludon",
-    "exit_game_info": "Reiri al precipa menuo"
+    "exit_game_info": "Reiri al precipa menuo",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Rapida Babilejo",
@@ -461,7 +464,8 @@
       "port": "Sendas komercŝipojn por produkti oron",
       "defense_post": "Pligrandigas defendojn de proksimumaj landlimoj",
       "city": "Pligrandigas maksiman loĝantaron",
-      "factory": "Kreas fervojojn kaj generas trajnojn"
+      "factory": "Kreas fervojojn kaj generas trajnojn",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Ne sufiĉe da mono"
   },
@@ -511,7 +515,9 @@
     "warships": "Militŝipoj",
     "health": "Sano",
     "attitude": "Teniĝo",
-    "levels": "Niveloj"
+    "levels": "Niveloj",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "retiriĝas",
@@ -555,7 +561,14 @@
   "control_panel": {
     "gold": "Oro",
     "troops": "Trupoj",
-    "attack_ratio": "Atakkvociento"
+    "attack_ratio": "Atakkvociento",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "Oro",

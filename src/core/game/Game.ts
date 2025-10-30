@@ -187,6 +187,7 @@ export enum UnitType {
   City = "City",
   Mine = "Mine",
   CentralBank = "Central Bank",
+  MilitaryBase = "Military Base",
   MIRV = "MIRV",
   MIRVWarhead = "MIRV Warhead",
   Construction = "Construction",
@@ -209,6 +210,7 @@ const _structureTypes: ReadonlySet<UnitType> = new Set([
   UnitType.Port,
   UnitType.Factory,
   UnitType.CentralBank,
+  UnitType.MilitaryBase,
 ]);
 
 export function isStructureType(type: UnitType): boolean {
@@ -261,6 +263,8 @@ export interface UnitParamsMap {
   };
 
   [UnitType.Factory]: Record<string, never>;
+
+  [UnitType.MilitaryBase]: Record<string, never>;
 
   [UnitType.MissileSilo]: Record<string, never>;
 
@@ -573,6 +577,13 @@ export interface Player {
   setTroops(troops: number): void;
   addTroops(troops: number): void;
   removeTroops(troops: number): number;
+  civilians(): number;
+  addCivilians(amount: number): void;
+  removeCivilians(amount: number): number;
+  population(): number;
+  defenseStrength(): number;
+  trainSoldiers(amount: number): number;
+  applyDefenseLoss(loss: number): number;
   defensePostGarrisonedTroops(): number;
 
   // Units

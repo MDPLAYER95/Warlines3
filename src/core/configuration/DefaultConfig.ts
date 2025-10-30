@@ -587,6 +587,13 @@ export class DefaultConfig implements Config {
           territoryBound: true,
           constructionDuration: this.instantBuild() ? 0 : 2 * 10,
         };
+      case UnitType.MilitaryBase:
+        return {
+          cost: this.costWrapper(() => 750_000, UnitType.MilitaryBase),
+          territoryBound: true,
+          constructionDuration: this.instantBuild() ? 0 : 3 * 10,
+          upgradable: true,
+        };
       case UnitType.Factory:
         return {
           cost: this.costWrapper(
@@ -801,18 +808,26 @@ export class DefaultConfig implements Config {
 
       return {
         attackerTroopLoss:
-          within(defender.troops() / attackTroops, 0.6, 2) *
+          within(
+            defender.defenseStrength() / Math.max(1, attackTroops),
+            0.6,
+            2,
+          ) *
           mag *
           0.8 *
           largeDefenderAttackDebuff *
           largeAttackBonus *
           (defender.isTraitor() ? this.traitorDefenseDebuff() : 1),
         defenderTroopLoss:
-          defender.troops() /
-          defender.numTilesOwned() /
+          defender.defenseStrength() /
+          Math.max(1, defender.numTilesOwned()) /
           appliedDefenseMultiplier,
         tilesPerTickUsed:
-          within(defender.troops() / (5 * attackTroops), 0.2, 1.5) *
+          within(
+            defender.defenseStrength() / Math.max(1, 5 * attackTroops),
+            0.2,
+            1.5,
+          ) *
           speed *
           largeDefenderSpeedDebuff *
           largeAttackerSpeedBonus *
@@ -840,7 +855,11 @@ export class DefaultConfig implements Config {
   ): number {
     if (defender.isPlayer()) {
       return (
-        within(((5 * attackTroops) / defender.troops()) * 2, 0.01, 0.5) *
+        within(
+          ((5 * attackTroops) / Math.max(1, defender.defenseStrength())) * 2,
+          0.01,
+          0.5,
+        ) *
         numAdjacentTilesWithEnemy *
         3
       );
@@ -849,8 +868,31 @@ export class DefaultConfig implements Config {
     }
   }
 
+  private activeStructureCount(
+    player: Player | PlayerView,
+    type: UnitType,
+  ): number {
+    return player.units(type).filter((unit) => unit.isActive()).length;
+  }
+
   boatAttackAmount(attacker: Player, defender: Player | TerraNullius): number {
     return Math.floor(attacker.troops() / 5);
+  }
+
+  militaryBaseTrainingRatePerTick(): number {
+    return 250;
+  }
+
+  militaryBaseSoldierCapBonus(baseCount: number): number {
+    return baseCount * 25_000;
+  }
+
+  initialSoldierShare(): number {
+    return 0.2;
+  }
+
+  neutralCaptureCivilianShare(): number {
+    return 0.25;
   }
 
   warshipShellLifetime(): number {
@@ -866,11 +908,16 @@ export class DefaultConfig implements Config {
   }
 
   attackAmount(attacker: Player, defender: Player | TerraNullius) {
-    if (attacker.type() === PlayerType.Bot) {
-      return attacker.troops() / 20;
-    } else {
-      return attacker.troops() / 5;
+    const divisor = attacker.type() === PlayerType.Bot ? 20 : 5;
+    if (!defender.isPlayer()) {
+      const civilianSupport = Math.floor(
+        attacker.civilians() * this.neutralCaptureCivilianShare(),
+      );
+      const combined = attacker.troops() + civilianSupport;
+      return Math.max(0, combined / divisor);
     }
+
+    return attacker.troops() / divisor;
   }
 
   startManpower(playerInfo: PlayerInfo): number {
@@ -893,6 +940,10 @@ export class DefaultConfig implements Config {
   }
 
   maxTroops(player: Player | PlayerView): number {
+    const activeBases = this.activeStructureCount(
+      player,
+      UnitType.MilitaryBase,
+    );
     const maxTroops =
       player.type() === PlayerType.Human && this.infiniteTroops()
         ? 1_000_000_000
@@ -903,78 +954,77 @@ export class DefaultConfig implements Config {
             .reduce((a, b) => a + b, 0) *
             this.cityTroopIncrease();
 
+    const baseBonus = this.militaryBaseSoldierCapBonus(activeBases);
+    const maxWithBases = maxTroops + baseBonus;
+
     if (player.type() === PlayerType.Bot) {
-      return maxTroops / 3;
+      return maxWithBases / 3;
     }
 
     if (player.type() === PlayerType.Human) {
-      return maxTroops;
+      return maxWithBases;
     }
 
     switch (this._gameConfig.difficulty) {
       case Difficulty.Easy:
-        return maxTroops * 0.5;
+        return maxWithBases * 0.5;
       case Difficulty.Medium:
-        return maxTroops * 1;
+        return maxWithBases * 1;
       case Difficulty.Hard:
-        return maxTroops * 1.5;
+        return maxWithBases * 1.5;
       case Difficulty.Impossible:
-        return maxTroops * 2;
+        return maxWithBases * 2;
     }
   }
 
   troopIncreaseRate(player: Player | PlayerView): number {
-    const max = this.maxTroops(player);
+    const maxPopulation = this.maxTroops(player);
 
-    const serverGarrisonGetter = (
-      player as Player & { defensePostGarrisonedTroops?: () => number }
-    ).defensePostGarrisonedTroops;
-    const clientGarrisonGetter = (
-      player as PlayerView & { garrisonedTroops?: () => number }
-    ).garrisonedTroops;
+    const serverPopulationGetter = (
+      player as Player & { population?: () => number }
+    ).population;
+    const clientPopulationGetter = (
+      player as PlayerView & { population?: () => number }
+    ).population;
 
-    const garrisoned =
-      typeof serverGarrisonGetter === "function"
-        ? serverGarrisonGetter.call(player as Player)
-        : typeof clientGarrisonGetter === "function"
-          ? clientGarrisonGetter.call(player as PlayerView)
-          : 0;
+    const population =
+      typeof serverPopulationGetter === "function"
+        ? serverPopulationGetter.call(player as Player)
+        : typeof clientPopulationGetter === "function"
+          ? clientPopulationGetter.call(player as PlayerView)
+          : player.troops();
 
-    const effectiveTroops = Math.min(
-      max,
-      Math.max(0, player.troops() + garrisoned),
-    );
+    const cappedPopulation = Math.min(maxPopulation, Math.max(0, population));
 
-    let toAdd = 10 + Math.pow(effectiveTroops, 0.73) / 4;
+    if (cappedPopulation >= maxPopulation) {
+      return 0;
+    }
 
-    const ratio = 1 - effectiveTroops / max;
-    toAdd *= Math.max(0, ratio);
+    let growth = Math.max(5, Math.floor(maxPopulation * 0.002));
 
     if (player.type() === PlayerType.Bot) {
-      toAdd *= 0.6;
+      growth *= 0.6;
     }
 
     if (player.type() === PlayerType.FakeHuman) {
       switch (this._gameConfig.difficulty) {
         case Difficulty.Easy:
-          toAdd *= 0.9;
+          growth *= 0.9;
           break;
         case Difficulty.Medium:
-          toAdd *= 1;
+          growth *= 1;
           break;
         case Difficulty.Hard:
-          toAdd *= 1.1;
+          growth *= 1.1;
           break;
         case Difficulty.Impossible:
-          toAdd *= 1.2;
+          growth *= 1.2;
           break;
       }
     }
 
-    const maxReserve = Math.max(0, max - Math.min(garrisoned, max));
-    const cappedTroops = Math.min(maxReserve, player.troops() + toAdd);
-
-    return Math.max(0, cappedTroops - player.troops());
+    const remainingSpace = maxPopulation - cappedPopulation;
+    return Math.max(0, Math.min(growth, remainingSpace));
   }
 
   goldAdditionRate(player: Player): Gold {

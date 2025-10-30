@@ -106,6 +106,19 @@ export class AttackExecution implements Execution {
       .config()
       .attackAmount(this._owner, this.target);
     if (this.removeTroops) {
+      if (!this.target.isPlayer()) {
+        const share = this.mg.config().neutralCaptureCivilianShare();
+        if (share > 0) {
+          const desired = Math.max(0, Math.ceil(this.startTroops));
+          const mobilizable = Math.min(
+            Math.floor(this._owner.civilians() * share),
+            desired,
+          );
+          if (mobilizable > 0) {
+            this._owner.trainSoldiers(mobilizable);
+          }
+        }
+      }
       this.startTroops = Math.min(this._owner.troops(), this.startTroops);
       this._owner.removeTroops(this.startTroops);
     }
@@ -275,7 +288,7 @@ export class AttackExecution implements Execution {
       troopCount -= attackerTroopLoss;
       this.attack.setTroops(troopCount);
       if (targetPlayer) {
-        targetPlayer.removeTroops(defenderTroopLoss);
+        targetPlayer.applyDefenseLoss(defenderTroopLoss);
       }
       this._owner.conquer(tileToConquer);
       this.handleDeadDefender();
