@@ -328,6 +328,7 @@ function getAllEnabledUnits(myPlayer: boolean, config: Config): Set<UnitType> {
     addStructureIfEnabled(UnitType.City);
     addStructureIfEnabled(UnitType.Mine);
     addStructureIfEnabled(UnitType.CentralBank);
+    addStructureIfEnabled(UnitType.MilitaryBase);
     addStructureIfEnabled(UnitType.DefensePost);
     addStructureIfEnabled(UnitType.Port);
     addStructureIfEnabled(UnitType.MissileSilo);

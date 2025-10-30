@@ -120,6 +120,7 @@ export class UILayer implements Layer {
       case UnitType.City:
       case UnitType.Mine:
       case UnitType.CentralBank:
+      case UnitType.MilitaryBase:
       case UnitType.Factory:
       case UnitType.DefensePost:
       case UnitType.Port:
@@ -344,6 +345,7 @@ export class UILayer implements Layer {
       case UnitType.City:
       case UnitType.Mine:
       case UnitType.CentralBank:
+      case UnitType.MilitaryBase:
       case UnitType.Factory:
       case UnitType.Port:
       case UnitType.DefensePost:

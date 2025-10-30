@@ -294,6 +294,7 @@
     "city": "City",
     "mine": "Mine",
     "central_bank": "Central Bank",
+    "military_base": "Military Base",
     "defense_post": "Defense Post",
     "port": "Port",
     "warship": "Warship",
@@ -346,6 +347,8 @@
     "build_mine_desc": "Build a Mine under your cursor.",
     "build_central_bank": "Build Central Bank",
     "build_central_bank_desc": "Build the Central Bank under your cursor.",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor.",
     "build_factory": "Build Factory",
     "build_factory_desc": "Build a Factory under your cursor.",
     "build_defense_post": "Build Defense Post",
@@ -501,6 +504,7 @@
       "city": "Increases max population",
       "mine": "Generates gold faster as your troops approach their capacity",
       "central_bank": "Prints currency at the cost of inflating future purchases",
+      "military_base": "Trains civilians into soldiers over time",
       "factory": "Creates railroads and spawns trains"
     },
     "not_enough_money": "Not enough money"
@@ -556,6 +560,8 @@
     "team": "Team",
     "alliance_timeout": "Alliance ends in",
     "troops": "Troops",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
     "a_troops": "Attacking troops",
     "gold": "Gold",
     "ports": "Ports",
@@ -617,10 +623,15 @@
   "control_panel": {
     "gold": "Gold",
     "attack_ratio": "Attack Ratio",
-    "total_troops": "Total troops",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
     "reserve": "Reserve",
     "garrison": "Garrison",
-    "regen": "Regeneration"
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "defense_post_panel": {
     "heading": "Defense Post",

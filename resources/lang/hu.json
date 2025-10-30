@@ -275,7 +275,8 @@
     "atom_bomb": "Atombomba",
     "hydrogen_bomb": "Hidrogénbomba",
     "mirv": "MIRV",
-    "factory": "Gyár"
+    "factory": "Gyár",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Játékos beállítások",
@@ -360,7 +361,9 @@
     "terrain_enabled": "Domborzat nézet engedélyezve",
     "terrain_disabled": "Domborzat nézet letiltva",
     "exit_game_label": "Kilépés a játékból",
-    "exit_game_info": "Visszatérés a főmenübe"
+    "exit_game_info": "Visszatérés a főmenübe",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Gyors csevegés",
@@ -461,7 +464,8 @@
       "port": "Kereskedőhajókat küld, hogy arany termeljen",
       "defense_post": "Növeli a közeli határok védelmét",
       "city": "Növeli a maximális népességet",
-      "factory": "Vasútvonalakat hoz létre és vonatokat indít"
+      "factory": "Vasútvonalakat hoz létre és vonatokat indít",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Nincs elég pénz"
   },
@@ -511,7 +515,9 @@
     "warships": "Hadihajók",
     "health": "Életerő",
     "attitude": "Hozzáállás",
-    "levels": "Szintek"
+    "levels": "Szintek",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "visszavonulás",
@@ -555,7 +561,14 @@
   "control_panel": {
     "gold": "Arany",
     "troops": "Katonák",
-    "attack_ratio": "Támadási ráta"
+    "attack_ratio": "Támadási ráta",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "Arany",

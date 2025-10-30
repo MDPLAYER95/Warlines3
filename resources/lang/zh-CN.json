@@ -275,7 +275,8 @@
     "atom_bomb": "原子弹",
     "hydrogen_bomb": "氢弹",
     "mirv": "MIRV",
-    "factory": "工厂"
+    "factory": "工厂",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "用户设置",
@@ -360,7 +361,9 @@
     "terrain_enabled": "已启用地形视图",
     "terrain_disabled": "已禁用地形视图",
     "exit_game_label": "退出游戏",
-    "exit_game_info": "返回主菜单"
+    "exit_game_info": "返回主菜单",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "快捷聊天",
@@ -461,7 +464,8 @@
       "port": "发送商船来获得黄金",
       "defense_post": "增加附近边界的防御力",
       "city": "增加最大人口",
-      "factory": "创建铁轨并生成火车"
+      "factory": "创建铁轨并生成火车",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "金钱不足"
   },
@@ -511,7 +515,9 @@
     "warships": "军舰",
     "health": "生命值",
     "attitude": "态度",
-    "levels": "等级"
+    "levels": "等级",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "正在撤退",
@@ -555,7 +561,14 @@
   "control_panel": {
     "gold": "黄金",
     "troops": "军队",
-    "attack_ratio": "攻击比例"
+    "attack_ratio": "攻击比例",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "黄金",
