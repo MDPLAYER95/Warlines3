@@ -272,7 +272,8 @@
     "atom_bomb": "Atom Bombası",
     "hydrogen_bomb": "Hidrojen Bombası",
     "mirv": "MIRV",
-    "factory": "Fabrika"
+    "factory": "Fabrika",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Kullanıcı Ayarları",
@@ -355,7 +356,9 @@
     "terrain_enabled": "Arazi görünümü etkinleştirildi",
     "terrain_disabled": "Arazi görünümü kapatıldı",
     "exit_game_label": "Oyundan Çık",
-    "exit_game_info": "Ana menüye dön"
+    "exit_game_info": "Ana menüye dön",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Hızlı Sohbet",
@@ -456,7 +459,8 @@
       "port": "Altın üretmek için ticaret gemileri gönderir",
       "defense_post": "Yakındaki sınırların savunmasını artırır",
       "city": "Maksimum nüfusu artırır",
-      "factory": "Demiryolları yapar ve trenler oluşturur"
+      "factory": "Demiryolları yapar ve trenler oluşturur",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Yeterli para yok"
   },
@@ -505,7 +509,9 @@
     "warships": "Savaş gemileri",
     "health": "Sağlık",
     "attitude": "Tutum",
-    "levels": "Seviyeler"
+    "levels": "Seviyeler",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "geri çekiliyor",
@@ -549,7 +555,11 @@
   "control_panel": {
     "gold": "Altın",
     "troops": "Birlik",
-    "attack_ratio": "Saldırı Oranı"
+    "attack_ratio": "Saldırı Oranı",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "player_panel": {
     "gold": "Altın",

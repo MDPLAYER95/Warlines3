@@ -251,7 +251,8 @@
     "atom_bomb": "원자 폭탄",
     "hydrogen_bomb": "수소 폭탄",
     "mirv": "다탄두 미사일",
-    "factory": "공장"
+    "factory": "공장",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "사용자 설정",
@@ -327,7 +328,9 @@
     "terrain_enabled": "지형 보기 활성화됨",
     "terrain_disabled": "지형 보기 비활성화됨",
     "exit_game_label": "게임 나가기",
-    "exit_game_info": "주 메뉴로 돌아가기"
+    "exit_game_info": "주 메뉴로 돌아가기",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "빠른 채팅",
@@ -413,7 +416,8 @@
       "port": "무역선을 보내 금을 생산합니다",
       "defense_post": "주변 경계의 방어력을 강화합니다",
       "city": "최대 인구 수를 증가시킵니다",
-      "factory": "철도를 만들고 기차를 생성합니다"
+      "factory": "철도를 만들고 기차를 생성합니다",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "돈이 부족합니다"
   },
@@ -453,7 +457,9 @@
     "warships": "군함",
     "health": "체력",
     "attitude": "태도",
-    "levels": "레벨"
+    "levels": "레벨",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "후퇴 중",
@@ -498,7 +504,11 @@
     "gold": "금",
     "troops": "병력",
     "workers": "일꾼",
-    "attack_ratio": "공격 비율"
+    "attack_ratio": "공격 비율",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "player_panel": {
     "gold": "금",

@@ -167,5 +167,27 @@
   },
   "heads_up_message": {
     "choose_spawn": "heads_up_message.choose_spawn"
+  },
+  "unit_type": {
+    "military_base": "Military Base"
+  },
+  "user_setting": {
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
+  },
+  "build_menu": {
+    "desc": {
+      "military_base": "Trains civilians into soldiers over time"
+    }
+  },
+  "player_info_overlay": {
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
+  },
+  "control_panel": {
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   }
 }

@@ -275,7 +275,7 @@ export class AttackExecution implements Execution {
       troopCount -= attackerTroopLoss;
       this.attack.setTroops(troopCount);
       if (targetPlayer) {
-        targetPlayer.removeTroops(defenderTroopLoss);
+        targetPlayer.applyDefenseLoss(defenderTroopLoss);
       }
       this._owner.conquer(tileToConquer);
       this.handleDeadDefender();
