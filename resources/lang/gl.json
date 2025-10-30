@@ -258,7 +258,8 @@
     "atom_bomb": "Bomba atómica",
     "hydrogen_bomb": "Bomba de hidróxeno",
     "mirv": "MIRV",
-    "factory": "Fábrica"
+    "factory": "Fábrica",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Axustes do usuario",
@@ -341,7 +342,9 @@
     "terrain_enabled": "Vista xeográfica activada",
     "terrain_disabled": "Vista xeográfica desactivada",
     "exit_game_label": "Saír da partida",
-    "exit_game_info": "Volver ó menú principal"
+    "exit_game_info": "Volver ó menú principal",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Chat rápido",
@@ -427,7 +430,8 @@
       "port": "Envía barcos comerciais para xerar ouro",
       "defense_post": "Reforza as defensas das fronteiras próximas",
       "city": "Aumenta a poboación máxima",
-      "factory": "Constrúe vías férreas e xera trens"
+      "factory": "Constrúe vías férreas e xera trens",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Non tes ouro dabondo"
   },
@@ -468,7 +472,9 @@
     "warships": "Buques",
     "health": "Saúde",
     "attitude": "Actitude",
-    "levels": "Niveis"
+    "levels": "Niveis",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "retirando",
@@ -512,7 +518,14 @@
   "control_panel": {
     "gold": "Ouro",
     "troops": "Tropas",
-    "attack_ratio": "Proporción de ataque"
+    "attack_ratio": "Proporción de ataque",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "Ouro",

@@ -272,7 +272,8 @@
     "atom_bomb": "Атомна бомба",
     "hydrogen_bomb": "Водородна бомба",
     "mirv": "МИРВ",
-    "factory": "Фабрика"
+    "factory": "Фабрика",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Потребителски настройки",
@@ -355,7 +356,9 @@
     "terrain_enabled": "Изгледът на терена е активиран",
     "terrain_disabled": "Изгледът на терена е деактивиран",
     "exit_game_label": "Напускане на играта",
-    "exit_game_info": "Връщане в главното меню"
+    "exit_game_info": "Връщане в главното меню",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Бърз чат",
@@ -456,7 +459,8 @@
       "port": "Изпраща търговски кораби, за да се получава злато",
       "defense_post": "Увеличава отбраната на близки граници",
       "city": "Увеличава максималната популация",
-      "factory": "Създава железопътни линии и пуска влакове"
+      "factory": "Създава железопътни линии и пуска влакове",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Няма достатъчно пари"
   },
@@ -505,7 +509,9 @@
     "warships": "Бойни кораби",
     "health": "Живот",
     "attitude": "Становище",
-    "levels": "Нива"
+    "levels": "Нива",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "отстъпване",
@@ -549,7 +555,14 @@
   "control_panel": {
     "gold": "Злато",
     "troops": "Войници",
-    "attack_ratio": "Съотношение на атака"
+    "attack_ratio": "Съотношение на атака",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "Злато",

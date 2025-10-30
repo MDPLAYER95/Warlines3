@@ -160,6 +160,9 @@ export interface PlayerUpdate {
   gold: Gold;
   totalGoldEarned: Gold;
   troops: number;
+  civilians: number;
+  population: number;
+  defenseStrength: number;
   garrisonedTroops: number;
   allies: number[];
   embargoes: Set<PlayerID>;

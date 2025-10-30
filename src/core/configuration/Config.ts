@@ -124,6 +124,10 @@ export interface Config {
   maxTroops(player: Player | PlayerView): number;
   cityTroopIncrease(): number;
   boatAttackAmount(attacker: Player, defender: Player | TerraNullius): number;
+  militaryBaseTrainingRatePerTick(): number;
+  militaryBaseSoldierCapBonus(baseCount: number): number;
+  initialSoldierShare(): number;
+  neutralCaptureCivilianShare(): number;
   shellLifetime(): number;
   boatMaxNumber(): number;
   allianceDuration(): Tick;

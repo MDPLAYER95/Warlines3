@@ -247,7 +247,8 @@
     "atom_bomb": "פצצת אטום",
     "hydrogen_bomb": "פצצת מימן",
     "mirv": "MIRV",
-    "factory": "מפעל"
+    "factory": "מפעל",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "הגדרות משתמש",
@@ -305,7 +306,9 @@
     "move_right": "הזז מצלמה ימינה",
     "move_right_desc": "מזיז את המצלמה לצד ימין",
     "reset": "איפוס",
-    "unbind": "בטל קיצור מקלדת"
+    "unbind": "בטל קיצור מקלדת",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "צ'אט מהיר",
@@ -390,7 +393,8 @@
       "warship": "לוכד ספינות סחר, הורס ספינות סחר וכיבוש.",
       "port": "שולח ספינות סחר כדי לייצר זהב",
       "defense_post": "מעלה הגנות של גבולות קרובים",
-      "city": "מעלה כמות אוכלוסיה מירבית"
+      "city": "מעלה כמות אוכלוסיה מירבית",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "אין מספיק זהב"
   },
@@ -432,7 +436,9 @@
     "warships": "ספינות קרב",
     "health": "חיים",
     "attitude": "יחסים",
-    "levels": "שלבים"
+    "levels": "שלבים",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "נסיגה",
@@ -464,7 +470,14 @@
     "gold": "זהב",
     "troops": "חיילים",
     "workers": "עובדים",
-    "attack_ratio": "יחס תקיפה"
+    "attack_ratio": "יחס תקיפה",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "זהב",
