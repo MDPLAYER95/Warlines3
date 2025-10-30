@@ -258,7 +258,8 @@
     "atom_bomb": "Atómová bomba",
     "hydrogen_bomb": "Vodíková bomba",
     "mirv": "MIRV",
-    "factory": "Továreň"
+    "factory": "Továreň",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Užívateľské nastavenia",
@@ -341,7 +342,9 @@
     "terrain_enabled": "Viditeľnosť povrchu zapnutá",
     "terrain_disabled": "Viditeľnosť povrchu vypnutá",
     "exit_game_label": "Opustiť hru",
-    "exit_game_info": "Vrátiť sa do hlavnej ponuky"
+    "exit_game_info": "Vrátiť sa do hlavnej ponuky",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Rýchly čet",
@@ -427,7 +430,8 @@
       "port": "Posiela obchodné lode na tvorbu zlata",
       "defense_post": "Zvyšuje obranu okolitých hraníc",
       "city": "Zvyšuje maximálnu populáciu",
-      "factory": "Tvorí železnice a vlaky"
+      "factory": "Tvorí železnice a vlaky",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Nedostatok zlata"
   },
@@ -468,7 +472,9 @@
     "warships": "Bojové lode",
     "health": "Život",
     "attitude": "Postoj",
-    "levels": "Levely"
+    "levels": "Levely",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "ustupuje",
@@ -512,7 +518,14 @@
   "control_panel": {
     "gold": "Zlato",
     "troops": "Vojská",
-    "attack_ratio": "Pomer útoku"
+    "attack_ratio": "Pomer útoku",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "Zlato",

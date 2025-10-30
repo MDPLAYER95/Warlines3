@@ -332,6 +332,18 @@ export class PlayerInfoOverlay extends LitElement implements Layer {
                     </span>
                   </div>`
                 : ""}
+              <div class="flex gap-2 text-sm opacity-80" translate="no">
+                ${translateText("player_info_overlay.civilians")}
+                <span class="ml-auto mr-0 font-bold">
+                  ${renderTroops(player.civilians())}
+                </span>
+              </div>
+              <div class="flex gap-2 text-sm opacity-80" translate="no">
+                ${translateText("player_info_overlay.defense_strength")}
+                <span class="ml-auto mr-0 font-bold">
+                  ${renderTroops(player.defenseStrength())}
+                </span>
+              </div>
               ${attackingTroops >= 1
                 ? html`<div
                     class="flex gap-2 text-sm opacity-80"

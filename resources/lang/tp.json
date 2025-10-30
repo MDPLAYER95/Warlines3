@@ -202,7 +202,8 @@
     "sam_launcher": "ilo tawa pi ilo sewi pi pakala wawa",
     "atom_bomb": "ilo pi pakala wawa pi kipisi ijo",
     "hydrogen_bomb": "ilo pi pakala wawa pi wan ijo",
-    "mirv": "ilo pi pakala wawa mute"
+    "mirv": "ilo pi pakala wawa mute",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "ken pi jan musi",
@@ -244,7 +245,9 @@
     "move_right": "o lukin teje",
     "move_right_desc": "o lukin teje",
     "reset": "o pini e ante",
-    "unbind": "o weka"
+    "unbind": "o weka",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "toki lili",
@@ -318,5 +321,23 @@
       "saving_for_mirv": "[P1] li awen tawa ilo pi pakala wawa mute.",
       "mirv_ready": "[P1] li jo e mani tawa ilo pi pakala wawa mute a!"
     }
+  },
+  "build_menu": {
+    "desc": {
+      "military_base": "Trains civilians into soldiers over time"
+    }
+  },
+  "player_info_overlay": {
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
+  },
+  "control_panel": {
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   }
 }

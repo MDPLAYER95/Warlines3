@@ -4,6 +4,7 @@ import { ClientID } from "../Schemas";
 import {
   assertNever,
   distSortUnit,
+  maxInt,
   minInt,
   simpleHash,
   toInt,
@@ -68,7 +69,8 @@ export class PlayerImpl implements Player {
   public _pseudo_random: PseudoRandom;
 
   private _gold: bigint;
-  private _troops: bigint;
+  private _civilians: bigint;
+  private _soldiers: bigint;
   private _totalGoldEarned: bigint = 0n;
   private centralBankPrints = 0;
   private centralBankInflationSteps = 0;
@@ -114,7 +116,12 @@ export class PlayerImpl implements Player {
     private readonly _team: Team | null,
   ) {
     this._name = sanitizeUsername(playerInfo.name);
-    this._troops = toInt(startTroops);
+    const start = toInt(startTroops);
+    const share = within(this.mg.config().initialSoldierShare(), 0, 1);
+    const desiredSoldiers = toInt(Number(start) * share);
+    const initialSoldiers = minInt(start, desiredSoldiers);
+    this._soldiers = initialSoldiers;
+    this._civilians = start - initialSoldiers;
     this._gold = 0n;
     this._displayName = this._name;
     this._pseudo_random = new PseudoRandom(simpleHash(this.playerInfo.id));
@@ -143,6 +150,9 @@ export class PlayerImpl implements Player {
       gold: this._gold,
       totalGoldEarned: this._totalGoldEarned,
       troops: this.troops(),
+      civilians: this.civilians(),
+      population: this.population(),
+      defenseStrength: this.defenseStrength(),
       garrisonedTroops: this.defensePostGarrisonedTroops(),
       centralBankPrintsUsed: this.centralBankPrints,
       centralBankPrintsRemaining: this.centralBankPrintsRemaining(),
@@ -313,7 +323,7 @@ export class PlayerImpl implements Player {
     return true as const;
   }
   setTroops(troops: number) {
-    this._troops = toInt(troops);
+    this._soldiers = maxInt(0n, toInt(troops));
   }
   conquer(tile: TileRef) {
     this.mg.conquer(this, tile);
@@ -861,7 +871,7 @@ export class PlayerImpl implements Player {
   }
 
   troops(): number {
-    return Number(this._troops);
+    return Number(this._soldiers);
   }
 
   addTroops(troops: number): void {
@@ -869,15 +879,76 @@ export class PlayerImpl implements Player {
       this.removeTroops(-1 * troops);
       return;
     }
-    this._troops += toInt(troops);
+    this._soldiers += toInt(troops);
   }
   removeTroops(troops: number): number {
     if (troops <= 0) {
       return 0;
     }
-    const toRemove = minInt(this._troops, toInt(troops));
-    this._troops -= toRemove;
+    const toRemove = minInt(this._soldiers, toInt(troops));
+    this._soldiers -= toRemove;
     return Number(toRemove);
+  }
+
+  civilians(): number {
+    return Number(this._civilians);
+  }
+
+  addCivilians(amount: number): void {
+    if (amount < 0) {
+      this.removeCivilians(-amount);
+      return;
+    }
+    this._civilians += toInt(amount);
+  }
+
+  removeCivilians(amount: number): number {
+    if (amount <= 0) {
+      return 0;
+    }
+    const toRemove = minInt(this._civilians, toInt(amount));
+    this._civilians -= toRemove;
+    return Number(toRemove);
+  }
+
+  population(): number {
+    return Number(this._soldiers + this._civilians);
+  }
+
+  defenseStrength(): number {
+    return this.troops() + this.civilians() / 10;
+  }
+
+  trainSoldiers(amount: number): number {
+    if (amount <= 0) {
+      return 0;
+    }
+    const trained = this.removeCivilians(amount);
+    if (trained > 0) {
+      this.addTroops(trained);
+    }
+    return trained;
+  }
+
+  applyDefenseLoss(loss: number): number {
+    if (loss <= 0) {
+      return 0;
+    }
+    let remaining = loss;
+    const soldiersLost = Math.min(this.troops(), Math.floor(remaining));
+    if (soldiersLost > 0) {
+      this.removeTroops(soldiersLost);
+      remaining -= soldiersLost;
+    }
+
+    let civilianLoss = 0;
+    if (remaining > 0) {
+      const civilianEquivalent = Math.ceil(remaining * 10);
+      civilianLoss = this.removeCivilians(civilianEquivalent);
+      remaining -= civilianLoss / 10;
+    }
+
+    return soldiersLost + civilianLoss / 10;
   }
 
   defensePostGarrisonedTroops(): number {
@@ -1041,6 +1112,7 @@ export class PlayerImpl implements Player {
       case UnitType.City:
       case UnitType.Mine:
       case UnitType.CentralBank:
+      case UnitType.MilitaryBase:
       case UnitType.Factory:
       case UnitType.Construction:
         return this.landBasedStructureSpawn(targetTile, validTiles);
@@ -1183,6 +1255,7 @@ export class PlayerImpl implements Player {
     return (
       simpleHash(this.id()) *
         (this.troops() +
+          this.civilians() +
           this.numTilesOwned() +
           this.defensePostGarrisonedTroops()) +
       this._units.reduce((acc, unit) => acc + unit.hash(), 0) +
@@ -1194,9 +1267,9 @@ export class PlayerImpl implements Player {
   toString(): string {
     return `Player:{name:${this.info().name},clientID:${
       this.info().clientID
-    },isAlive:${this.isAlive()},troops:${
-      this._troops
-    },numTileOwned:${this.numTilesOwned()}}]`;
+    },isAlive:${this.isAlive()},soldiers:${
+      this._soldiers
+    },civilians:${this._civilians},numTileOwned:${this.numTilesOwned()}}]`;
   }
 
   public playerProfile(): PlayerProfile {

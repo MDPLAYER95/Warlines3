@@ -11,6 +11,7 @@ import atomBombIcon from "../../../../resources/images/NukeIconWhite.svg";
 import portIcon from "../../../../resources/images/PortIcon.svg";
 import samlauncherIcon from "../../../../resources/images/SamLauncherIconWhite.svg";
 import shieldIcon from "../../../../resources/images/ShieldIconWhite.svg";
+import militaryBaseIcon from "../../../../resources/images/buildings/fortAlt2.png";
 import { translateText } from "../../../client/Utils";
 import { EventBus } from "../../../core/EventBus";
 import {
@@ -123,6 +124,13 @@ export const buildTable: BuildItemDisplay[][] = [
       icon: bankIconWhite,
       description: "build_menu.desc.central_bank",
       key: "unit_type.central_bank",
+      countable: true,
+    },
+    {
+      unitType: UnitType.MilitaryBase,
+      icon: militaryBaseIcon,
+      description: "build_menu.desc.military_base",
+      key: "unit_type.military_base",
       countable: true,
     },
     {

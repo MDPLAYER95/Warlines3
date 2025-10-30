@@ -2,7 +2,7 @@ import { LitElement, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { translateText } from "../../../client/Utils";
 import { EventBus } from "../../../core/EventBus";
-import { Gold } from "../../../core/game/Game";
+import { Gold, UnitType } from "../../../core/game/Game";
 import { GameView } from "../../../core/game/GameView";
 import { ClientID } from "../../../core/Schemas";
 import { AttackRatioEvent } from "../../InputHandler";
@@ -34,6 +34,21 @@ export class ControlPanel extends LitElement implements Layer {
 
   @state()
   private _totalTroops: number = 0;
+
+  @state()
+  private _population: number = 0;
+
+  @state()
+  private _civilians: number = 0;
+
+  @state()
+  private _defenseStrength: number = 0;
+
+  @state()
+  private _militaryBaseCount: number = 0;
+
+  @state()
+  private _baseTrainingRate: number = 0;
 
   @state()
   private _isVisible = false;
@@ -93,13 +108,25 @@ export class ControlPanel extends LitElement implements Layer {
 
     const reserveTroops = player.troops();
     const garrisonedTroops = player.garrisonedTroops();
+    const activeBases = player
+      .units(UnitType.MilitaryBase)
+      .filter((unit) => unit.isActive()).length;
+    const trainingDuration = this.game.config().militaryBaseTrainingDuration();
+    const batchSize = this.game.config().militaryBaseTrainingBatchSize();
+    const basePerTick =
+      trainingDuration > 0 ? (batchSize / trainingDuration) * activeBases : 0;
 
     this._troops = reserveTroops;
     this._garrisonedTroops = garrisonedTroops;
     this._totalTroops = reserveTroops + garrisonedTroops;
+    this._population = player.population();
+    this._civilians = player.civilians();
+    this._defenseStrength = player.defenseStrength();
     this._maxTroops = this.game.config().maxTroops(player);
     this._gold = player.gold();
     this.troopRate = this.game.config().troopIncreaseRate(player) * 10;
+    this._militaryBaseCount = activeBases;
+    this._baseTrainingRate = basePerTick * 10;
     this.requestUpdate();
   }
 
@@ -179,7 +206,7 @@ export class ControlPanel extends LitElement implements Layer {
         <div class="block bg-black/30 text-white mb-4 p-2 rounded">
           <div class="flex justify-between mb-1">
             <span class="font-bold"
-              >${translateText("control_panel.total_troops")}:</span
+              >${translateText("control_panel.soldiers")}:</span
             >
             <span translate="no"
               >${renderTroops(this._totalTroops)} /
@@ -194,6 +221,18 @@ export class ControlPanel extends LitElement implements Layer {
             <span>${translateText("control_panel.garrison")}:</span>
             <span translate="no">${renderTroops(this._garrisonedTroops)}</span>
           </div>
+          <div class="flex justify-between text-xs sm:text-sm text-white/80">
+            <span>${translateText("control_panel.civilians")}:</span>
+            <span translate="no">${renderTroops(this._civilians)}</span>
+          </div>
+          <div class="flex justify-between text-xs sm:text-sm text-white/80">
+            <span>${translateText("control_panel.population")}:</span>
+            <span translate="no">${renderTroops(this._population)}</span>
+          </div>
+          <div class="flex justify-between text-xs sm:text-sm text-white/80">
+            <span>${translateText("control_panel.defense_strength")}:</span>
+            <span translate="no">${renderTroops(this._defenseStrength)}</span>
+          </div>
           <div class="flex justify-between text-xs sm:text-sm mt-1">
             <span>${translateText("control_panel.regen")}:</span>
             <span
@@ -201,7 +240,19 @@ export class ControlPanel extends LitElement implements Layer {
                 ? "text-green-500"
                 : "text-yellow-500"}"
               translate="no"
-              >+${renderTroops(this.troopRate)}</span
+              >+${renderTroops(this.troopRate)}/s</span
+            >
+          </div>
+          <div
+            class="flex justify-between text-xs sm:text-sm text-white/80 mt-1"
+          >
+            <span>${translateText("control_panel.military_bases")}:</span>
+            <span translate="no">${this._militaryBaseCount}</span>
+          </div>
+          <div class="flex justify-between text-xs sm:text-sm text-sky-300">
+            <span>${translateText("control_panel.base_output")}:</span>
+            <span translate="no"
+              >+${renderTroops(this._baseTrainingRate)}/s</span
             >
           </div>
           <div class="flex justify-between mt-2">
