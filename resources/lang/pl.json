@@ -272,7 +272,8 @@
     "atom_bomb": "Bomba atomowa",
     "hydrogen_bomb": "Bomba wodorowa",
     "mirv": "MIRV",
-    "factory": "Fabryka"
+    "factory": "Fabryka",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Ustawienia użytkownika",
@@ -355,7 +356,9 @@
     "terrain_enabled": "Widok terenu włączony",
     "terrain_disabled": "Widok terenu wyłączony",
     "exit_game_label": "Wyjdź z gry",
-    "exit_game_info": "Powrót do menu głównego"
+    "exit_game_info": "Powrót do menu głównego",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Szybka rozmowa",
@@ -456,7 +459,8 @@
       "port": "Wysyła statki handlowe, aby wygenerować złoto",
       "defense_post": "Wzmacnia obronę pobliskich granic",
       "city": "Zwiększa maksymalną populację",
-      "factory": "Tworzy linie kolejowe i przywołuje pociągi"
+      "factory": "Tworzy linie kolejowe i przywołuje pociągi",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Za mało złota"
   },
@@ -505,7 +509,9 @@
     "warships": "Okręty wojenne",
     "health": "Zdrowie",
     "attitude": "Postawa",
-    "levels": "Poziomy"
+    "levels": "Poziomy",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "wycofuje się",
@@ -549,7 +555,11 @@
   "control_panel": {
     "gold": "Złoto",
     "troops": "Wojsko",
-    "attack_ratio": "Współczynnik ataku"
+    "attack_ratio": "Współczynnik ataku",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "player_panel": {
     "gold": "Złoto",

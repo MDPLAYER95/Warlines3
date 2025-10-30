@@ -275,7 +275,8 @@
     "atom_bomb": "原子爆弾",
     "hydrogen_bomb": "水素爆弾",
     "mirv": "MIRV",
-    "factory": "工場"
+    "factory": "工場",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "ユーザー設定",
@@ -360,7 +361,9 @@
     "terrain_enabled": "地形のみを表示",
     "terrain_disabled": "国境を表示",
     "exit_game_label": "ゲームから退出する",
-    "exit_game_info": "メインメニューに戻ります"
+    "exit_game_info": "メインメニューに戻ります",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "クイックチャット",
@@ -461,7 +464,8 @@
       "port": "貿易船を送って資金を獲得する",
       "defense_post": "近くの国境の防御を強化します",
       "city": "最大人口が増加します",
-      "factory": "列車が行き来できる線路を作成します"
+      "factory": "列車が行き来できる線路を作成します",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "資金不足"
   },
@@ -511,7 +515,9 @@
     "warships": "戦艦",
     "health": "体力",
     "attitude": "態度",
-    "levels": "レベル"
+    "levels": "レベル",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "撤退中",
@@ -555,7 +561,11 @@
   "control_panel": {
     "gold": "資金",
     "troops": "兵士",
-    "attack_ratio": "攻撃比率"
+    "attack_ratio": "攻撃比率",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "player_panel": {
     "gold": "資金",

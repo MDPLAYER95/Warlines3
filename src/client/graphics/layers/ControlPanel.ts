@@ -36,6 +36,15 @@ export class ControlPanel extends LitElement implements Layer {
   private _totalTroops: number = 0;
 
   @state()
+  private _population: number = 0;
+
+  @state()
+  private _civilians: number = 0;
+
+  @state()
+  private _defenseStrength: number = 0;
+
+  @state()
   private _isVisible = false;
 
   @state()
@@ -97,6 +106,9 @@ export class ControlPanel extends LitElement implements Layer {
     this._troops = reserveTroops;
     this._garrisonedTroops = garrisonedTroops;
     this._totalTroops = reserveTroops + garrisonedTroops;
+    this._population = player.population();
+    this._civilians = player.civilians();
+    this._defenseStrength = player.defenseStrength();
     this._maxTroops = this.game.config().maxTroops(player);
     this._gold = player.gold();
     this.troopRate = this.game.config().troopIncreaseRate(player) * 10;
@@ -179,12 +191,16 @@ export class ControlPanel extends LitElement implements Layer {
         <div class="block bg-black/30 text-white mb-4 p-2 rounded">
           <div class="flex justify-between mb-1">
             <span class="font-bold"
-              >${translateText("control_panel.total_troops")}:</span
+              >${translateText("control_panel.population")}:</span
             >
             <span translate="no"
-              >${renderTroops(this._totalTroops)} /
+              >${renderTroops(this._population)} /
               ${renderTroops(this._maxTroops)}</span
             >
+          </div>
+          <div class="flex justify-between text-xs sm:text-sm text-white/80">
+            <span>${translateText("control_panel.soldiers")}:</span>
+            <span translate="no">${renderTroops(this._totalTroops)}</span>
           </div>
           <div class="flex justify-between text-xs sm:text-sm text-white/80">
             <span>${translateText("control_panel.reserve")}:</span>
@@ -193,6 +209,14 @@ export class ControlPanel extends LitElement implements Layer {
           <div class="flex justify-between text-xs sm:text-sm text-white/80">
             <span>${translateText("control_panel.garrison")}:</span>
             <span translate="no">${renderTroops(this._garrisonedTroops)}</span>
+          </div>
+          <div class="flex justify-between text-xs sm:text-sm text-white/80">
+            <span>${translateText("control_panel.civilians")}:</span>
+            <span translate="no">${renderTroops(this._civilians)}</span>
+          </div>
+          <div class="flex justify-between text-xs sm:text-sm text-white/80">
+            <span>${translateText("control_panel.defense_strength")}:</span>
+            <span translate="no">${renderTroops(this._defenseStrength)}</span>
           </div>
           <div class="flex justify-between text-xs sm:text-sm mt-1">
             <span>${translateText("control_panel.regen")}:</span>

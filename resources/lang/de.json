@@ -247,7 +247,8 @@
     "atom_bomb": "Atombombe",
     "hydrogen_bomb": "Wasserstoffbombe",
     "mirv": "MIRV-Rakete",
-    "factory": "Fabrik"
+    "factory": "Fabrik",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Benutzer Einstellungen",
@@ -305,7 +306,9 @@
     "move_right": "Kamera nach rechts bewegen",
     "move_right_desc": "Bewegt die Kamera nach rechts",
     "reset": "Zurücksetzen",
-    "unbind": "Aufheben"
+    "unbind": "Aufheben",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Chat",
@@ -390,7 +393,8 @@
       "warship": "Erobert Handelsschiffe, zerstört Schiffe und Boote",
       "port": "Sendet Handelsschiffe, um Gold zu generieren",
       "defense_post": "Erhöht Verteidigung der Grenzen in der Nähe",
-      "city": "Erhöht maximale Bevölkerung"
+      "city": "Erhöht maximale Bevölkerung",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Nicht genug Geld"
   },
@@ -432,7 +436,9 @@
     "warships": "Schlachtschiffe",
     "health": "Gesundheit",
     "attitude": "Haltung",
-    "levels": "Levels"
+    "levels": "Levels",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "Zieht sich zurück",
@@ -464,7 +470,11 @@
     "gold": "Gold",
     "troops": "Truppen",
     "workers": "Arbeiter",
-    "attack_ratio": "Angriffsverhältnis"
+    "attack_ratio": "Angriffsverhältnis",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "player_panel": {
     "gold": "Gold",

@@ -275,7 +275,8 @@
     "atom_bomb": "Atomska bomba",
     "hydrogen_bomb": "Vodikova bomba",
     "mirv": "MIRV",
-    "factory": "Tovarna"
+    "factory": "Tovarna",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Uporabniške nastavitve",
@@ -360,7 +361,9 @@
     "terrain_enabled": "Terenski pogled vklopljen",
     "terrain_disabled": "Terenski pogled izklopljen",
     "exit_game_label": "Zapri Igro",
-    "exit_game_info": "Vrnitev na glavni meni"
+    "exit_game_info": "Vrnitev na glavni meni",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Hitri klepet",
@@ -461,7 +464,8 @@
       "port": "Pošilja trgovske ladje za pridobivanje zlata",
       "defense_post": "Poveča obrambo bližnjih meja",
       "city": "Poveča največjo populacijo",
-      "factory": "Ustvarja železnice in ustvarja vlake"
+      "factory": "Ustvarja železnice in ustvarja vlake",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Ni dovolj denarja"
   },
@@ -511,7 +515,9 @@
     "warships": "Bojna ladja",
     "health": "Zdravje",
     "attitude": "Odnos",
-    "levels": "Nivoji"
+    "levels": "Nivoji",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "umikanje",
@@ -555,7 +561,11 @@
   "control_panel": {
     "gold": "Zlato",
     "troops": "Enote",
-    "attack_ratio": "Napadalno razmerje"
+    "attack_ratio": "Napadalno razmerje",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "player_panel": {
     "gold": "Zlato",

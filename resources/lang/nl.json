@@ -253,7 +253,8 @@
     "atom_bomb": "Atoombom",
     "hydrogen_bomb": "Waterstofbom",
     "mirv": "MIRV",
-    "factory": "Fabriek"
+    "factory": "Fabriek",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Gebruikersinstellingen",
@@ -329,7 +330,9 @@
     "terrain_enabled": "Terreinweergave ingeschakeld",
     "terrain_disabled": "Terreinweergave uitgeschakeld",
     "exit_game_label": "Spel Verlaten",
-    "exit_game_info": "Terug naar hoofdmenu"
+    "exit_game_info": "Terug naar hoofdmenu",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Snelchat",
@@ -415,7 +418,8 @@
       "port": "Stuurt handelsschepen om goud te genereren",
       "defense_post": "Versterkt verdediging eromheen",
       "city": "Verhoogt maximale bevolking",
-      "factory": "Maakt spoorwegen en laat treinen rijden"
+      "factory": "Maakt spoorwegen en laat treinen rijden",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Niet genoeg goud"
   },
@@ -456,7 +460,9 @@
     "warships": "Oorlogsschepen",
     "health": "Gezondheid",
     "attitude": "Houding",
-    "levels": "Levels"
+    "levels": "Levels",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "trekken zich terug",
@@ -501,7 +507,11 @@
     "gold": "Goud",
     "troops": "Troepen",
     "workers": "Werkers",
-    "attack_ratio": "Aanvalsverhouding"
+    "attack_ratio": "Aanvalsverhouding",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "player_panel": {
     "gold": "Goud",

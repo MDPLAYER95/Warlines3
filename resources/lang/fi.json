@@ -272,7 +272,8 @@
     "atom_bomb": "Atomipommi",
     "hydrogen_bomb": "Vetypommi",
     "mirv": "MIRV",
-    "factory": "Tehdas"
+    "factory": "Tehdas",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Käyttäjäasetukset",
@@ -355,7 +356,9 @@
     "terrain_enabled": "Maastonäkymä käytössä",
     "terrain_disabled": "Maastonäkymä pois käytöstä",
     "exit_game_label": "Poistu pelistä",
-    "exit_game_info": "Palaa päävalikkoon"
+    "exit_game_info": "Palaa päävalikkoon",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Pikaviestit",
@@ -456,7 +459,8 @@
       "port": "Lähettää kauppa-aluksia tuottaakseen kultaa",
       "defense_post": "Parantaa läheisten rajojen puolustusta",
       "city": "Lisää enimmäisväkilukuasi",
-      "factory": "Luo rautateitä ja lähettää junia"
+      "factory": "Luo rautateitä ja lähettää junia",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Ei tarpeeksi rahaa"
   },
@@ -505,7 +509,9 @@
     "warships": "Sota-aluksia",
     "health": "Terveys",
     "attitude": "Asenne",
-    "levels": "Tasot"
+    "levels": "Tasot",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "peräännytään",
@@ -549,7 +555,11 @@
   "control_panel": {
     "gold": "Kultaa",
     "troops": "Joukkoja",
-    "attack_ratio": "Hyökkäyksen osuus"
+    "attack_ratio": "Hyökkäyksen osuus",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "player_panel": {
     "gold": "Kultaa",

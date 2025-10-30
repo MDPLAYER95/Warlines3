@@ -587,6 +587,13 @@ export class DefaultConfig implements Config {
           territoryBound: true,
           constructionDuration: this.instantBuild() ? 0 : 2 * 10,
         };
+      case UnitType.MilitaryBase:
+        return {
+          cost: this.costWrapper(() => 750_000, UnitType.MilitaryBase),
+          territoryBound: true,
+          constructionDuration: this.instantBuild() ? 0 : 3 * 10,
+          upgradable: true,
+        };
       case UnitType.Factory:
         return {
           cost: this.costWrapper(
@@ -801,18 +808,26 @@ export class DefaultConfig implements Config {
 
       return {
         attackerTroopLoss:
-          within(defender.troops() / attackTroops, 0.6, 2) *
+          within(
+            defender.defenseStrength() / Math.max(1, attackTroops),
+            0.6,
+            2,
+          ) *
           mag *
           0.8 *
           largeDefenderAttackDebuff *
           largeAttackBonus *
           (defender.isTraitor() ? this.traitorDefenseDebuff() : 1),
         defenderTroopLoss:
-          defender.troops() /
-          defender.numTilesOwned() /
+          defender.defenseStrength() /
+          Math.max(1, defender.numTilesOwned()) /
           appliedDefenseMultiplier,
         tilesPerTickUsed:
-          within(defender.troops() / (5 * attackTroops), 0.2, 1.5) *
+          within(
+            defender.defenseStrength() / Math.max(1, 5 * attackTroops),
+            0.2,
+            1.5,
+          ) *
           speed *
           largeDefenderSpeedDebuff *
           largeAttackerSpeedBonus *
@@ -840,7 +855,11 @@ export class DefaultConfig implements Config {
   ): number {
     if (defender.isPlayer()) {
       return (
-        within(((5 * attackTroops) / defender.troops()) * 2, 0.01, 0.5) *
+        within(
+          ((5 * attackTroops) / Math.max(1, defender.defenseStrength())) * 2,
+          0.01,
+          0.5,
+        ) *
         numAdjacentTilesWithEnemy *
         3
       );
@@ -851,6 +870,18 @@ export class DefaultConfig implements Config {
 
   boatAttackAmount(attacker: Player, defender: Player | TerraNullius): number {
     return Math.floor(attacker.troops() / 5);
+  }
+
+  militaryBaseTrainingBatchSize(): number {
+    return 25_000;
+  }
+
+  militaryBaseTrainingDuration(): number {
+    return 30 * 10;
+  }
+
+  initialSoldierShare(): number {
+    return 0.2;
   }
 
   warshipShellLifetime(): number {
@@ -940,14 +971,28 @@ export class DefaultConfig implements Config {
           ? clientGarrisonGetter.call(player as PlayerView)
           : 0;
 
-    const effectiveTroops = Math.min(
+    const serverPopulationGetter = (
+      player as Player & { population?: () => number }
+    ).population;
+    const clientPopulationGetter = (
+      player as PlayerView & { population?: () => number }
+    ).population;
+
+    const population =
+      typeof serverPopulationGetter === "function"
+        ? serverPopulationGetter.call(player as Player)
+        : typeof clientPopulationGetter === "function"
+          ? clientPopulationGetter.call(player as PlayerView)
+          : player.troops();
+
+    const effectivePopulation = Math.min(
       max,
-      Math.max(0, player.troops() + garrisoned),
+      Math.max(0, population + garrisoned),
     );
 
-    let toAdd = 10 + Math.pow(effectiveTroops, 0.73) / 4;
+    let toAdd = 10 + Math.pow(effectivePopulation, 0.73) / 4;
 
-    const ratio = 1 - effectiveTroops / max;
+    const ratio = 1 - effectivePopulation / max;
     toAdd *= Math.max(0, ratio);
 
     if (player.type() === PlayerType.Bot) {
@@ -972,9 +1017,9 @@ export class DefaultConfig implements Config {
     }
 
     const maxReserve = Math.max(0, max - Math.min(garrisoned, max));
-    const cappedTroops = Math.min(maxReserve, player.troops() + toAdd);
+    const cappedPopulation = Math.min(maxReserve, population + toAdd);
 
-    return Math.max(0, cappedTroops - player.troops());
+    return Math.max(0, cappedPopulation - population);
   }
 
   goldAdditionRate(player: Player): Gold {

@@ -275,7 +275,8 @@
     "atom_bomb": "Bombe atomique",
     "hydrogen_bomb": "Bombe à hydrogène",
     "mirv": "MIRV",
-    "factory": "Usine"
+    "factory": "Usine",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Paramètres utilisateur",
@@ -360,7 +361,9 @@
     "terrain_enabled": "Affichage du terrain activé",
     "terrain_disabled": "Affichage du terrain désactivé",
     "exit_game_label": "Quitter la partie",
-    "exit_game_info": "Retour au menu principal"
+    "exit_game_info": "Retour au menu principal",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Discussion",
@@ -461,7 +464,8 @@
       "port": "Envoie des navires commerciaux pour produire de l'or",
       "defense_post": "Augmente les défenses des frontières proches",
       "city": "Augmente la population maximale",
-      "factory": "Crée des chemins de fer et fait apparaître des trains"
+      "factory": "Crée des chemins de fer et fait apparaître des trains",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Pas assez d'argent"
   },
@@ -511,7 +515,9 @@
     "warships": "Navires de guerre",
     "health": "Santé",
     "attitude": "Attitude",
-    "levels": "Niveaux"
+    "levels": "Niveaux",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "en retraite",
@@ -558,7 +564,11 @@
     "total_troops": "Total de troupes",
     "reserve": "Réserve",
     "garrison": "Garnison",
-    "regen": "Régénération"
+    "regen": "Régénération",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "defense_post_panel": {
     "heading": "Poste de défense",
