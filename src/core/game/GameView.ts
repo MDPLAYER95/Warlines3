@@ -97,6 +97,10 @@ export class UnitView {
   troops(): number {
     return this.data.troops;
   }
+
+  defensePostGarrisonedTroops(): number {
+    return this.data.garrisonedTroops ?? 0;
+  }
   retreating(): boolean {
     if (this.type() !== UnitType.TransportShip) {
       throw Error("Must be a transport ship");
@@ -381,6 +385,10 @@ export class PlayerView {
 
   troops(): number {
     return this.data.troops;
+  }
+
+  garrisonedTroops(): number {
+    return this.data.garrisonedTroops;
   }
 
   totalUnitLevels(type: UnitType): number {

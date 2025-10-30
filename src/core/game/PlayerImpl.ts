@@ -143,6 +143,7 @@ export class PlayerImpl implements Player {
       gold: this._gold,
       totalGoldEarned: this._totalGoldEarned,
       troops: this.troops(),
+      garrisonedTroops: this.defensePostGarrisonedTroops(),
       centralBankPrintsUsed: this.centralBankPrints,
       centralBankPrintsRemaining: this.centralBankPrintsRemaining(),
       centralBankInflationPercent: this.centralBankInflationPercent(),
@@ -879,6 +880,12 @@ export class PlayerImpl implements Player {
     return Number(toRemove);
   }
 
+  defensePostGarrisonedTroops(): number {
+    return this.units(UnitType.DefensePost)
+      .filter((unit) => unit.isActive())
+      .reduce((acc, unit) => acc + unit.troops(), 0);
+  }
+
   captureUnit(unit: Unit): void {
     if (unit.owner() === this) {
       throw new Error(`Cannot capture unit, ${this} already owns ${unit}`);
@@ -1174,7 +1181,10 @@ export class PlayerImpl implements Player {
 
   hash(): number {
     return (
-      simpleHash(this.id()) * (this.troops() + this.numTilesOwned()) +
+      simpleHash(this.id()) *
+        (this.troops() +
+          this.numTilesOwned() +
+          this.defensePostGarrisonedTroops()) +
       this._units.reduce((acc, unit) => acc + unit.hash(), 0) +
       Number(this._totalGoldEarned % 1_000_000_007n) +
       this.centralBankPrints * 17 +
