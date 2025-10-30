@@ -113,6 +113,7 @@ export interface UnitUpdate {
   type: GameUpdateType.Unit;
   unitType: UnitType;
   troops: number;
+  garrisonedTroops?: number;
   id: number;
   ownerID: number;
   lastOwnerID?: number;
@@ -159,6 +160,7 @@ export interface PlayerUpdate {
   gold: Gold;
   totalGoldEarned: Gold;
   troops: number;
+  garrisonedTroops: number;
   allies: number[];
   embargoes: Set<PlayerID>;
   isTraitor: boolean;

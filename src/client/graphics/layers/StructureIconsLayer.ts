@@ -51,6 +51,8 @@ class StructureRenderInfo {
     public dotContainer: PIXI.Container,
     public level: number = 0,
     public underConstruction: boolean = true,
+    public garrisonLevel: number = 0,
+    public garrisonRatio: number = 0,
   ) {}
 }
 
@@ -414,6 +416,34 @@ export class StructureIconsLayer implements Layer {
     return this.renders.find((render) => render.unit.id() === unitView.id());
   }
 
+  private defensePostGarrisonInfo(unit: UnitView): {
+    level: number;
+    ratio: number;
+  } {
+    if (unit.type() !== UnitType.DefensePost) {
+      return { level: 0, ratio: 0 };
+    }
+
+    const { level, capacityRatio } = this.game
+      .config()
+      .defensePostGarrisonBonuses(unit.defensePostGarrisonedTroops());
+    return { level, ratio: capacityRatio };
+  }
+
+  private rebuildStructureSprites(render: StructureRenderInfo, unit: UnitView) {
+    render.iconContainer?.destroy();
+    render.levelContainer?.destroy();
+    render.dotContainer?.destroy();
+    render.iconContainer = this.createIconSprite(unit);
+    render.levelContainer = this.createLevelSprite(unit);
+    render.dotContainer = this.createDotSprite(unit);
+    const { level, ratio } = this.defensePostGarrisonInfo(unit);
+    render.garrisonLevel = level;
+    render.garrisonRatio = ratio;
+    this.modifyVisibility(render);
+    this.computeNewLocation(render);
+  }
+
   private handleActiveUnit(unitView: UnitView) {
     if (this.seenUnits.has(unitView)) {
       const render = this.findRenderByUnit(unitView);
@@ -422,6 +452,7 @@ export class StructureIconsLayer implements Layer {
         this.checkForDeletionState(render, unitView);
         this.checkForOwnershipChange(render, unitView);
         this.checkForLevelChange(render, unitView);
+        this.checkForGarrisonChange(render, unitView);
       }
     } else if (
       this.structures.has(unitView.type()) ||
@@ -488,36 +519,36 @@ export class StructureIconsLayer implements Layer {
       render.unit.type() !== UnitType.Construction
     ) {
       render.underConstruction = false;
-      render.iconContainer?.destroy();
-      render.dotContainer?.destroy();
-      render.iconContainer = this.createIconSprite(unit);
-      render.dotContainer = this.createDotSprite(unit);
-      this.modifyVisibility(render);
+      this.rebuildStructureSprites(render, unit);
     }
   }
 
   private checkForOwnershipChange(render: StructureRenderInfo, unit: UnitView) {
     if (render.owner !== unit.owner().id()) {
       render.owner = unit.owner().id();
-      render.iconContainer?.destroy();
-      render.dotContainer?.destroy();
-      render.iconContainer = this.createIconSprite(unit);
-      render.dotContainer = this.createDotSprite(unit);
-      this.modifyVisibility(render);
+      this.rebuildStructureSprites(render, unit);
     }
   }
 
   private checkForLevelChange(render: StructureRenderInfo, unit: UnitView) {
     if (render.level !== unit.level()) {
       render.level = unit.level();
-      render.iconContainer?.destroy();
-      render.levelContainer?.destroy();
-      render.dotContainer?.destroy();
-      render.iconContainer = this.createIconSprite(unit);
-      render.levelContainer = this.createLevelSprite(unit);
-      render.dotContainer = this.createDotSprite(unit);
-      this.modifyVisibility(render);
+      this.rebuildStructureSprites(render, unit);
     }
+  }
+
+  private checkForGarrisonChange(render: StructureRenderInfo, unit: UnitView) {
+    if (unit.type() !== UnitType.DefensePost) {
+      return;
+    }
+    const { level, ratio } = this.defensePostGarrisonInfo(unit);
+    if (
+      render.garrisonLevel === level &&
+      Math.abs(render.garrisonRatio - ratio) < 0.001
+    ) {
+      return;
+    }
+    this.rebuildStructureSprites(render, unit);
   }
 
   private computeNewLocation(render: StructureRenderInfo) {
@@ -584,6 +615,8 @@ export class StructureIconsLayer implements Layer {
 
   private addNewStructure(unitView: UnitView) {
     this.seenUnits.add(unitView);
+    const { level: garrisonLevel, ratio: garrisonRatio } =
+      this.defensePostGarrisonInfo(unitView);
     const render = new StructureRenderInfo(
       unitView,
       unitView.owner().id(),
@@ -592,6 +625,8 @@ export class StructureIconsLayer implements Layer {
       this.createDotSprite(unitView),
       unitView.level(),
       unitView.type() === UnitType.Construction,
+      garrisonLevel,
+      garrisonRatio,
     );
     this.renders.push(render);
     this.computeNewLocation(render);
