@@ -218,11 +218,34 @@
     "move_right": "Pomeri kameru udesno",
     "move_right_desc": "Pomera kameru udesno",
     "reset": "Resetuj",
-    "unbind": "Obriši prečicu"
+    "unbind": "Obriši prečicu",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "map_categories": {
     "continental": "Kontinentalne",
     "regional": "Regionalne",
     "fantasy": "Druge"
+  },
+  "unit_type": {
+    "military_base": "Military Base"
+  },
+  "build_menu": {
+    "desc": {
+      "military_base": "Trains civilians into soldiers over time"
+    }
+  },
+  "player_info_overlay": {
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
+  },
+  "control_panel": {
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   }
 }

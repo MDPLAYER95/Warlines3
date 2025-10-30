@@ -37,6 +37,13 @@ jest.mock("../../../src/client/graphics/layers/BuildMenu", () => {
         countable: true,
       },
       {
+        unitType: UnitType.MilitaryBase,
+        key: "unit_type.military_base",
+        description: "build_menu.desc.military_base",
+        icon: "military-base-icon",
+        countable: true,
+      },
+      {
         unitType: UnitType.Factory,
         key: "unit_type.factory",
         description: "unit_type.factory_desc",
@@ -126,6 +133,7 @@ describe("RadialMenuElements", () => {
       buildableUnits: [
         { type: UnitType.City, canBuild: true },
         { type: UnitType.Mine, canBuild: true },
+        { type: UnitType.MilitaryBase, canBuild: true },
         { type: UnitType.Factory, canBuild: true },
         { type: UnitType.AtomBomb, canBuild: true },
         { type: UnitType.Warship, canBuild: true },
@@ -220,6 +228,7 @@ describe("RadialMenuElements", () => {
       const constructionUnitTypes = [
         UnitType.City,
         UnitType.Mine,
+        UnitType.MilitaryBase,
         UnitType.Factory,
       ];
       const returnedUnitTypes = subMenu.map((item) => {
@@ -267,6 +276,7 @@ describe("RadialMenuElements", () => {
       const constructionUnitTypes = [
         UnitType.City,
         UnitType.Mine,
+        UnitType.MilitaryBase,
         UnitType.Factory,
       ];
       const returnedUnitTypes = subMenu.map((item) => {

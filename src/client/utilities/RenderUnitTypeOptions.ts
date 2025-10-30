@@ -12,6 +12,7 @@ const unitOptions: { type: UnitType; translationKey: string }[] = [
   { type: UnitType.City, translationKey: "unit_type.city" },
   { type: UnitType.Mine, translationKey: "unit_type.mine" },
   { type: UnitType.CentralBank, translationKey: "unit_type.central_bank" },
+  { type: UnitType.MilitaryBase, translationKey: "unit_type.military_base" },
   { type: UnitType.DefensePost, translationKey: "unit_type.defense_post" },
   { type: UnitType.Port, translationKey: "unit_type.port" },
   { type: UnitType.Warship, translationKey: "unit_type.warship" },

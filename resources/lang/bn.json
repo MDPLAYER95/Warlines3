@@ -217,11 +217,34 @@
     "move_right": "ক্যামেরা ডানে সরান",
     "move_right_desc": "ক্যামেরা ডানে সরান",
     "reset": "রিসেট করুন",
-    "unbind": "আনবাইন্ড করুন"
+    "unbind": "আনবাইন্ড করুন",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "map_categories": {
     "continental": "মহাদেশীয়",
     "regional": "আঞ্চলিক",
     "fantasy": "অন্য"
+  },
+  "unit_type": {
+    "military_base": "Military Base"
+  },
+  "build_menu": {
+    "desc": {
+      "military_base": "Trains civilians into soldiers over time"
+    }
+  },
+  "player_info_overlay": {
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
+  },
+  "control_panel": {
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   }
 }

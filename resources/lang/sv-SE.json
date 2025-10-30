@@ -253,7 +253,8 @@
     "atom_bomb": "Liten atombomb",
     "hydrogen_bomb": "Vätebomb",
     "mirv": "MIRV",
-    "factory": "Fabrik"
+    "factory": "Fabrik",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Användarinställningar",
@@ -329,7 +330,9 @@
     "terrain_enabled": "Terräng vy aktiverad",
     "terrain_disabled": "Terräng vy avaktiverad",
     "exit_game_label": "Avsluta Spelet",
-    "exit_game_info": "Återgå till huvudmenyn"
+    "exit_game_info": "Återgå till huvudmenyn",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Snabbchat",
@@ -415,7 +418,8 @@
       "port": "Skickar handelsfartyg för att generera guld",
       "defense_post": "Ökar försvaret mot närliggande gränser",
       "city": "Ökar max befolkning",
-      "factory": "Skapar järnvägar och producerar tåg"
+      "factory": "Skapar järnvägar och producerar tåg",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Ej tillräckligt med guld"
   },
@@ -456,7 +460,9 @@
     "warships": "Krigsskepp",
     "health": "Hälsa",
     "attitude": "Attityd",
-    "levels": "Nivåer"
+    "levels": "Nivåer",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "retirerar",
@@ -501,7 +507,14 @@
     "gold": "Guld",
     "troops": "Trupper",
     "workers": "Arbetare",
-    "attack_ratio": "Anfallsskala"
+    "attack_ratio": "Anfallsskala",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "Guld",

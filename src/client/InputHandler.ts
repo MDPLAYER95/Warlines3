@@ -196,6 +196,7 @@ export class InputHandler {
       buildCity: "Digit1",
       buildMine: "KeyM",
       buildCentralBank: "KeyN",
+      buildMilitaryBase: "KeyL",
       buildFactory: "Digit2",
       buildPort: "Digit3",
       buildDefensePost: "Digit4",
@@ -380,6 +381,11 @@ export class InputHandler {
       if (e.code === this.keybinds.buildFactory) {
         e.preventDefault();
         this.uiState.ghostStructure = UnitType.Factory;
+      }
+
+      if (e.code === this.keybinds.buildMilitaryBase) {
+        e.preventDefault();
+        this.uiState.ghostStructure = UnitType.MilitaryBase;
       }
 
       if (e.code === this.keybinds.buildPort) {

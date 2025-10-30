@@ -10,6 +10,7 @@ import atomBombIcon from "../../../../resources/images/NukeIconWhite.svg";
 import portIcon from "../../../../resources/images/PortIcon.svg";
 import samLauncherIcon from "../../../../resources/images/SamLauncherIconWhite.svg";
 import defensePostIcon from "../../../../resources/images/ShieldIconWhite.svg";
+import militaryBaseIcon from "../../../../resources/images/buildings/fortAlt2.png";
 import { EventBus } from "../../../core/EventBus";
 import { Gold, PlayerActions, UnitType } from "../../../core/game/Game";
 import { GameView } from "../../../core/game/GameView";
@@ -30,6 +31,7 @@ export class UnitDisplay extends LitElement implements Layer {
   private _cities = 0;
   private _mines = 0;
   private _centralBank = 0;
+  private _militaryBases = 0;
   private _warships = 0;
   private _factories = 0;
   private _missileSilo = 0;
@@ -110,6 +112,7 @@ export class UnitDisplay extends LitElement implements Layer {
     this._cities = player.totalUnitLevels(UnitType.City);
     this._mines = player.totalUnitLevels(UnitType.Mine);
     this._centralBank = player.totalUnitLevels(UnitType.CentralBank);
+    this._militaryBases = player.totalUnitLevels(UnitType.MilitaryBase);
     this._missileSilo = player.totalUnitLevels(UnitType.MissileSilo);
     this._port = player.totalUnitLevels(UnitType.Port);
     this._defensePost = player.totalUnitLevels(UnitType.DefensePost);
@@ -159,6 +162,13 @@ export class UnitDisplay extends LitElement implements Layer {
               UnitType.CentralBank,
               "central_bank",
               this.keybinds["buildCentralBank"]?.key ?? "N",
+            )}
+            ${this.renderUnitItem(
+              militaryBaseIcon,
+              this._militaryBases,
+              UnitType.MilitaryBase,
+              "military_base",
+              this.keybinds["buildMilitaryBase"]?.key ?? "L",
             )}
             ${this.renderUnitItem(
               factoryIcon,
