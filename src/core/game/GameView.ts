@@ -387,6 +387,18 @@ export class PlayerView {
     return this.data.troops;
   }
 
+  civilians(): number {
+    return this.data.civilians ?? 0;
+  }
+
+  population(): number {
+    return this.data.population ?? this.data.troops + this.civilians();
+  }
+
+  defenseStrength(): number {
+    return this.data.defenseStrength ?? this.troops();
+  }
+
   garrisonedTroops(): number {
     return this.data.garrisonedTroops;
   }

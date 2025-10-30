@@ -258,7 +258,8 @@
     "atom_bomb": "Atombombe",
     "hydrogen_bomb": "Brintbombe",
     "mirv": "MIRV",
-    "factory": "Fabrik"
+    "factory": "Fabrik",
+    "military_base": "Military Base"
   },
   "user_setting": {
     "title": "Brugerindstillinger",
@@ -341,7 +342,9 @@
     "terrain_enabled": "Terrænvisning aktiveret",
     "terrain_disabled": "Terrænvisning deaktiveret",
     "exit_game_label": "Afslut Spil",
-    "exit_game_info": "Tilbage til hovedmenu"
+    "exit_game_info": "Tilbage til hovedmenu",
+    "build_military_base": "Build Military Base",
+    "build_military_base_desc": "Build a Military Base under your cursor."
   },
   "chat": {
     "title": "Hurtig Chat",
@@ -427,7 +430,8 @@
       "port": "Sender handelsskibe for at generere guld",
       "defense_post": "Forstærker forsvaret af nærliggende grænser",
       "city": "Øger maksimal befolkning",
-      "factory": "Opretter jernbaner og sender tog afsted"
+      "factory": "Opretter jernbaner og sender tog afsted",
+      "military_base": "Trains civilians into soldiers over time"
     },
     "not_enough_money": "Ikke nok penge"
   },
@@ -468,7 +472,9 @@
     "warships": "Krigsskibe",
     "health": "Helbred",
     "attitude": "Adfærd",
-    "levels": "Niveauer"
+    "levels": "Niveauer",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength"
   },
   "events_display": {
     "retreating": "trækker sig tilbage",
@@ -512,7 +518,14 @@
   "control_panel": {
     "gold": "Guld",
     "troops": "Tropper",
-    "attack_ratio": "Angrebsforhold"
+    "attack_ratio": "Angrebsforhold",
+    "population": "Population",
+    "soldiers": "Soldiers",
+    "civilians": "Civilians",
+    "defense_strength": "Defense strength",
+    "regen": "Passive reinforcements",
+    "military_bases": "Military bases",
+    "base_output": "Base output"
   },
   "player_panel": {
     "gold": "Guld",
