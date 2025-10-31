@@ -550,6 +550,15 @@ export class DefaultConfig implements Config {
           territoryBound: true,
           constructionDuration: this.instantBuild() ? 0 : 5 * 10,
         };
+      case UnitType.MilitaryCamp:
+        return {
+          cost: this.costWrapper(
+            (numUnits: number) => Math.min(2_000_000, (numUnits + 1) * 250_000),
+            UnitType.MilitaryCamp,
+          ),
+          territoryBound: true,
+          constructionDuration: this.instantBuild() ? 0 : 5 * 10,
+        };
       case UnitType.SAMLauncher:
         return {
           cost: this.costWrapper(
@@ -926,28 +935,25 @@ export class DefaultConfig implements Config {
   troopIncreaseRate(player: Player | PlayerView): number {
     const max = this.maxTroops(player);
 
-    const serverGarrisonGetter = (
-      player as Player & { defensePostGarrisonedTroops?: () => number }
-    ).defensePostGarrisonedTroops;
-    const clientGarrisonGetter = (
-      player as PlayerView & { garrisonedTroops?: () => number }
-    ).garrisonedTroops;
+    const serverTotalGetter = (
+      player as Player & { totalPopulation?: () => number }
+    ).totalPopulation;
+    const clientTotalGetter = (
+      player as PlayerView & { totalPopulation?: () => number }
+    ).totalPopulation;
 
-    const garrisoned =
-      typeof serverGarrisonGetter === "function"
-        ? serverGarrisonGetter.call(player as Player)
-        : typeof clientGarrisonGetter === "function"
-          ? clientGarrisonGetter.call(player as PlayerView)
-          : 0;
+    const totalPopulation =
+      typeof serverTotalGetter === "function"
+        ? serverTotalGetter.call(player as Player)
+        : typeof clientTotalGetter === "function"
+          ? clientTotalGetter.call(player as PlayerView)
+          : player.troops();
 
-    const effectiveTroops = Math.min(
-      max,
-      Math.max(0, player.troops() + garrisoned),
-    );
+    const effectivePopulation = Math.min(max, Math.max(0, totalPopulation));
 
-    let toAdd = 10 + Math.pow(effectiveTroops, 0.73) / 4;
+    let toAdd = 10 + Math.pow(effectivePopulation, 0.73) / 4;
 
-    const ratio = 1 - effectiveTroops / max;
+    const ratio = 1 - effectivePopulation / max;
     toAdd *= Math.max(0, ratio);
 
     if (player.type() === PlayerType.Bot) {
@@ -971,10 +977,9 @@ export class DefaultConfig implements Config {
       }
     }
 
-    const maxReserve = Math.max(0, max - Math.min(garrisoned, max));
-    const cappedTroops = Math.min(maxReserve, player.troops() + toAdd);
+    const cappedPopulation = Math.min(max, totalPopulation + toAdd);
 
-    return Math.max(0, cappedTroops - player.troops());
+    return Math.max(0, cappedPopulation - totalPopulation);
   }
 
   goldAdditionRate(player: Player): Gold {

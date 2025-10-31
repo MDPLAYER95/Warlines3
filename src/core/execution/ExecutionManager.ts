@@ -24,6 +24,7 @@ import { MoveWarshipExecution } from "./MoveWarshipExecution";
 import { NoOpExecution } from "./NoOpExecution";
 import { QuickChatExecution } from "./QuickChatExecution";
 import { RetreatExecution } from "./RetreatExecution";
+import { SetMilitaryRatioExecution } from "./SetMilitaryRatioExecution";
 import { SpawnExecution } from "./SpawnExecution";
 import { TargetPlayerExecution } from "./TargetPlayerExecution";
 import { TransportShipExecution } from "./TransportShipExecution";
@@ -119,6 +120,8 @@ export class Executor {
           intent.unitId,
           intent.troops,
         );
+      case "set_military_ratio":
+        return new SetMilitaryRatioExecution(player, intent.ratio);
       case "allianceExtension": {
         return new AllianceExtensionExecution(player, intent.recipient);
       }
