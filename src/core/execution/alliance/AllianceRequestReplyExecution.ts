@@ -34,7 +34,9 @@ export class AllianceRequestReplyExecution implements Execution {
       if (request === undefined) {
         console.warn("no alliance request found");
       } else {
-        if (this.accept) {
+        if (this.accept && this.recipient.governmentType() === "dictatorship") {
+          request.reject();
+        } else if (this.accept) {
           request.accept();
           this.requestor.updateRelation(this.recipient, 100);
           this.recipient.updateRelation(this.requestor, 100);

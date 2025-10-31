@@ -15,6 +15,7 @@ import {
   Alliance,
   AllianceRequest,
   AllPlayers,
+  AllUnitParams,
   Attack,
   BuildableUnit,
   Cell,
@@ -35,6 +36,7 @@ import {
   Tick,
   Unit,
   UnitParams,
+  UnitParamsMap,
   UnitType,
 } from "./Game";
 import { GameImpl } from "./GameImpl";
@@ -50,6 +52,19 @@ import {
   canBuildTransportShip,
 } from "./TransportShipUtils";
 import { UnitImpl } from "./UnitImpl";
+
+const BASE_MAX_MILITARY_RATIO = 0.1;
+const ABSOLUTE_MAX_MILITARY_RATIO = 0.5;
+const DICTATORSHIP_THRESHOLD = 0.16;
+const DEMOCRACY_THRESHOLD = 0.15;
+
+type TroopParamCarrier = { troops?: number };
+
+function hasTroops(
+  params: UnitParamsMap[keyof UnitParamsMap],
+): params is TroopParamCarrier {
+  return typeof params === "object" && params !== null && "troops" in params;
+}
 
 interface Target {
   tick: Tick;
@@ -69,6 +84,9 @@ export class PlayerImpl implements Player {
 
   private _gold: bigint;
   private _troops: bigint;
+  private _civilianPopulation: bigint;
+  private _militaryTargetRatio: number = BASE_MAX_MILITARY_RATIO;
+  private _governmentType: "democracy" | "dictatorship" = "democracy";
   private _totalGoldEarned: bigint = 0n;
   private centralBankPrints = 0;
   private centralBankInflationSteps = 0;
@@ -114,10 +132,22 @@ export class PlayerImpl implements Player {
     private readonly _team: Team | null,
   ) {
     this._name = sanitizeUsername(playerInfo.name);
-    this._troops = toInt(startTroops);
+    const startingPopulation = toInt(startTroops);
+    const initialMilitary = toInt(
+      Math.min(
+        Number(startingPopulation),
+        Math.floor(Number(startingPopulation) * this._militaryTargetRatio),
+      ),
+    );
+    this._troops = initialMilitary;
+    this._civilianPopulation = startingPopulation - initialMilitary;
+    if (this._civilianPopulation < 0n) {
+      this._civilianPopulation = 0n;
+    }
     this._gold = 0n;
     this._displayName = this._name;
     this._pseudo_random = new PseudoRandom(simpleHash(this.playerInfo.id));
+    this.updateGovernmentTypeFromRatio();
   }
 
   largestClusterBoundingBox: { min: Cell; max: Cell } | null;
@@ -143,6 +173,11 @@ export class PlayerImpl implements Player {
       gold: this._gold,
       totalGoldEarned: this._totalGoldEarned,
       troops: this.troops(),
+      civilianPopulation: this.civilianPopulation(),
+      militaryRatio: this.militaryRatio(),
+      militaryRatioTarget: this.militaryRatioTarget(),
+      maxMilitaryRatio: this.maxMilitaryRatio(),
+      governmentType: this.governmentType(),
       garrisonedTroops: this.defensePostGarrisonedTroops(),
       centralBankPrintsUsed: this.centralBankPrints,
       centralBankPrintsRemaining: this.centralBankPrintsRemaining(),
@@ -314,6 +349,10 @@ export class PlayerImpl implements Player {
   }
   setTroops(troops: number) {
     this._troops = toInt(troops);
+    if (this._troops < 0n) {
+      this._troops = 0n;
+    }
+    this.updateGovernmentTypeFromRatio();
   }
   conquer(tile: TileRef) {
     this.mg.conquer(this, tile);
@@ -397,6 +436,12 @@ export class PlayerImpl implements Player {
 
   canSendAllianceRequest(other: Player): boolean {
     if (other === this) {
+      return false;
+    }
+    if (this.governmentType() === "dictatorship") {
+      return false;
+    }
+    if (other.governmentType() === "dictatorship") {
       return false;
     }
     if (this.isDisconnected() || other.isDisconnected()) {
@@ -864,12 +909,54 @@ export class PlayerImpl implements Player {
     return Number(this._troops);
   }
 
+  civilianPopulation(): number {
+    return Number(this._civilianPopulation);
+  }
+
+  totalPopulation(): number {
+    return (
+      this.troops() +
+      this.civilianPopulation() +
+      this.defensePostGarrisonedTroops()
+    );
+  }
+
+  militaryRatio(): number {
+    const garrisoned = this.defensePostGarrisonedTroops();
+    const reserve = this.troops();
+    const total = this.civilianPopulation() + reserve + garrisoned;
+    if (total <= 0) {
+      return 0;
+    }
+    return Math.min(1, (reserve + garrisoned) / total);
+  }
+
+  militaryRatioTarget(): number {
+    return this._militaryTargetRatio;
+  }
+
+  setMilitaryRatioTarget(ratio: number): void {
+    const clamped = Math.max(0, Math.min(ratio, this.maxMilitaryRatio()));
+    this._militaryTargetRatio = clamped;
+  }
+
+  maxMilitaryRatio(): number {
+    const camps = this.unitCount(UnitType.MilitaryCamp);
+    const allowed = BASE_MAX_MILITARY_RATIO + camps * 0.1;
+    return Math.min(ABSOLUTE_MAX_MILITARY_RATIO, allowed);
+  }
+
+  governmentType(): "democracy" | "dictatorship" {
+    return this._governmentType;
+  }
+
   addTroops(troops: number): void {
     if (troops < 0) {
       this.removeTroops(-1 * troops);
       return;
     }
     this._troops += toInt(troops);
+    this.updateGovernmentTypeFromRatio();
   }
   removeTroops(troops: number): number {
     if (troops <= 0) {
@@ -877,7 +964,66 @@ export class PlayerImpl implements Player {
     }
     const toRemove = minInt(this._troops, toInt(troops));
     this._troops -= toRemove;
+    this.updateGovernmentTypeFromRatio();
     return Number(toRemove);
+  }
+
+  addCivilians(civilians: number): void {
+    if (civilians < 0) {
+      this.removeCivilians(-1 * civilians);
+      return;
+    }
+    this._civilianPopulation += toInt(civilians);
+    this.updateGovernmentTypeFromRatio();
+  }
+
+  removeCivilians(civilians: number): number {
+    if (civilians <= 0) {
+      return 0;
+    }
+    const toRemove = minInt(this._civilianPopulation, toInt(civilians));
+    this._civilianPopulation -= toRemove;
+    this.updateGovernmentTypeFromRatio();
+    return Number(toRemove);
+  }
+
+  updateMilitaryComposition(conversionRate: number): void {
+    const civilian = this.civilianPopulation();
+    const reserve = this.troops();
+    const garrisoned = this.defensePostGarrisonedTroops();
+    const total = civilian + reserve + garrisoned;
+    if (total <= 0) {
+      this.updateGovernmentTypeFromRatio();
+      return;
+    }
+
+    const cappedTarget = Math.max(
+      0,
+      Math.min(this._militaryTargetRatio, this.maxMilitaryRatio()),
+    );
+    this._militaryTargetRatio = cappedTarget;
+
+    const desiredMilitary = Math.min(total, Math.floor(total * cappedTarget));
+    const desiredReserve = Math.max(0, desiredMilitary - garrisoned);
+    const maxConvertible = Math.max(1, Math.floor(total * conversionRate));
+
+    if (reserve < desiredReserve) {
+      const needed = desiredReserve - reserve;
+      const convertible = Math.min(needed, maxConvertible, civilian);
+      if (convertible > 0) {
+        this.removeCivilians(convertible);
+        this.addTroops(convertible);
+      }
+    } else if (reserve > desiredReserve) {
+      const surplus = reserve - desiredReserve;
+      const convertible = Math.min(surplus, maxConvertible);
+      if (convertible > 0) {
+        this.removeTroops(convertible);
+        this.addCivilians(convertible);
+      }
+    }
+
+    this.updateGovernmentTypeFromRatio();
   }
 
   defensePostGarrisonedTroops(): number {
@@ -893,7 +1039,7 @@ export class PlayerImpl implements Player {
     unit.setOwner(this);
   }
 
-  buildUnit<T extends UnitType>(
+  buildUnit<T extends keyof UnitParamsMap>(
     type: T,
     spawnTile: TileRef,
     params: UnitParams<T>,
@@ -911,16 +1057,43 @@ export class PlayerImpl implements Player {
       spawnTile,
       this.mg.nextUnitID(),
       this,
-      params,
+      params as AllUnitParams,
     );
     this._units.push(b);
     this.recordUnitConstructed(type);
     this.removeGold(cost);
-    this.removeTroops("troops" in params ? (params.troops ?? 0) : 0);
+    const troopCost = hasTroops(params) ? (params.troops ?? 0) : 0;
+    this.removeTroops(troopCost);
     this.mg.addUpdate(b.toUpdate());
     this.mg.addUnit(b);
 
     return b;
+  }
+
+  private updateGovernmentTypeFromRatio(): void {
+    const ratio = this.militaryRatio();
+    let newType: "democracy" | "dictatorship" = this._governmentType;
+
+    if (this._governmentType === "dictatorship") {
+      if (ratio <= DEMOCRACY_THRESHOLD) {
+        newType = "democracy";
+      }
+    } else if (ratio >= DICTATORSHIP_THRESHOLD) {
+      newType = "dictatorship";
+    }
+
+    if (newType === this._governmentType) {
+      return;
+    }
+
+    this._governmentType = newType;
+
+    if (newType === "dictatorship") {
+      const currentAlliances = [...this.alliances()];
+      for (const alliance of currentAlliances) {
+        this.breakAlliance(alliance);
+      }
+    }
   }
 
   public findUnitToUpgrade(type: UnitType, targetTile: TileRef): Unit | false {
@@ -1043,6 +1216,7 @@ export class PlayerImpl implements Player {
       case UnitType.CentralBank:
       case UnitType.Factory:
       case UnitType.Construction:
+      case UnitType.MilitaryCamp:
         return this.landBasedStructureSpawn(targetTile, validTiles);
       default:
         assertNever(unitType);
