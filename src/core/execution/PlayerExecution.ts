@@ -4,6 +4,8 @@ import { GameImpl } from "../game/GameImpl";
 import { GameMap, TileRef } from "../game/GameMap";
 import { calculateBoundingBox, getMode, inscribed, simpleHash } from "../Util";
 
+const POPULATION_CONVERSION_RATE = 0.002;
+
 export class PlayerExecution implements Execution {
   private readonly ticksPerClusterCalc = 20;
 
@@ -74,10 +76,17 @@ export class PlayerExecution implements Execution {
     }
 
     const troopInc = this.config.troopIncreaseRate(this.player);
-    this.player.addTroops(troopInc);
+    this.player.addCivilians(troopInc);
+    this.player.updateMilitaryComposition(POPULATION_CONVERSION_RATE);
     const goldFromWorkers = this.config.goldAdditionRate(this.player);
     const goldFromMines = this.mineGoldPerTick();
-    const totalGoldGain = goldFromWorkers + goldFromMines;
+    const combinedGold = goldFromWorkers + goldFromMines;
+    const militaryPercent = Math.min(
+      50,
+      Math.floor(this.player.militaryRatio() * 100),
+    );
+    const revenueMultiplier = Math.max(0, 100 - militaryPercent * 2);
+    const totalGoldGain = (combinedGold * BigInt(revenueMultiplier)) / 100n;
     this.player.addGold(totalGoldGain);
 
     // Record stats

@@ -12,6 +12,7 @@ import { CentralBankExecution } from "./CentralBankExecution";
 import { CityExecution } from "./CityExecution";
 import { DefensePostExecution } from "./DefensePostExecution";
 import { FactoryExecution } from "./FactoryExecution";
+import { MilitaryCampExecution } from "./MilitaryCampExecution";
 import { MineExecution } from "./MineExecution";
 import { MirvExecution } from "./MIRVExecution";
 import { MissileSiloExecution } from "./MissileSiloExecution";
@@ -134,6 +135,9 @@ export class ConstructionExecution implements Execution {
         break;
       case UnitType.Mine:
         this.mg.addExecution(new MineExecution(player, this.tile));
+        break;
+      case UnitType.MilitaryCamp:
+        this.mg.addExecution(new MilitaryCampExecution(player, this.tile));
         break;
       case UnitType.CentralBank:
         this.mg.addExecution(new CentralBankExecution(player, this.tile));
