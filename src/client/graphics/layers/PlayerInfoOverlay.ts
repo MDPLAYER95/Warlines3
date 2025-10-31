@@ -6,6 +6,7 @@ import warshipIcon from "../../../../resources/images/BattleshipIconWhite.svg";
 import cityIcon from "../../../../resources/images/CityIconWhite.svg";
 import factoryIcon from "../../../../resources/images/FactoryIconWhite.svg";
 import goldCoinIcon from "../../../../resources/images/GoldCoinIcon.svg";
+import militaryCampIcon from "../../../../resources/images/MilitaryCampIconWhite.svg";
 import missileSiloIcon from "../../../../resources/images/MissileSiloIconWhite.svg";
 import portIcon from "../../../../resources/images/PortIcon.svg";
 import samLauncherIcon from "../../../../resources/images/SamLauncherIconWhite.svg";
@@ -377,6 +378,12 @@ export class PlayerInfoOverlay extends LitElement implements Layer {
                   UnitType.CentralBank,
                   bankIconWhite,
                   "player_info_overlay.central_banks",
+                )}
+                ${this.displayUnitCount(
+                  player,
+                  UnitType.MilitaryCamp,
+                  militaryCampIcon,
+                  "player_info_overlay.military_camps",
                 )}
                 ${this.displayUnitCount(
                   player,

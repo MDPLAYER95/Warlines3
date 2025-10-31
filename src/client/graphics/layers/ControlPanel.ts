@@ -2,10 +2,11 @@ import { LitElement, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { translateText } from "../../../client/Utils";
 import { EventBus } from "../../../core/EventBus";
-import { Gold } from "../../../core/game/Game";
+import { Gold, UnitType } from "../../../core/game/Game";
 import { GameView } from "../../../core/game/GameView";
 import { ClientID } from "../../../core/Schemas";
 import { AttackRatioEvent } from "../../InputHandler";
+import { SendMilitaryRatioIntentEvent } from "../../Transport";
 import { renderNumber, renderTroops } from "../../Utils";
 import { UIState } from "../UIState";
 import { Layer } from "./Layer";
@@ -44,6 +45,27 @@ export class ControlPanel extends LitElement implements Layer {
   private _troopRateIsIncreasing: boolean = true;
 
   private _lastTroopIncreaseRate: number;
+
+  @state()
+  private _militaryTargetRatio = 0.1;
+
+  @state()
+  private _militaryActualRatio = 0;
+
+  @state()
+  private _maxMilitaryRatio = 0.1;
+
+  @state()
+  private _civilianPopulation = 0;
+
+  @state()
+  private _militaryCamps = 0;
+
+  @state()
+  private _governmentType: "democracy" | "dictatorship" = "democracy";
+
+  @state()
+  private _isAdjustingMilitarySlider = false;
 
   init() {
     this.attackRatio = Number(
@@ -100,6 +122,20 @@ export class ControlPanel extends LitElement implements Layer {
     this._maxTroops = this.game.config().maxTroops(player);
     this._gold = player.gold();
     this.troopRate = this.game.config().troopIncreaseRate(player) * 10;
+    const serverTargetRatio = player.militaryRatioTarget();
+    this._maxMilitaryRatio = player.maxMilitaryRatio();
+    if (!this._isAdjustingMilitarySlider) {
+      this._militaryTargetRatio = Math.min(
+        serverTargetRatio,
+        this._maxMilitaryRatio,
+      );
+    } else if (this._militaryTargetRatio > this._maxMilitaryRatio) {
+      this._militaryTargetRatio = this._maxMilitaryRatio;
+    }
+    this._militaryActualRatio = player.militaryRatio();
+    this._civilianPopulation = player.civilianPopulation();
+    this._militaryCamps = player.units(UnitType.MilitaryCamp).length;
+    this._governmentType = player.governmentType();
     this.requestUpdate();
   }
 
@@ -116,6 +152,42 @@ export class ControlPanel extends LitElement implements Layer {
     this.uiState.attackRatio = newRatio;
   }
 
+  private updateMilitaryTargetFromSlider(event: Event) {
+    const slider = event.target as HTMLInputElement;
+    if (!slider) {
+      return;
+    }
+    const percent = Number(slider.value);
+    if (Number.isNaN(percent)) {
+      return;
+    }
+    const ratio = Math.max(0, Math.min(percent / 100, this._maxMilitaryRatio));
+    this._militaryTargetRatio = ratio;
+  }
+
+  private onMilitaryRatioChange(event: Event) {
+    this.updateMilitaryTargetFromSlider(event);
+    this._isAdjustingMilitarySlider = false;
+    const ratio = Math.max(
+      0,
+      Math.min(this._militaryTargetRatio, this._maxMilitaryRatio),
+    );
+    this.eventBus.emit(new SendMilitaryRatioIntentEvent(ratio));
+  }
+
+  private onMilitarySliderInput(event: Event) {
+    this._isAdjustingMilitarySlider = true;
+    this.updateMilitaryTargetFromSlider(event);
+  }
+
+  private onMilitarySliderPointerUp(event: PointerEvent) {
+    if (!this._isAdjustingMilitarySlider) {
+      return;
+    }
+    this.updateMilitaryTargetFromSlider(event);
+    this._isAdjustingMilitarySlider = false;
+  }
+
   renderLayer(context: CanvasRenderingContext2D) {
     // Render any necessary canvas elements
   }
@@ -130,6 +202,21 @@ export class ControlPanel extends LitElement implements Layer {
   }
 
   render() {
+    const militaryTargetPercent = Math.round(this._militaryTargetRatio * 100);
+    const militaryActualPercent = Math.round(this._militaryActualRatio * 100);
+    const militaryMaxPercent = Math.round(this._maxMilitaryRatio * 100);
+    const sliderMax = Math.max(1, militaryMaxPercent);
+    const sliderValue = Math.min(militaryTargetPercent, sliderMax);
+    const sliderFill =
+      sliderMax === 0
+        ? 0
+        : Math.max(0, Math.min(100, (sliderValue / sliderMax) * 100));
+    const governmentKey =
+      this._governmentType === "dictatorship"
+        ? "control_panel.government_dictatorship"
+        : "control_panel.government_democracy";
+    const governmentLabel = translateText(governmentKey);
+
     return html`
       <style>
         input[type="range"] {
@@ -242,6 +329,56 @@ export class ControlPanel extends LitElement implements Layer {
               }}
               class="absolute left-0 right-0 top-2 m-0 h-4 cursor-pointer attackRatio"
             />
+          </div>
+        </div>
+
+        <div class="relative mb-0 sm:mb-4">
+          <label class="block text-white mb-1" translate="no">
+            ${translateText("control_panel.military_ratio")}: ${sliderValue}%
+          </label>
+          <div class="text-xs text-white/80 mb-2" translate="no">
+            ${translateText("control_panel.military_ratio_detail", {
+              target: String(sliderValue),
+              actual: String(militaryActualPercent),
+              max: String(militaryMaxPercent),
+            })}
+          </div>
+          <div class="relative h-8">
+            <div
+              class="absolute left-0 right-0 top-3 h-2 bg-white/20 rounded"
+            ></div>
+            <div
+              class="absolute left-0 top-3 h-2 bg-blue-500/60 rounded transition-all duration-300"
+              style="width: ${Math.max(0, Math.min(100, sliderFill))}%"
+            ></div>
+            <input
+              type="range"
+              min="0"
+              max="${sliderMax}"
+              .value=${String(sliderValue)}
+              @input=${(event: Event) => this.onMilitarySliderInput(event)}
+              @change=${(event: Event) => this.onMilitaryRatioChange(event)}
+              @pointerdown=${() => (this._isAdjustingMilitarySlider = true)}
+              @pointerup=${(event: PointerEvent) =>
+                this.onMilitarySliderPointerUp(event)}
+              class="absolute left-0 right-0 top-2 m-0 h-4 cursor-pointer targetTroopRatio"
+            />
+          </div>
+          <div class="text-xs text-white/80 mt-2 space-y-1" translate="no">
+            <div>${governmentLabel}</div>
+            <div>
+              ${translateText("control_panel.civilian_population", {
+                civilians: renderTroops(this._civilianPopulation),
+              })}
+            </div>
+            <div>
+              ${translateText("control_panel.military_camps", {
+                count: String(this._militaryCamps),
+              })}
+            </div>
+            <div class="text-white/60">
+              ${translateText("control_panel.military_slider_hint")}
+            </div>
           </div>
         </div>
       </div>

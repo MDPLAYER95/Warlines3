@@ -7,6 +7,7 @@ import { TransformHandler } from "../TransformHandler";
 import anchorIcon from "../../../../resources/images/AnchorIcon.png";
 import cityIcon from "../../../../resources/images/CityIcon.png";
 import factoryIcon from "../../../../resources/images/FactoryUnit.png";
+import militaryCampIcon from "../../../../resources/images/MilitaryCampIconWhite.svg";
 import missileSiloIcon from "../../../../resources/images/MissileSiloUnit.png";
 import SAMMissileIcon from "../../../../resources/images/SamLauncherUnit.png";
 import shieldIcon from "../../../../resources/images/ShieldIcon.png";
@@ -20,6 +21,7 @@ export const STRUCTURE_SHAPES: Partial<Record<UnitType, ShapeType>> = {
   [UnitType.Port]: "pentagon",
   [UnitType.Factory]: "circle",
   [UnitType.DefensePost]: "octagon",
+  [UnitType.MilitaryCamp]: "triangle",
   [UnitType.SAMLauncher]: "square",
   [UnitType.MissileSilo]: "triangle",
   [UnitType.Warship]: "cross",
@@ -69,6 +71,7 @@ export class SpriteFactory {
     [UnitType.CentralBank, { iconPath: bankStructureSprite, image: null }],
     [UnitType.Factory, { iconPath: factoryIcon, image: null }],
     [UnitType.DefensePost, { iconPath: shieldIcon, image: null }],
+    [UnitType.MilitaryCamp, { iconPath: militaryCampIcon, image: null }],
     [UnitType.Port, { iconPath: anchorIcon, image: null }],
     [UnitType.MissileSilo, { iconPath: missileSiloIcon, image: null }],
     [UnitType.SAMLauncher, { iconPath: SAMMissileIcon, image: null }],

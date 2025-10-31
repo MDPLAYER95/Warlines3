@@ -387,6 +387,34 @@ export class PlayerView {
     return this.data.troops;
   }
 
+  civilianPopulation(): number {
+    return this.data.civilianPopulation;
+  }
+
+  totalPopulation(): number {
+    return (
+      this.data.troops +
+      this.data.civilianPopulation +
+      this.data.garrisonedTroops
+    );
+  }
+
+  militaryRatio(): number {
+    return this.data.militaryRatio;
+  }
+
+  militaryRatioTarget(): number {
+    return this.data.militaryRatioTarget;
+  }
+
+  maxMilitaryRatio(): number {
+    return this.data.maxMilitaryRatio;
+  }
+
+  governmentType(): "democracy" | "dictatorship" {
+    return this.data.governmentType;
+  }
+
   garrisonedTroops(): number {
     return this.data.garrisonedTroops;
   }

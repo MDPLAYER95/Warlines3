@@ -48,7 +48,8 @@ export type Intent =
   | DeleteUnitIntent
   | KickPlayerIntent
   | CentralBankMintIntent
-  | AssignDefensePostTroopsIntent;
+  | AssignDefensePostTroopsIntent
+  | SetMilitaryRatioIntent;
 
 export type AttackIntent = z.infer<typeof AttackIntentSchema>;
 export type CancelAttackIntent = z.infer<typeof CancelAttackIntentSchema>;
@@ -83,6 +84,9 @@ export type KickPlayerIntent = z.infer<typeof KickPlayerIntentSchema>;
 export type CentralBankMintIntent = z.infer<typeof CentralBankMintIntentSchema>;
 export type AssignDefensePostTroopsIntent = z.infer<
   typeof AssignDefensePostTroopsIntentSchema
+>;
+export type SetMilitaryRatioIntent = z.infer<
+  typeof SetMilitaryRatioIntentSchema
 >;
 
 export type Turn = z.infer<typeof TurnSchema>;
@@ -307,6 +311,11 @@ export const AssignDefensePostTroopsIntentSchema = BaseIntentSchema.extend({
   troops: z.number().nonnegative(),
 });
 
+export const SetMilitaryRatioIntentSchema = BaseIntentSchema.extend({
+  type: z.literal("set_military_ratio"),
+  ratio: z.number().min(0).max(1),
+});
+
 export const BuildUnitIntentSchema = BaseIntentSchema.extend({
   type: z.literal("build_unit"),
   unit: z.enum(UnitType),
@@ -388,6 +397,7 @@ const IntentSchema = z.discriminatedUnion("type", [
   KickPlayerIntentSchema,
   CentralBankMintIntentSchema,
   AssignDefensePostTroopsIntentSchema,
+  SetMilitaryRatioIntentSchema,
 ]);
 
 //
