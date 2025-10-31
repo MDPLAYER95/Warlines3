@@ -25,6 +25,7 @@ import { MoveWarshipExecution } from "./MoveWarshipExecution";
 import { NoOpExecution } from "./NoOpExecution";
 import { QuickChatExecution } from "./QuickChatExecution";
 import { RetreatExecution } from "./RetreatExecution";
+import { SetCustomsDutyExecution } from "./SetCustomsDutyExecution";
 import { SetMilitaryRatioExecution } from "./SetMilitaryRatioExecution";
 import { SpawnExecution } from "./SpawnExecution";
 import { TargetPlayerExecution } from "./TargetPlayerExecution";
@@ -131,6 +132,12 @@ export class Executor {
         );
       case "set_military_ratio":
         return new SetMilitaryRatioExecution(player, intent.ratio);
+      case "set_customs_duty":
+        return new SetCustomsDutyExecution(
+          player,
+          intent.category,
+          intent.rate,
+        );
       case "allianceExtension": {
         return new AllianceExtensionExecution(player, intent.recipient);
       }

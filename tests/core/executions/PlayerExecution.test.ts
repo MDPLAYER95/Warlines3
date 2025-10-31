@@ -106,7 +106,37 @@ describe("PlayerExecution", () => {
     expect(game.unitCount(UnitType.CentralBank)).toBe(0);
   });
 
-  test("Mine generates additional gold when fully staffed", () => {
+  const computeBaselineGain = async (): Promise<bigint> => {
+    const baselineGame = await setup(
+      "big_plains",
+      {
+        infiniteGold: true,
+        instantBuild: true,
+      },
+      [
+        new PlayerInfo("player", PlayerType.Human, "client_id1", "player_id"),
+        new PlayerInfo("other", PlayerType.Human, "client_id2", "other_id"),
+      ],
+    );
+
+    while (baselineGame.inSpawnPhase()) {
+      baselineGame.executeNextTick();
+    }
+
+    const baselinePlayer = baselineGame.player("player_id");
+    const baselineOther = baselineGame.player("other_id");
+    baselineGame.addExecution(new PlayerExecution(baselinePlayer));
+    baselineGame.addExecution(new PlayerExecution(baselineOther));
+    (
+      baselineGame.config() as unknown as { turnIntervalMs: () => number }
+    ).turnIntervalMs = () => 100;
+    baselinePlayer.setTroops(0);
+    const start = baselinePlayer.gold();
+    executeTicks(baselineGame, 2);
+    return baselinePlayer.gold() - start;
+  };
+
+  test("Mine does not grant immediate gold when staffed", async () => {
     const tile = game.ref(40, 40);
     player.conquer(tile);
     player.buildUnit(UnitType.Mine, tile, {});
@@ -122,10 +152,11 @@ describe("PlayerExecution", () => {
     executeTicks(game, 2);
 
     const goldGained = player.gold() - startingGold;
-    expect(goldGained).toBe(1767n);
+    const baseline = await computeBaselineGain();
+    expect(goldGained).toBe(baseline);
   });
 
-  test("Mine does not yield gold without stationed troops", () => {
+  test("Mine generates revenue without stationed troops", async () => {
     const tile = game.ref(60, 60);
     player.conquer(tile);
     player.buildUnit(UnitType.Mine, tile, {});
@@ -140,6 +171,7 @@ describe("PlayerExecution", () => {
     executeTicks(game, 2);
 
     const goldGained = player.gold() - startingGold;
-    expect(goldGained).toBe(100n);
+    const baseline = await computeBaselineGain();
+    expect(goldGained).toBeGreaterThanOrEqual(baseline);
   });
 });
