@@ -1,26 +1,40 @@
 :root {
-  --theme: "light";
+  --theme: "dark";
   --breakPoint-tablet: 800px;
   --breakPoint-Desktop: 1024px;
-  --blur-md: 4px;
-  --boxBackgroundColor: #111827cc;
-  --fontColor: #202020;
-  --fontColorLight: #fff;
-  --primaryColor: #2563eb;
-  --primaryColorHover: #1d4ed8;
-  --primaryColorDisabled: linear-gradient(
-    to right,
-    rgb(74, 74, 74),
-    rgb(61, 61, 61)
-  );
-  --secondaryColor: #dbeafe;
-  --secondaryColorHover: #bfdbfe;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --blur-md: 12px;
 
-  --primaryColorDark: #3b82f6;
-  --primaryColorHoverDark: #2563eb;
-  --primaryColorDisabledDark: #4b5563;
-  --secondaryColorDark: #374151;
-  --secondaryColorHoverDark: #4b5563;
-  --fontColorDark: #f3f4f6;
+  --backgroundBase: #050a14;
+  --backgroundElevated: rgba(10, 14, 24, 0.85);
+  --backgroundHighlight: rgba(21, 30, 46, 0.9);
+  --surfaceGradient: linear-gradient(
+    145deg,
+    rgba(32, 41, 58, 0.68),
+    rgba(8, 12, 24, 0.92)
+  );
+  --surfaceBorder: rgba(148, 163, 184, 0.22);
+  --surfaceBorderStrong: rgba(148, 163, 184, 0.35);
+
+  --fontColor: #0f172a;
+  --fontColorLight: #f8fafc;
+  --fontColorDark: #e2e8f0;
+  --fontColorMuted: #94a3b8;
+
+  --primaryColor: linear-gradient(135deg, #f97316, #fb923c);
+  --primaryColorHover: linear-gradient(135deg, #fb923c, #facc15);
+  --primaryColorDisabled: linear-gradient(135deg, #3f3f46, #27272a);
+
+  --secondaryColor: rgba(148, 163, 184, 0.12);
+  --secondaryColorHover: rgba(148, 163, 184, 0.22);
+
+  --primaryColorDark: linear-gradient(135deg, #fb923c, #f97316);
+  --primaryColorHoverDark: linear-gradient(135deg, #f97316, #fb7185);
+  --primaryColorDisabledDark: rgba(51, 65, 85, 0.75);
+
+  --secondaryColorDark: rgba(51, 65, 85, 0.5);
+  --secondaryColorHoverDark: rgba(71, 85, 105, 0.65);
+
+  --accentGlow: rgba(249, 115, 22, 0.32);
+  --accentRing: rgba(249, 115, 22, 0.65);
+  --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }

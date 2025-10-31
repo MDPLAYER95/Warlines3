@@ -1,39 +1,81 @@
 .l-header {
-  background: var(--boxBackgroundColor);
-  backdrop-filter: blur(var(--blur-md));
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2.5rem) 0;
   display: flex;
   justify-content: center;
-  padding: 24px 24px 12px;
-
-  @media (min-width: 800px) {
-    padding: 24px 24px;
-  }
+  background: transparent;
 }
 
 .l-header__content {
   display: flex;
-  flex: 1;
-  max-width: 600px;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 1.5rem;
+  width: min(960px, 100%);
+  padding: clamp(2rem, 5vw, 3.75rem);
+  border-radius: 28px;
+  background: var(--surfaceGradient);
+  border: 1px solid var(--surfaceBorder);
+  box-shadow:
+    0 20px 60px rgba(2, 6, 23, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(var(--blur-md));
 }
 
-.l-header__logo {
-  max-width: 450px;
-  fill: url(#logo-gradient);
-  filter: drop-shadow(1px 1px 0px rgb(255, 255, 255))
-    drop-shadow(-1px -1px 0px rgb(255, 255, 255))
-    drop-shadow(1px -1px 0px rgb(255, 255, 255))
-    drop-shadow(-1px 1px 0px rgb(255, 255, 255))
-    drop-shadow(3px 3px 0px rgb(255, 255, 255));
+.l-header__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  text-align: center;
+  color: var(--fontColorLight);
 }
 
-.l-header__highlightText {
-  color: #2563eb;
-  font-weight: 700;
-  filter: drop-shadow(1px 1px 0px rgb(255, 255, 255))
-    drop-shadow(-1px -1px 0px rgb(255, 255, 255))
-    drop-shadow(1px -1px 0px rgb(255, 255, 255))
-    drop-shadow(-1px 1px 0px rgb(255, 255, 255));
+.l-header__kicker {
+  font-size: 0.9rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--fontColorMuted);
+}
+
+.l-header__title {
+  font-family:
+    "Rajdhani",
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: clamp(3rem, 8vw, 4.75rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+  background: linear-gradient(135deg, #f97316 0%, #fb7185 40%, #facc15 100%);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 10px 30px rgba(249, 115, 22, 0.32);
+}
+
+.l-header__tagline {
+  font-size: clamp(1rem, 2.4vw, 1.35rem);
+  color: var(--fontColorDark);
+  font-weight: 500;
+  max-width: 28ch;
+}
+
+.l-header__subtitle {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--fontColorMuted);
+}
+
+.l-header__meta {
+  font-size: 0.9rem;
+  color: var(--fontColorMuted);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.55);
+  box-shadow: 0 10px 40px rgba(2, 6, 23, 0.45);
 }

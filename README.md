@@ -2,11 +2,11 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="resources/images/OpenFrontLogoDark.svg">
     <source media="(prefers-color-scheme: light)" srcset="resources/images/OpenFrontLogo.svg">
-    <img src="resources/images/OpenFrontLogo.svg" alt="OpenFrontIO Logo" width="300">
+    <img src="resources/images/OpenFrontLogo.svg" alt="WarLines Logo" width="300">
   </picture>
 </p>
 
-[OpenFront.io](https://openfront.io/) is an online real-time strategy game focused on territorial control and alliance building. Players compete to expand their territory, build structures, and form strategic alliances in various maps based on real-world geography.
+[WarLines.gg](https://warlines.gg/) is an online real-time strategy game focused on territorial control and alliance building. Players compete to expand their territory, build structures, and form strategic alliances in various maps based on real-world geography. WarLines is proudly based on and derived from the OpenFront project.
 
 This is a fork/rewrite of WarFront.io. Credit to https://github.com/WarFrontIO.
 

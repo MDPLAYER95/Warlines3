@@ -20,7 +20,7 @@
     "none": "None"
   },
   "main": {
-    "title": "OpenFront (ALPHA)",
+    "title": "WarLines (ALPHA)",
     "join_discord": "Join the Discord!",
     "login_discord": "Login with Discord",
     "checking_login": "Checking login...",
@@ -522,7 +522,7 @@
     "confirm": "Mint currency"
   },
   "win_modal": {
-    "support_openfront": "Support OpenFront!",
+    "support_openfront": "Support WarLines!",
     "territory_pattern": "Purchase a territory skin to go ad-free!",
     "died": "You died",
     "your_team": "Your team won!",
@@ -750,8 +750,8 @@
       "cursor": "Cursor",
       "hand": "Hand",
       "radiation": "Radiation",
-      "openfront_qr": "OpenFront.io QR code",
-      "openfront": "OpenFront",
+      "openfront_qr": "WarLines.io QR code",
+      "openfront": "WarLines",
       "t_rex": "T-Rex",
       "embelem": "Emblem",
       "contributor": "Contributor",

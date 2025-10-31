@@ -9,7 +9,7 @@
     "close": "Bezár"
   },
   "main": {
-    "title": "OpenFront (ALPHA)",
+    "title": "WarLines (ALPHA)",
     "join_discord": "Csatlakozz discord szerverünkhöz!",
     "login_discord": "Bejelentkezés Discord fiókkal",
     "checking_login": "Bejelentkezés ellenőrzése...",
@@ -466,8 +466,8 @@
     "not_enough_money": "Nincs elég pénz"
   },
   "win_modal": {
-    "support_openfront": "Támogasd az OpenFrontot!",
-    "territory_pattern": "Vásárolj egy területi mintát az OpenFront támogatásához!",
+    "support_openfront": "Támogasd a WarLines-t!",
+    "territory_pattern": "Vásárolj egy területi mintát a WarLines támogatásához!",
     "died": "Meghaltál",
     "your_team": "A csapatod nyert!",
     "other_team": "A(z) {team} csapat győzött!",
@@ -624,8 +624,8 @@
       "cursor": "Egérmutató",
       "hand": "Kéz",
       "radiation": "Sugárzás",
-      "openfront_qr": "OpenFront.io QR kód",
-      "openfront": "OpenFront",
+      "openfront_qr": "WarLines.io QR kód",
+      "openfront": "WarLines",
       "t_rex": "T-Rex",
       "embelem": "Embléma",
       "contributor": "Közreműködő",

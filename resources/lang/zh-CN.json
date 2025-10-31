@@ -9,7 +9,7 @@
     "close": "关闭"
   },
   "main": {
-    "title": "OpenFront (ALPHA)",
+    "title": "WarLines (ALPHA)",
     "join_discord": "加入 Discord",
     "login_discord": "用 Discord 登录",
     "checking_login": "正在检查登录...",
@@ -466,8 +466,8 @@
     "not_enough_money": "金钱不足"
   },
   "win_modal": {
-    "support_openfront": "支持 OpenFront！",
-    "territory_pattern": "购买一个领土皮肤以支持 OpenFront！",
+    "support_openfront": "支持 WarLines！",
+    "territory_pattern": "购买一个领土皮肤以支持 WarLines！",
     "died": "你已经死了",
     "your_team": "你的队伍获胜了！",
     "other_team": "{team} 队获胜了！",
@@ -624,8 +624,8 @@
       "cursor": "光标",
       "hand": "手",
       "radiation": "辐射",
-      "openfront_qr": "OpenFront.io 二维码",
-      "openfront": "OpenFront",
+      "openfront_qr": "WarLines.io 二维码",
+      "openfront": "WarLines",
       "t_rex": "霸王龙",
       "embelem": "徽章",
       "contributor": "贡献者",

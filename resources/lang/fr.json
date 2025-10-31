@@ -9,7 +9,7 @@
     "close": "Fermer"
   },
   "main": {
-    "title": "OpenFront (ALPHA)",
+    "title": "WarLines (ALPHA)",
     "join_discord": "Rejoignez le Discord !",
     "login_discord": "Se connecter avec Discord",
     "checking_login": "Vérification de la connexion...",
@@ -466,8 +466,8 @@
     "not_enough_money": "Pas assez d'argent"
   },
   "win_modal": {
-    "support_openfront": "Soutenir OpenFront!",
-    "territory_pattern": "Achetez un modèle de territoire pour supporter OpenFront !",
+    "support_openfront": "Soutenir WarLines!",
+    "territory_pattern": "Achetez un modèle de territoire pour supporter WarLines !",
     "died": "Vous êtes mort",
     "your_team": "Votre équipe a gagné !",
     "other_team": "L'équipe {team} a gagné !",
@@ -645,8 +645,8 @@
       "cursor": "Curseur",
       "hand": "Main",
       "radiation": "Radiation",
-      "openfront_qr": "QR code OpenFront.io",
-      "openfront": "OpenFront",
+      "openfront_qr": "QR code WarLines.io",
+      "openfront": "WarLines",
       "t_rex": "T-Rex",
       "embelem": "Emblème",
       "contributor": "Contributeur·ice",
