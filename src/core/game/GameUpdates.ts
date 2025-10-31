@@ -160,6 +160,11 @@ export interface PlayerUpdate {
   gold: Gold;
   totalGoldEarned: Gold;
   troops: number;
+  civilianPopulation: number;
+  militaryRatio: number;
+  militaryRatioTarget: number;
+  maxMilitaryRatio: number;
+  governmentType: "democracy" | "dictatorship";
   garrisonedTroops: number;
   allies: number[];
   embargoes: Set<PlayerID>;
