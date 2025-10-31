@@ -1,6 +1,5 @@
 import { TrainExecution } from "../execution/TrainExecution";
 import { GraphAdapter } from "../pathfinding/SerialAStar";
-import { PseudoRandom } from "../PseudoRandom";
 import { Game, Player, Unit, UnitType } from "./Game";
 import { TileRef } from "./GameMap";
 import { GameUpdateType, RailTile, RailType } from "./GameUpdates";
@@ -19,38 +18,18 @@ interface TrainStopHandler {
  */
 class CityStopHandler implements TrainStopHandler {
   onStop(
-    mg: Game,
-    station: TrainStation,
-    trainExecution: TrainExecution,
-  ): void {
-    const stationOwner = station.unit.owner();
-    const trainOwner = trainExecution.owner();
-    const goldBonus = mg.config().trainGold(rel(trainOwner, stationOwner));
-    // Share revenue with the station owner if it's not the current player
-    if (trainOwner !== stationOwner) {
-      stationOwner.addGold(goldBonus, station.tile());
-    }
-    trainOwner.addGold(goldBonus, station.tile());
-  }
+    _mg: Game,
+    _station: TrainStation,
+    _trainExecution: TrainExecution,
+  ): void {}
 }
 
 class PortStopHandler implements TrainStopHandler {
-  constructor(private random: PseudoRandom) {}
   onStop(
-    mg: Game,
-    station: TrainStation,
-    trainExecution: TrainExecution,
-  ): void {
-    const stationOwner = station.unit.owner();
-    const trainOwner = trainExecution.owner();
-    const goldBonus = mg.config().trainGold(rel(trainOwner, stationOwner));
-
-    trainOwner.addGold(goldBonus, station.tile());
-    // Share revenue with the station owner if it's not the current player
-    if (trainOwner !== stationOwner) {
-      stationOwner.addGold(goldBonus, station.tile());
-    }
-  }
+    _mg: Game,
+    _station: TrainStation,
+    _trainExecution: TrainExecution,
+  ): void {}
 }
 
 class FactoryStopHandler implements TrainStopHandler {
@@ -61,13 +40,13 @@ class FactoryStopHandler implements TrainStopHandler {
   ): void {}
 }
 
-export function createTrainStopHandlers(
-  random: PseudoRandom,
-): Partial<Record<UnitType, TrainStopHandler>> {
+export function createTrainStopHandlers(): Partial<
+  Record<UnitType, TrainStopHandler>
+> {
   return {
     [UnitType.City]: new CityStopHandler(),
     [UnitType.Mine]: new CityStopHandler(),
-    [UnitType.Port]: new PortStopHandler(random),
+    [UnitType.Port]: new PortStopHandler(),
     [UnitType.Factory]: new FactoryStopHandler(),
   };
 }
@@ -82,7 +61,7 @@ export class TrainStation {
     private mg: Game,
     public unit: Unit,
   ) {
-    this.stopHandlers = createTrainStopHandlers(new PseudoRandom(mg.ticks()));
+    this.stopHandlers = createTrainStopHandlers();
   }
 
   tradeAvailable(otherPlayer: Player): boolean {
@@ -232,20 +211,4 @@ export class Cluster {
   clear() {
     this.stations.clear();
   }
-}
-
-function rel(
-  player: Player,
-  other: Player,
-): "self" | "team" | "ally" | "other" {
-  if (player === other) {
-    return "self";
-  }
-  if (player.isOnSameTeam(other)) {
-    return "team";
-  }
-  if (player.isAlliedWith(other)) {
-    return "ally";
-  }
-  return "other";
 }

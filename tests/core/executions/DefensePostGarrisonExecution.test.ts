@@ -111,6 +111,7 @@ describe("DefensePost garrison executions", () => {
       units: () => [],
       troops: () => 0,
       garrisonedTroops: () => config.maxTroops(player) * 2,
+      totalPopulation: () => config.maxTroops(player) * 2,
     } as unknown as PlayerView;
 
     expect(config.troopIncreaseRate(stubPlayerView)).toBe(0);

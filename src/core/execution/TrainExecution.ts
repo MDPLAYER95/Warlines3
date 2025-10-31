@@ -1,3 +1,4 @@
+import type { ExpeditionReport } from "../game/EconomyManager";
 import {
   Execution,
   Game,
@@ -23,6 +24,8 @@ export class TrainExecution implements Execution {
   private stations: TrainStation[] = [];
   private currentRailroad: OrientedRailroad | null = null;
   private speed: number = 2;
+  private precomputedStations: TrainStation[] | null;
+  private expedition: ExpeditionReport | null;
 
   constructor(
     private railNetwork: RailNetwork,
@@ -30,7 +33,12 @@ export class TrainExecution implements Execution {
     private source: TrainStation,
     private destination: TrainStation,
     private numCars: number,
-  ) {}
+    precomputedPath?: TrainStation[],
+    preparedExpedition?: ExpeditionReport,
+  ) {
+    this.precomputedStations = precomputedPath ? [...precomputedPath] : null;
+    this.expedition = preparedExpedition ?? null;
+  }
 
   public owner(): Player {
     return this.player;
@@ -38,10 +46,9 @@ export class TrainExecution implements Execution {
 
   init(mg: Game, ticks: number): void {
     this.mg = mg;
-    const stations = this.railNetwork.findStationsPath(
-      this.source,
-      this.destination,
-    );
+    const stations =
+      this.precomputedStations ??
+      this.railNetwork.findStationsPath(this.source, this.destination);
     if (!stations || stations.length <= 1) {
       this.active = false;
       return;
@@ -63,6 +70,9 @@ export class TrainExecution implements Execution {
       return;
     }
     this.train = this.createTrainUnits(spawn);
+    if (this.expedition) {
+      this.loadCargo();
+    }
   }
 
   tick(ticks: number): void {
@@ -102,6 +112,10 @@ export class TrainExecution implements Execution {
     this.cars.forEach((car: Unit) => {
       car.setReachedTarget();
     });
+    if (this.mg !== null && this.expedition !== null) {
+      this.mg.economy().completeExpedition(this.expedition);
+      this.expedition = null;
+    }
   }
 
   private createTrainUnits(tile: TileRef): Unit {

@@ -3,10 +3,15 @@ import { customElement, state } from "lit/decorators.js";
 import { translateText } from "../../../client/Utils";
 import { EventBus } from "../../../core/EventBus";
 import { Gold, UnitType } from "../../../core/game/Game";
+import type { SerializedExpeditionReport } from "../../../core/game/GameUpdates";
+import { GameUpdateType } from "../../../core/game/GameUpdates";
 import { GameView } from "../../../core/game/GameView";
 import { ClientID } from "../../../core/Schemas";
 import { AttackRatioEvent } from "../../InputHandler";
-import { SendMilitaryRatioIntentEvent } from "../../Transport";
+import {
+  SendCustomsDutyIntentEvent,
+  SendMilitaryRatioIntentEvent,
+} from "../../Transport";
 import { renderNumber, renderTroops } from "../../Utils";
 import { UIState } from "../UIState";
 import { Layer } from "./Layer";
@@ -66,6 +71,30 @@ export class ControlPanel extends LitElement implements Layer {
 
   @state()
   private _isAdjustingMilitarySlider = false;
+
+  @state()
+  private alliedDuty = 0;
+
+  @state()
+  private otherDuty = 0;
+
+  @state()
+  private trainCapacityAvailable: bigint = 0n;
+
+  @state()
+  private trainCapacityTotal: bigint = 0n;
+
+  @state()
+  private seaCapacityAvailable: bigint = 0n;
+
+  @state()
+  private seaCapacityTotal: bigint = 0n;
+
+  @state()
+  private routeDiversity: SerializedExpeditionReport["diversity"] | null = null;
+
+  @state()
+  private expeditionLog: SerializedExpeditionReport[] = [];
 
   init() {
     this.attackRatio = Number(
@@ -136,6 +165,23 @@ export class ControlPanel extends LitElement implements Layer {
     this._civilianPopulation = player.civilianPopulation();
     this._militaryCamps = player.units(UnitType.MilitaryCamp).length;
     this._governmentType = player.governmentType();
+    this.alliedDuty = player.alliedCustomsRate();
+    this.otherDuty = player.otherCustomsRate();
+    const economy = player.economy();
+    this.trainCapacityAvailable = BigInt(economy.trainCapacityAvailable);
+    this.trainCapacityTotal = BigInt(economy.trainCapacityTotal);
+    this.seaCapacityAvailable = BigInt(economy.seaCapacityAvailable);
+    this.seaCapacityTotal = BigInt(economy.seaCapacityTotal);
+    this.routeDiversity = economy.diversity;
+
+    const updates = this.game.updatesSinceLastTick();
+    if (updates) {
+      const expeditionUpdates = updates[GameUpdateType.EconomyExpeditionEvent];
+      if (expeditionUpdates.length > 0) {
+        const newEntries = expeditionUpdates.map((evt) => evt.report);
+        this.expeditionLog = [...newEntries, ...this.expeditionLog].slice(0, 5);
+      }
+    }
     this.requestUpdate();
   }
 
@@ -188,6 +234,19 @@ export class ControlPanel extends LitElement implements Layer {
     this._isAdjustingMilitarySlider = false;
   }
 
+  private onCustomsDutyChange(category: "allies" | "others", event: Event) {
+    const slider = event.target as HTMLInputElement;
+    if (!slider) {
+      return;
+    }
+    const value = Number(slider.value);
+    if (Number.isNaN(value)) {
+      return;
+    }
+    const rate = Math.max(0, Math.min(value / 100, 1));
+    this.eventBus.emit(new SendCustomsDutyIntentEvent(category, rate));
+  }
+
   renderLayer(context: CanvasRenderingContext2D) {
     // Render any necessary canvas elements
   }
@@ -216,6 +275,36 @@ export class ControlPanel extends LitElement implements Layer {
         ? "control_panel.government_dictatorship"
         : "control_panel.government_democracy";
     const governmentLabel = translateText(governmentKey);
+    const alliedPercent = Math.round(this.alliedDuty * 100);
+    const otherPercent = Math.round(this.otherDuty * 100);
+    const maxCustoms = Math.round(this.game.config().maxCustomsRate() * 100);
+    const trainCapacityLabel = `${renderNumber(this.trainCapacityAvailable)} / ${renderNumber(this.trainCapacityTotal)}`;
+    const seaCapacityLabel = `${renderNumber(this.seaCapacityAvailable)} / ${renderNumber(this.seaCapacityTotal)}`;
+    const diversityTarget = Math.round(
+      this.game.config().routeDiversityTargetShare() * 100,
+    );
+    const diversityInfo = this.routeDiversity;
+    const diversityPercent = diversityInfo
+      ? Math.round(diversityInfo.ratio * 100)
+      : 0;
+    const appliedPercent = diversityInfo?.appliedPercent ?? 100;
+    const penaltyPercent = diversityInfo?.penaltyPercent ?? 0;
+    const bonusPercent = diversityInfo?.bonusPercent ?? 0;
+    const diversityStatusClass =
+      appliedPercent < 100
+        ? "text-yellow-400"
+        : appliedPercent > 100
+          ? "text-green-400"
+          : "text-white/80";
+    const diversityStatusText = diversityInfo
+      ? appliedPercent > 100
+        ? `Bonus +${bonusPercent.toFixed(0)}%`
+        : appliedPercent < 100
+          ? `Penalty ${penaltyPercent.toFixed(0)}%`
+          : "Neutral"
+      : "Neutral";
+    const worldPathCount = diversityInfo?.worldPathCount ?? 0;
+    const playerPathCount = diversityInfo?.playerPathCount ?? 0;
 
     return html`
       <style>
@@ -380,6 +469,120 @@ export class ControlPanel extends LitElement implements Layer {
               ${translateText("control_panel.military_slider_hint")}
             </div>
           </div>
+        </div>
+
+        <div class="block bg-black/30 text-white mb-4 p-2 rounded">
+          <div class="font-bold mb-2">Customs Duties</div>
+          <div class="mb-3">
+            <label class="block text-xs text-white/80 mb-1">
+              Allies: ${alliedPercent}%
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="${maxCustoms}"
+              .value=${String(alliedPercent)}
+              class="w-full h-4 cursor-pointer"
+              @change=${(event: Event) =>
+                this.onCustomsDutyChange("allies", event)}
+            />
+          </div>
+          <div>
+            <label class="block text-xs text-white/80 mb-1">
+              Others: ${otherPercent}%
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="${maxCustoms}"
+              .value=${String(otherPercent)}
+              class="w-full h-4 cursor-pointer"
+              @change=${(event: Event) =>
+                this.onCustomsDutyChange("others", event)}
+            />
+          </div>
+        </div>
+
+        <div class="block bg-black/30 text-white mb-4 p-2 rounded space-y-1">
+          <div class="font-bold">Logistics</div>
+          <div class="flex justify-between text-xs text-white/80">
+            <span>Train capacity</span>
+            <span translate="no">${trainCapacityLabel}</span>
+          </div>
+          <div class="flex justify-between text-xs text-white/80">
+            <span>Sea capacity</span>
+            <span translate="no">${seaCapacityLabel}</span>
+          </div>
+          <div class="flex justify-between text-xs text-white/80">
+            <span>Route diversity</span>
+            <span translate="no"
+              >${diversityPercent}% (goal ${diversityTarget}%)</span
+            >
+          </div>
+          <div class="flex justify-between text-xs text-white/80">
+            <span>Routes used</span>
+            <span translate="no">${playerPathCount} / ${worldPathCount}</span>
+          </div>
+          <div class="text-xs ${diversityStatusClass}">
+            ${diversityStatusText} · Applied ${appliedPercent.toFixed(0)}%
+          </div>
+        </div>
+
+        <div class="block bg-black/30 text-white mb-2 p-2 rounded">
+          <div class="font-bold mb-2">Recent expeditions</div>
+          <ul class="space-y-2">
+            ${this.expeditionLog.length === 0
+              ? html`<li class="text-xs text-white/70">No shipments yet.</li>`
+              : this.expeditionLog.map((entry) => {
+                  const customsSummary =
+                    entry.customs.length === 0
+                      ? "No customs"
+                      : entry.customs
+                          .map((custom) => {
+                            const ownerView = this.game.playerBySmallID(
+                              custom.owner,
+                            );
+                            const name = ownerView.isPlayer()
+                              ? ownerView.displayName()
+                              : custom.owner === 0
+                                ? "Neutral"
+                                : `P${custom.owner}`;
+                            const relationLabel =
+                              custom.relation === "ally" ? "Allied" : "Other";
+                            return `${name} ${relationLabel} ${custom.ratePercent.toFixed(
+                              1,
+                            )}%: ${renderNumber(BigInt(custom.amount))}`;
+                          })
+                          .join("; ");
+                  return html`<li class="border border-white/10 rounded p-2">
+                    <div class="flex justify-between text-xs text-white/80">
+                      <span>Initial</span>
+                      <span translate="no"
+                        >${renderNumber(BigInt(entry.initialGold))}</span
+                      >
+                    </div>
+                    <div class="flex justify-between text-xs text-white/80">
+                      <span>After customs</span>
+                      <span translate="no"
+                        >${renderNumber(BigInt(entry.deliveredGold))}</span
+                      >
+                    </div>
+                    <div class="flex justify-between text-xs text-white">
+                      <span>Credit</span>
+                      <span translate="no"
+                        >${renderNumber(BigInt(entry.creditedGold))}</span
+                      >
+                    </div>
+                    <div class="text-[10px] text-white/70 mt-1">
+                      ${customsSummary}
+                    </div>
+                    <div class="text-[10px] text-white/60">
+                      Route nodes: ${entry.path.length}
+                      ${entry.hadSeaSegment ? "· includes sea segment" : ""}
+                    </div>
+                  </li>`;
+                })}
+          </ul>
         </div>
       </div>
     `;
