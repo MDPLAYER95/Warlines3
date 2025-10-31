@@ -11,6 +11,7 @@ import {
 } from "../Util";
 import { sanitizeUsername } from "../validations/username";
 import { AttackImpl } from "./AttackImpl";
+import type { PlayerEconomySnapshot } from "./EconomyManager";
 import {
   Alliance,
   AllianceRequest,
@@ -45,6 +46,7 @@ import {
   AllianceView,
   AttackUpdate,
   GameUpdateType,
+  PlayerEconomyView,
   PlayerUpdate,
 } from "./GameUpdates";
 import {
@@ -118,6 +120,9 @@ export class PlayerImpl implements Player {
   private lastDeleteUnitTick: Tick = -1;
   private lastEmbargoAllTick: Tick = -1;
 
+  private alliedCustomsDuty: number;
+  private otherCustomsDuty: number;
+
   public _incomingAttacks: Attack[] = [];
   public _outgoingAttacks: Attack[] = [];
   public _outgoingLandAttacks: Attack[] = [];
@@ -148,6 +153,8 @@ export class PlayerImpl implements Player {
     this._gold = 0n;
     this._displayName = this._name;
     this._pseudo_random = new PseudoRandom(simpleHash(this.playerInfo.id));
+    this.alliedCustomsDuty = this.mg.config().defaultAlliedCustomsRate();
+    this.otherCustomsDuty = this.mg.config().defaultOtherCustomsRate();
     this.updateGovernmentTypeFromRatio();
   }
 
@@ -158,6 +165,7 @@ export class PlayerImpl implements Player {
       ar.recipient().id(),
     );
     const stats = this.mg.stats().getPlayerStats(this);
+    const economySnapshot = this.mg.economy().playerSnapshot(this);
 
     return {
       type: GameUpdateType.Player,
@@ -183,6 +191,11 @@ export class PlayerImpl implements Player {
       centralBankPrintsUsed: this.centralBankPrints,
       centralBankPrintsRemaining: this.centralBankPrintsRemaining(),
       centralBankInflationPercent: this.centralBankInflationPercent(),
+      customs: {
+        alliedRate: this.alliedCustomsRate(),
+        otherRate: this.otherCustomsRate(),
+      },
+      economy: this.makeEconomyView(economySnapshot),
       allies: this.alliances().map((a) => a.other(this).smallID()),
       embargoes: new Set([...this.embargoes.keys()].map((p) => p.toString())),
       isTraitor: this.isTraitor(),
@@ -847,6 +860,39 @@ export class PlayerImpl implements Player {
 
   gold(): Gold {
     return this._gold;
+  }
+
+  alliedCustomsRate(): number {
+    return this.alliedCustomsDuty;
+  }
+
+  otherCustomsRate(): number {
+    return this.otherCustomsDuty;
+  }
+
+  setAlliedCustomsRate(rate: number): void {
+    this.alliedCustomsDuty = this.clampCustomsDuty(rate);
+  }
+
+  setOtherCustomsRate(rate: number): void {
+    this.otherCustomsDuty = this.clampCustomsDuty(rate);
+  }
+
+  private clampCustomsDuty(rate: number): number {
+    const maxRate = this.mg.config().maxCustomsRate();
+    return Math.max(0, Math.min(maxRate, rate));
+  }
+
+  private makeEconomyView(snapshot: PlayerEconomySnapshot): PlayerEconomyView {
+    return {
+      rawMaterialStock: snapshot.rawMaterialStock.toString(),
+      goldStock: snapshot.goldStock.toString(),
+      trainCapacityAvailable: snapshot.trainCapacityAvailable.toString(),
+      trainCapacityTotal: snapshot.trainCapacityTotal.toString(),
+      seaCapacityAvailable: snapshot.seaCapacityAvailable.toString(),
+      seaCapacityTotal: snapshot.seaCapacityTotal.toString(),
+      diversity: snapshot.diversity,
+    };
   }
 
   addGold(toAdd: Gold, tile?: TileRef): void {
