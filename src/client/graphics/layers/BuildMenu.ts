@@ -77,6 +77,13 @@ export const buildTable: BuildItemDisplay[][] = [
       countable: true,
     },
     {
+      unitType: UnitType.Submarine,
+      icon: warshipIcon,
+      description: "build_menu.desc.warship",
+      key: "unit_type.submarine",
+      countable: true,
+    },
+    {
       unitType: UnitType.Port,
       icon: portIcon,
       description: "build_menu.desc.port",

@@ -65,7 +65,10 @@ export class UILayer implements Layer {
     this.selectionAnimTime = (this.selectionAnimTime + 1) % 60;
 
     // If there's a selected warship, redraw to update the selection box animation
-    if (this.selectedUnit && this.selectedUnit.type() === UnitType.Warship) {
+    if (
+      this.selectedUnit &&
+      [UnitType.Warship, UnitType.Submarine].includes(this.selectedUnit.type())
+    ) {
       this.drawSelectionBox(this.selectedUnit);
     }
 
@@ -113,7 +116,8 @@ export class UILayer implements Layer {
         this.createLoadingBar(unit);
         break;
       }
-      case UnitType.Warship: {
+      case UnitType.Warship:
+      case UnitType.Submarine: {
         this.drawHealthBar(unit);
         break;
       }

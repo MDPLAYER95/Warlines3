@@ -1,6 +1,6 @@
 import { EventBus } from "../../core/EventBus";
 import { Cell, UnitType } from "../../core/game/Game";
-import { GameView } from "../../core/game/GameView";
+import { GameView, PlayerView, UnitView } from "../../core/game/GameView";
 import { UserSettings } from "../../core/game/UserSettings";
 import { GameStartingModal } from "../GameStartingModal";
 import {
@@ -40,6 +40,10 @@ import { SettingsModal } from "./layers/SettingsModal";
 import { SpawnTimer } from "./layers/SpawnTimer";
 import { StructureIconsLayer } from "./layers/StructureIconsLayer";
 import { StructureLayer } from "./layers/StructureLayer";
+import {
+  SubmarineOrdersModal,
+  openSubmarineOrdersModal,
+} from "./layers/SubmarineOrdersModal";
 import { TeamStats } from "./layers/TeamStats";
 import { TerrainLayer } from "./layers/TerrainLayer";
 import { TerritoryLayer } from "./layers/TerritoryLayer";
@@ -204,6 +208,34 @@ export function createRenderer(
     }
   }
 
+  const submarineModalElement = document.querySelector(
+    "submarine-orders-modal",
+  );
+  if (!submarineModalElement) {
+    console.error("SubmarineOrdersModal element not found in the DOM");
+  } else {
+    const assignSubmarineModal = (modal: SubmarineOrdersModal) => {
+      modal.game = game;
+      modal.eventBus = eventBus;
+    };
+    if (submarineModalElement instanceof SubmarineOrdersModal) {
+      assignSubmarineModal(submarineModalElement);
+    } else {
+      customElements
+        .whenDefined("submarine-orders-modal")
+        .then(() => {
+          const upgraded = submarineModalElement as SubmarineOrdersModal;
+          assignSubmarineModal(upgraded);
+        })
+        .catch((error) => {
+          console.error(
+            "Failed waiting for submarine-orders-modal definition",
+            error,
+          );
+        });
+    }
+  }
+
   const playerPanel = document.querySelector("player-panel") as PlayerPanel;
   if (!(playerPanel instanceof PlayerPanel)) {
     console.error("player panel not found");
@@ -357,21 +389,32 @@ export class GameRenderer {
     }
 
     const tileRef = this.game.ref(worldCell.x, worldCell.y);
-    const banks = myPlayer
-      .units(UnitType.CentralBank)
-      .filter((unit) => unit.isActive());
-    if (banks.length === 0) {
+
+    if (this.tryOpenCentralBankModalAt(myPlayer, tileRef, event)) {
       return;
     }
 
-    const directMatch = banks.find((unit) => unit.tile() === tileRef);
+    if (this.tryOpenSubmarineModalAt(myPlayer, tileRef, event)) {
+      return;
+    }
+  };
+
+  private findUnitNearDoubleClick(
+    units: UnitView[],
+    tileRef: TileRef,
+    event: DoubleClickEvent,
+  ): UnitView | null {
+    if (units.length === 0) {
+      return null;
+    }
+    const directMatch = units.find((unit) => unit.tile() === tileRef);
     const scale = this.transformHandler.scale;
     const baseRadius = 40;
     const radius = Math.max(24, baseRadius / Math.max(1, scale));
     const radiusSq = radius * radius;
-    let closest: { unit: (typeof banks)[number]; distSq: number } | undefined;
+    let closest: { unit: UnitView; distSq: number } | undefined;
 
-    for (const unit of banks) {
+    for (const unit of units) {
       const tile = unit.tile();
       const worldPos = new Cell(this.game.x(tile), this.game.y(tile));
       const screenPos =
@@ -386,13 +429,40 @@ export class GameRenderer {
       }
     }
 
-    const target = directMatch ?? closest?.unit;
-    if (!target) {
-      return;
-    }
+    return directMatch ?? closest?.unit ?? null;
+  }
 
+  private tryOpenCentralBankModalAt(
+    player: PlayerView,
+    tileRef: TileRef,
+    event: DoubleClickEvent,
+  ): boolean {
+    const banks = player
+      .units(UnitType.CentralBank)
+      .filter((unit) => unit.isActive());
+    const target = this.findUnitNearDoubleClick(banks, tileRef, event);
+    if (!target) {
+      return false;
+    }
     openCentralBankModal(this.eventBus, target.id());
-  };
+    return true;
+  }
+
+  private tryOpenSubmarineModalAt(
+    player: PlayerView,
+    tileRef: TileRef,
+    event: DoubleClickEvent,
+  ): boolean {
+    const submarines = player
+      .units(UnitType.Submarine)
+      .filter((unit) => unit.isActive());
+    const target = this.findUnitNearDoubleClick(submarines, tileRef, event);
+    if (!target) {
+      return false;
+    }
+    openSubmarineOrdersModal(this.eventBus, target.id());
+    return true;
+  }
 
   initialize() {
     this.eventBus.on(RedrawGraphicsEvent, () => this.redraw());

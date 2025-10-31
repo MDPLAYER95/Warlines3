@@ -10,7 +10,10 @@ import {
   MouseUpEvent,
   UnitSelectionEvent,
 } from "../../InputHandler";
-import { MoveWarshipIntentEvent } from "../../Transport";
+import {
+  MoveSubmarineIntentEvent,
+  MoveWarshipIntentEvent,
+} from "../../Transport";
 import { TransformHandler } from "../TransformHandler";
 import { Layer } from "./Layer";
 
@@ -93,7 +96,7 @@ export class UnitLayer implements Layer {
 
     // Only select warships owned by the player
     return this.game
-      .units(UnitType.Warship)
+      .units(UnitType.Warship, UnitType.Submarine)
       .filter(
         (unit) =>
           unit.isActive() &&
@@ -122,9 +125,15 @@ export class UnitLayer implements Layer {
     if (this.selectedUnit) {
       const clickRef = this.game.ref(cell.x, cell.y);
       if (this.game.isOcean(clickRef)) {
-        this.eventBus.emit(
-          new MoveWarshipIntentEvent(this.selectedUnit.id(), clickRef),
-        );
+        if (this.selectedUnit.type() === UnitType.Submarine) {
+          this.eventBus.emit(
+            new MoveSubmarineIntentEvent(this.selectedUnit.id(), clickRef),
+          );
+        } else if (this.selectedUnit.type() === UnitType.Warship) {
+          this.eventBus.emit(
+            new MoveWarshipIntentEvent(this.selectedUnit.id(), clickRef),
+          );
+        }
       }
       // Deselect
       this.eventBus.emit(new UnitSelectionEvent(this.selectedUnit, false));
@@ -270,6 +279,9 @@ export class UnitLayer implements Layer {
       case UnitType.Warship:
         this.handleWarShipEvent(unit);
         break;
+      case UnitType.Submarine:
+        this.handleSubmarineEvent(unit);
+        break;
       case UnitType.Shell:
         this.handleShellEvent(unit);
         break;
@@ -299,6 +311,10 @@ export class UnitLayer implements Layer {
     } else {
       this.drawSprite(unit);
     }
+  }
+
+  private handleSubmarineEvent(unit: UnitView) {
+    this.drawSprite(unit);
   }
 
   private handleShellEvent(unit: UnitView) {
@@ -501,23 +517,32 @@ export class UnitLayer implements Layer {
     const x = this.game.x(unit.tile());
     const y = this.game.y(unit.tile());
 
+    const rel = this.relationship(unit);
+    if (
+      unit.type() === UnitType.Submarine &&
+      rel !== Relationship.Self &&
+      !unit.targetable()
+    ) {
+      return;
+    }
+
     let alternateViewColor: Colord | null = null;
 
     if (this.alternateView) {
-      let rel = this.relationship(unit);
+      let relForAlternate = this.relationship(unit);
       const dstPortId = unit.targetUnitId();
       if (unit.type() === UnitType.TradeShip && dstPortId !== undefined) {
         const target = this.game.unit(dstPortId)?.owner();
         const myPlayer = this.game.myPlayer();
         if (myPlayer !== null && target !== undefined) {
           if (myPlayer === target) {
-            rel = Relationship.Self;
+            relForAlternate = Relationship.Self;
           } else if (myPlayer.isFriendly(target)) {
-            rel = Relationship.Ally;
+            relForAlternate = Relationship.Ally;
           }
         }
       }
-      switch (rel) {
+      switch (relForAlternate) {
         case Relationship.Self:
           alternateViewColor = this.theme.selfColor();
           break;

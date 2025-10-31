@@ -147,12 +147,23 @@ export class NukeExecution implements Execution {
         this.mg.stats().bombLaunch(this.player, target, this.nukeType);
       }
 
-      // after sending a nuke set the missilesilo on cooldown
+      // after sending a nuke set the launcher on cooldown
       const silo = this.player
         .units(UnitType.MissileSilo)
         .find((silo) => silo.tile() === spawn);
       if (silo) {
         silo.launch();
+      } else {
+        const submarine = this.player
+          .units(UnitType.Submarine)
+          .find((sub) => sub.tile() === spawn);
+        if (submarine) {
+          submarine.launch();
+          const revealUntil =
+            this.mg.ticks() + this.mg.config().submarineVisibilityDuration();
+          submarine.setTargetable(true);
+          submarine.setRevealedUntil(revealUntil);
+        }
       }
       return;
     }
