@@ -1,4 +1,5 @@
 import { AllPlayersStats, ClientID, Winner } from "../Schemas";
+import type { RouteDiversitySnapshot } from "./EconomyManager";
 import {
   EmojiMessage,
   GameUpdates,
@@ -47,6 +48,7 @@ export enum GameUpdateType {
   RailroadEvent,
   ConquestEvent,
   EmbargoEvent,
+  EconomyExpeditionEvent,
 }
 
 export type GameUpdate =
@@ -68,7 +70,8 @@ export type GameUpdate =
   | BonusEventUpdate
   | RailroadUpdate
   | ConquestUpdate
-  | EmbargoUpdate;
+  | EmbargoUpdate
+  | EconomyExpeditionUpdate;
 
 export interface BonusEventUpdate {
   type: GameUpdateType.BonusEvent;
@@ -96,6 +99,30 @@ export interface RailroadUpdate {
   type: GameUpdateType.RailroadEvent;
   isActive: boolean;
   railTiles: RailTile[];
+}
+
+export interface EconomyExpeditionUpdate {
+  type: GameUpdateType.EconomyExpeditionEvent;
+  report: SerializedExpeditionReport;
+}
+
+export interface SerializedExpeditionReport {
+  id: number;
+  player: number;
+  source: number;
+  destination: number;
+  path: number[];
+  initialGold: string;
+  deliveredGold: string;
+  creditedGold: string;
+  customs: Array<{
+    owner: number;
+    relation: "ally" | "other";
+    ratePercent: number;
+    amount: string;
+  }>;
+  hadSeaSegment: boolean;
+  diversity: RouteDiversitySnapshot;
 }
 
 export interface ConquestUpdate {
@@ -185,6 +212,23 @@ export interface PlayerUpdate {
   centralBankPrintsUsed: number;
   centralBankPrintsRemaining: number;
   centralBankInflationPercent: number;
+  customs: PlayerCustomsView;
+  economy: PlayerEconomyView;
+}
+
+export interface PlayerCustomsView {
+  alliedRate: number;
+  otherRate: number;
+}
+
+export interface PlayerEconomyView {
+  rawMaterialStock: string;
+  goldStock: string;
+  trainCapacityAvailable: string;
+  trainCapacityTotal: string;
+  seaCapacityAvailable: string;
+  seaCapacityTotal: string;
+  diversity: RouteDiversitySnapshot;
 }
 
 export interface AllianceView {

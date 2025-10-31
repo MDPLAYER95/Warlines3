@@ -415,6 +415,70 @@ export class DefaultConfig implements Config {
     }
   }
 
+  mineProductionPerTick(): bigint {
+    return 400n;
+  }
+
+  factoryConversionPerTick(): bigint {
+    return 400n;
+  }
+
+  factoryConversionRatio(): bigint {
+    return 1n;
+  }
+
+  trainCapacityPerFactory(): bigint {
+    return 2_000n;
+  }
+
+  seaCapacityPerPort(): bigint {
+    return 1_500n;
+  }
+
+  goldBasePrice(): bigint {
+    return 8n;
+  }
+
+  defaultAlliedCustomsRate(): number {
+    return 0.05;
+  }
+
+  defaultOtherCustomsRate(): number {
+    return 0.1;
+  }
+
+  maxCustomsRate(): number {
+    return 0.4;
+  }
+
+  routeDiversityWindow(): number {
+    return 10;
+  }
+
+  routeDiversityWorldThreshold(): number {
+    return 8;
+  }
+
+  routeDiversityTargetShare(): number {
+    return 0.35;
+  }
+
+  routeDiversityPenaltyMaxPercent(): number {
+    return 40;
+  }
+
+  routeDiversityPenaltyFloorPercent(): number {
+    return 60;
+  }
+
+  routeDiversityBonusThreshold(): number {
+    return 0.6;
+  }
+
+  routeDiversityBonusPercent(): number {
+    return 10;
+  }
+
   trainStationMinRange(): number {
     return 15;
   }
