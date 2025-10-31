@@ -7,6 +7,7 @@ import {
   NameViewData,
   PlayerID,
   PlayerType,
+  SubmarineOrders,
   Team,
   Tick,
   TrainType,
@@ -134,6 +135,8 @@ export interface UnitUpdate {
   hasTrainStation: boolean;
   trainType?: TrainType; // Only for trains
   loaded?: boolean; // Only for trains
+  submarineOrders?: SubmarineOrders; // Only for submarines
+  revealedUntil?: Tick | null; // Only for submarines
 }
 
 export interface AttackUpdate {

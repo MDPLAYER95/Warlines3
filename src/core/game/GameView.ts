@@ -17,6 +17,7 @@ import {
   PlayerID,
   PlayerProfile,
   PlayerType,
+  SubmarineOrders,
   Team,
   TerrainType,
   TerraNullius,
@@ -179,6 +180,14 @@ export class UnitView {
   }
   isLoaded(): boolean | undefined {
     return this.data.loaded;
+  }
+
+  submarineOrders(): SubmarineOrders | undefined {
+    return this.data.submarineOrders;
+  }
+
+  revealedUntil(): Tick | null {
+    return this.data.revealedUntil ?? null;
   }
 }
 

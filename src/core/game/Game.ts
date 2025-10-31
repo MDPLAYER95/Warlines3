@@ -175,6 +175,7 @@ export interface UnitInfo {
 export enum UnitType {
   TransportShip = "Transport",
   Warship = "Warship",
+  Submarine = "Submarine",
   Shell = "Shell",
   SAMMissile = "SAMMissile",
   Port = "Port",
@@ -235,6 +236,13 @@ export interface UnitParamsMap {
     patrolTile: TileRef;
   };
 
+  [UnitType.Submarine]: {
+    patrolTile: TileRef;
+    suppressWarshipAttacks?: boolean;
+    suppressMissiles?: boolean;
+    revealedUntilTick?: Tick | null;
+  };
+
   [UnitType.Shell]: Record<string, never>;
 
   [UnitType.SAMMissile]: Record<string, never>;
@@ -291,6 +299,11 @@ export interface UnitParamsMap {
 export type UnitParams<T extends keyof UnitParamsMap> = UnitParamsMap[T];
 
 export type AllUnitParams = UnitParamsMap[keyof UnitParamsMap];
+
+export interface SubmarineOrders {
+  attackWarships: boolean;
+  useMissiles: boolean;
+}
 
 export const nukeTypes = [
   UnitType.AtomBomb,
@@ -517,6 +530,12 @@ export interface Unit {
   // Warships
   setPatrolTile(tile: TileRef): void;
   patrolTile(): TileRef | undefined;
+
+  // Submarines
+  setSubmarineOrders(orders: SubmarineOrders): void;
+  submarineOrders(): SubmarineOrders;
+  setRevealedUntil(tick: Tick | null): void;
+  revealedUntil(): Tick | null;
 }
 
 export interface TerraNullius {

@@ -20,6 +20,7 @@ import { EmbargoExecution } from "./EmbargoExecution";
 import { EmojiExecution } from "./EmojiExecution";
 import { FakeHumanExecution } from "./FakeHumanExecution";
 import { MarkDisconnectedExecution } from "./MarkDisconnectedExecution";
+import { MoveSubmarineExecution } from "./MoveSubmarineExecution";
 import { MoveWarshipExecution } from "./MoveWarshipExecution";
 import { NoOpExecution } from "./NoOpExecution";
 import { QuickChatExecution } from "./QuickChatExecution";
@@ -28,6 +29,7 @@ import { SetMilitaryRatioExecution } from "./SetMilitaryRatioExecution";
 import { SpawnExecution } from "./SpawnExecution";
 import { TargetPlayerExecution } from "./TargetPlayerExecution";
 import { TransportShipExecution } from "./TransportShipExecution";
+import { UpdateSubmarineOrdersExecution } from "./UpdateSubmarineOrdersExecution";
 import { UpgradeStructureExecution } from "./UpgradeStructureExecution";
 
 export class Executor {
@@ -70,6 +72,13 @@ export class Executor {
         return new BoatRetreatExecution(player, intent.unitID);
       case "move_warship":
         return new MoveWarshipExecution(player, intent.unitId, intent.tile);
+      case "move_submarine":
+        return new MoveSubmarineExecution(player, intent.unitId, intent.tile);
+      case "update_submarine_orders":
+        return new UpdateSubmarineOrdersExecution(player, intent.unitId, {
+          attackWarships: intent.attackWarships,
+          useMissiles: intent.useMissiles,
+        });
       case "spawn":
         return new SpawnExecution(player.info(), intent.tile);
       case "boat":
