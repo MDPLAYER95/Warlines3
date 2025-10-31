@@ -3,6 +3,7 @@ import { customElement } from "lit/decorators.js";
 import warshipIcon from "../../../../resources/images/BattleshipIconWhite.svg";
 import cityIcon from "../../../../resources/images/CityIconWhite.svg";
 import factoryIcon from "../../../../resources/images/FactoryIconWhite.svg";
+import militaryCampIcon from "../../../../resources/images/MilitaryCampIconWhite.svg";
 import mirvIcon from "../../../../resources/images/MIRVIcon.svg";
 import missileSiloIcon from "../../../../resources/images/MissileSiloIconWhite.svg";
 import hydrogenBombIcon from "../../../../resources/images/MushroomCloudIconWhite.svg";
@@ -35,6 +36,7 @@ export class UnitDisplay extends LitElement implements Layer {
   private _missileSilo = 0;
   private _port = 0;
   private _defensePost = 0;
+  private _militaryCamps = 0;
   private _samLauncher = 0;
   private allDisabled = false;
   private _hoveredUnit: UnitType | null = null;
@@ -62,6 +64,7 @@ export class UnitDisplay extends LitElement implements Layer {
       config.isUnitDisabled(UnitType.Factory) &&
       config.isUnitDisabled(UnitType.Port) &&
       config.isUnitDisabled(UnitType.DefensePost) &&
+      config.isUnitDisabled(UnitType.MilitaryCamp) &&
       config.isUnitDisabled(UnitType.MissileSilo) &&
       config.isUnitDisabled(UnitType.SAMLauncher) &&
       config.isUnitDisabled(UnitType.Warship) &&
@@ -113,6 +116,7 @@ export class UnitDisplay extends LitElement implements Layer {
     this._missileSilo = player.totalUnitLevels(UnitType.MissileSilo);
     this._port = player.totalUnitLevels(UnitType.Port);
     this._defensePost = player.totalUnitLevels(UnitType.DefensePost);
+    this._militaryCamps = player.totalUnitLevels(UnitType.MilitaryCamp);
     this._samLauncher = player.totalUnitLevels(UnitType.SAMLauncher);
     this._factories = player.totalUnitLevels(UnitType.Factory);
     this._warships = player.totalUnitLevels(UnitType.Warship);
@@ -180,6 +184,13 @@ export class UnitDisplay extends LitElement implements Layer {
               UnitType.DefensePost,
               "defense_post",
               this.keybinds["buildDefensePost"]?.key ?? "4",
+            )}
+            ${this.renderUnitItem(
+              militaryCampIcon,
+              this._militaryCamps,
+              UnitType.MilitaryCamp,
+              "military_camp",
+              this.keybinds["buildMilitaryCamp"]?.key ?? "9",
             )}
             ${this.renderUnitItem(
               missileSiloIcon,

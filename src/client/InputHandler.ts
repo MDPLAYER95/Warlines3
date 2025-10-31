@@ -199,6 +199,7 @@ export class InputHandler {
       buildFactory: "Digit2",
       buildPort: "Digit3",
       buildDefensePost: "Digit4",
+      buildMilitaryCamp: "KeyK",
       buildMissileSilo: "Digit5",
       buildSamLauncher: "Digit6",
       buildWarship: "Digit7",
@@ -390,6 +391,11 @@ export class InputHandler {
       if (e.code === this.keybinds.buildDefensePost) {
         e.preventDefault();
         this.uiState.ghostStructure = UnitType.DefensePost;
+      }
+
+      if (e.code === this.keybinds.buildMilitaryCamp) {
+        e.preventDefault();
+        this.uiState.ghostStructure = UnitType.MilitaryCamp;
       }
 
       if (e.code === this.keybinds.buildMissileSilo) {

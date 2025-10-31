@@ -82,6 +82,7 @@ export class StructureIconsLayer implements Layer {
     [UnitType.CentralBank, { visible: true }],
     [UnitType.Factory, { visible: true }],
     [UnitType.DefensePost, { visible: true }],
+    [UnitType.MilitaryCamp, { visible: true }],
     [UnitType.Port, { visible: true }],
     [UnitType.MissileSilo, { visible: true }],
     [UnitType.SAMLauncher, { visible: true }],

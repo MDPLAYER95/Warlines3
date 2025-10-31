@@ -186,6 +186,10 @@ export class SendKickPlayerIntentEvent implements GameEvent {
   constructor(public readonly target: string) {}
 }
 
+export class SendMilitaryRatioIntentEvent implements GameEvent {
+  constructor(public readonly ratio: number) {}
+}
+
 export class Transport {
   private socket: WebSocket | null = null;
 
@@ -252,6 +256,9 @@ export class Transport {
     );
     this.eventBus.on(SendAssignDefensePostTroopsIntentEvent, (e) =>
       this.onAssignDefensePostTroopsIntent(e),
+    );
+    this.eventBus.on(SendMilitaryRatioIntentEvent, (e) =>
+      this.onSendMilitaryRatioIntent(e),
     );
     this.eventBus.on(BuildUnitIntentEvent, (e) => this.onBuildUnitIntent(e));
 
@@ -580,6 +587,15 @@ export class Transport {
       clientID: this.lobbyConfig.clientID,
       unitId: event.unitId,
       troops: Math.max(0, Math.floor(event.troops)),
+    });
+  }
+
+  private onSendMilitaryRatioIntent(event: SendMilitaryRatioIntentEvent) {
+    const ratio = Math.max(0, Math.min(event.ratio, 1));
+    this.sendIntent({
+      type: "set_military_ratio",
+      clientID: this.lobbyConfig.clientID,
+      ratio,
     });
   }
 

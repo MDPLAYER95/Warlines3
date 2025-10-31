@@ -4,6 +4,7 @@ import warshipIcon from "../../../../resources/images/BattleshipIconWhite.svg";
 import cityIcon from "../../../../resources/images/CityIconWhite.svg";
 import factoryIcon from "../../../../resources/images/FactoryIconWhite.svg";
 import goldCoinIcon from "../../../../resources/images/GoldCoinIcon.svg";
+import militaryCampIcon from "../../../../resources/images/MilitaryCampIconWhite.svg";
 import mirvIcon from "../../../../resources/images/MIRVIcon.svg";
 import missileSiloIcon from "../../../../resources/images/MissileSiloIconWhite.svg";
 import hydrogenBombIcon from "../../../../resources/images/MushroomCloudIconWhite.svg";
@@ -102,6 +103,13 @@ export const buildTable: BuildItemDisplay[][] = [
       icon: shieldIcon,
       description: "build_menu.desc.defense_post",
       key: "unit_type.defense_post",
+      countable: true,
+    },
+    {
+      unitType: UnitType.MilitaryCamp,
+      icon: militaryCampIcon,
+      description: "build_menu.desc.military_camp",
+      key: "unit_type.military_camp",
       countable: true,
     },
     {
