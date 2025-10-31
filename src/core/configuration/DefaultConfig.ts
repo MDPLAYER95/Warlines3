@@ -485,6 +485,13 @@ export class DefaultConfig implements Config {
           territoryBound: false,
           maxHealth: 1000,
         };
+      case UnitType.Submarine:
+        return {
+          cost: () => 15_000_000n,
+          territoryBound: false,
+          maxHealth: 1200,
+          experimental: true,
+        };
       case UnitType.Shell:
         return {
           cost: () => 0n,
@@ -1058,6 +1065,18 @@ export class DefaultConfig implements Config {
 
   warshipShellAttackRate(): number {
     return 20;
+  }
+
+  submarineVisibilityDuration(): Tick {
+    return 150;
+  }
+
+  submarineMissileVisibilityLead(): Tick {
+    return 150;
+  }
+
+  submarineDetectionRange(): number {
+    return 70;
   }
 
   defensePostShellAttackRate(): number {

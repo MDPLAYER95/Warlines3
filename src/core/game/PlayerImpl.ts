@@ -1222,6 +1222,8 @@ export class PlayerImpl implements Player {
         return this.portSpawn(targetTile, validTiles);
       case UnitType.Warship:
         return this.warshipSpawn(targetTile);
+      case UnitType.Submarine:
+        return this.submarineSpawn(targetTile);
       case UnitType.Shell:
       case UnitType.SAMMissile:
         return targetTile;
@@ -1253,16 +1255,33 @@ export class PlayerImpl implements Player {
         return false;
       }
     }
-    // only get missilesilos that are not on cooldown
-    const spawns = this.units(UnitType.MissileSilo)
+    const siloSpawns = this.units(UnitType.MissileSilo)
       .filter((silo) => {
-        return !silo.isInCooldown();
+        return silo.isActive() && !silo.isInCooldown();
       })
       .sort(distSortUnit(this.mg, tile));
-    if (spawns.length === 0) {
+    const submarineSpawns = this.units(UnitType.Submarine)
+      .filter((sub) => {
+        return (
+          sub.isActive() &&
+          sub.submarineOrders().useMissiles &&
+          !sub.isInCooldown()
+        );
+      })
+      .sort(distSortUnit(this.mg, tile));
+
+    const combined = siloSpawns.concat(submarineSpawns);
+    if (combined.length === 0) {
       return false;
     }
-    return spawns[0].tile();
+    const selected = combined[0];
+    if (selected.type() === UnitType.Submarine) {
+      const revealUntil =
+        this.mg.ticks() + this.mg.config().submarineMissileVisibilityLead();
+      selected.setTargetable(true);
+      selected.setRevealedUntil(revealUntil);
+    }
+    return selected.tile();
   }
 
   portSpawn(tile: TileRef, validTiles: TileRef[] | null): TileRef | false {
@@ -1301,6 +1320,10 @@ export class PlayerImpl implements Player {
       return false;
     }
     return spawns[0].tile();
+  }
+
+  submarineSpawn(tile: TileRef): TileRef | false {
+    return this.warshipSpawn(tile);
   }
 
   landBasedUnitSpawn(tile: TileRef): TileRef | false {

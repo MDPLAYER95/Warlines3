@@ -3,6 +3,7 @@ import {
   AllUnitParams,
   MessageType,
   Player,
+  SubmarineOrders,
   Tick,
   TrainType,
   TrajectoryTile,
@@ -34,6 +35,11 @@ export class UnitImpl implements Unit {
   private _patrolTile: TileRef | undefined;
   private _level: number = 1;
   private _targetable: boolean = true;
+  private _submarineOrders: SubmarineOrders = {
+    attackWarships: true,
+    useMissiles: true,
+  };
+  private _revealedUntil: Tick | null = null;
   private _loaded: boolean | undefined;
   private _trainType: TrainType | undefined;
   // Nuke only
@@ -61,6 +67,20 @@ export class UnitImpl implements Unit {
         : 0;
     this._patrolTile =
       "patrolTile" in params ? (params.patrolTile ?? undefined) : undefined;
+    if (this._type === UnitType.Submarine) {
+      this._submarineOrders = {
+        attackWarships: !("suppressWarshipAttacks" in params)
+          ? true
+          : !(params.suppressWarshipAttacks ?? false),
+        useMissiles: !("suppressMissiles" in params)
+          ? true
+          : !(params.suppressMissiles ?? false),
+      };
+      this._revealedUntil =
+        "revealedUntilTick" in params
+          ? (params.revealedUntilTick ?? null)
+          : null;
+    }
     this._targetUnit =
       "targetUnit" in params ? (params.targetUnit ?? undefined) : undefined;
     this._loaded =
@@ -69,6 +89,7 @@ export class UnitImpl implements Unit {
 
     switch (this._type) {
       case UnitType.Warship:
+      case UnitType.Submarine:
       case UnitType.Port:
       case UnitType.MissileSilo:
       case UnitType.DefensePost:
@@ -97,6 +118,39 @@ export class UnitImpl implements Unit {
 
   patrolTile(): TileRef | undefined {
     return this._patrolTile;
+  }
+
+  setSubmarineOrders(orders: SubmarineOrders): void {
+    if (this._type !== UnitType.Submarine) {
+      return;
+    }
+    const changed =
+      this._submarineOrders.attackWarships !== orders.attackWarships ||
+      this._submarineOrders.useMissiles !== orders.useMissiles;
+    if (!changed) {
+      return;
+    }
+    this._submarineOrders = { ...orders };
+    this.mg.addUpdate(this.toUpdate());
+  }
+
+  submarineOrders(): SubmarineOrders {
+    return this._submarineOrders;
+  }
+
+  setRevealedUntil(tick: Tick | null): void {
+    if (this._type !== UnitType.Submarine) {
+      return;
+    }
+    if (this._revealedUntil === tick) {
+      return;
+    }
+    this._revealedUntil = tick;
+    this.mg.addUpdate(this.toUpdate());
+  }
+
+  revealedUntil(): Tick | null {
+    return this._revealedUntil;
   }
 
   isUnit(): this is Unit {
@@ -143,6 +197,10 @@ export class UnitImpl implements Unit {
       hasTrainStation: this._hasTrainStation,
       trainType: this._trainType,
       loaded: this._loaded,
+      submarineOrders:
+        this._type === UnitType.Submarine ? this._submarineOrders : undefined,
+      revealedUntil:
+        this._type === UnitType.Submarine ? this._revealedUntil : undefined,
     };
   }
 
@@ -434,7 +492,11 @@ export class UnitImpl implements Unit {
 
   increaseLevel(): void {
     this._level++;
-    if ([UnitType.MissileSilo, UnitType.SAMLauncher].includes(this.type())) {
+    if (
+      [UnitType.MissileSilo, UnitType.SAMLauncher, UnitType.Submarine].includes(
+        this.type(),
+      )
+    ) {
       this._missileTimerQueue.push(this.mg.ticks());
     }
     this.mg.addUpdate(this.toUpdate());
@@ -442,7 +504,11 @@ export class UnitImpl implements Unit {
 
   decreaseLevel(destroyer?: Player): void {
     this._level--;
-    if ([UnitType.MissileSilo, UnitType.SAMLauncher].includes(this.type())) {
+    if (
+      [UnitType.MissileSilo, UnitType.SAMLauncher, UnitType.Submarine].includes(
+        this.type(),
+      )
+    ) {
       this._missileTimerQueue.pop();
     }
     if (this._level <= 0) {
