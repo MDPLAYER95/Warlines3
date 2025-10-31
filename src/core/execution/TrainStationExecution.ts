@@ -1,7 +1,7 @@
 import { Execution, Game, Unit, UnitType } from "../game/Game";
 import { TrainStation } from "../game/TrainStation";
 import { PseudoRandom } from "../PseudoRandom";
-import { TrainExecution } from "./TrainExecution";
+import { LogisticsExpeditionExecution } from "./LogisticsExpeditionExecution";
 
 export class TrainStationExecution implements Execution {
   private mg: Game;
@@ -39,9 +39,11 @@ export class TrainStationExecution implements Execution {
     if (this.station === null) {
       // Can't create new executions on init, so it has to be done in the tick
       this.station = new TrainStation(this.mg, this.unit);
+      this.mg.economy().registerStation(this.station);
       this.mg.railNetwork().connectStation(this.station);
     }
     if (!this.station.isActive()) {
+      this.mg.economy().unregisterStation(this.station);
       this.active = false;
       return;
     }
@@ -81,18 +83,28 @@ export class TrainStationExecution implements Execution {
     // Could be improved to pick a lucrative trip
     const destination: TrainStation =
       this.random.randFromSet(availableForTrade);
-    if (destination !== station) {
-      this.mg.addExecution(
-        new TrainExecution(
-          this.mg.railNetwork(),
-          this.unit.owner(),
-          station,
-          destination,
-          this.numCars,
-        ),
-      );
-      this.lastSpawnTick = currentTick;
+    if (destination === station) {
+      return;
     }
+    const path = this.mg.railNetwork().findStationsPath(station, destination);
+    if (!path || path.length <= 1) {
+      return;
+    }
+    const expedition = this.mg
+      .economy()
+      .prepareExpedition(station, destination, path);
+    if (expedition === null) {
+      return;
+    }
+    this.mg.addExecution(
+      new LogisticsExpeditionExecution(
+        this.unit.owner(),
+        path,
+        this.numCars,
+        expedition,
+      ),
+    );
+    this.lastSpawnTick = currentTick;
   }
 
   activeDuringSpawnPhase(): boolean {
