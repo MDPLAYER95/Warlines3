@@ -32,6 +32,7 @@ export class UnitDisplay extends LitElement implements Layer {
   private _mines = 0;
   private _centralBank = 0;
   private _warships = 0;
+  private _submarines = 0;
   private _factories = 0;
   private _missileSilo = 0;
   private _port = 0;
@@ -68,6 +69,7 @@ export class UnitDisplay extends LitElement implements Layer {
       config.isUnitDisabled(UnitType.MissileSilo) &&
       config.isUnitDisabled(UnitType.SAMLauncher) &&
       config.isUnitDisabled(UnitType.Warship) &&
+      config.isUnitDisabled(UnitType.Submarine) &&
       config.isUnitDisabled(UnitType.AtomBomb) &&
       config.isUnitDisabled(UnitType.HydrogenBomb) &&
       config.isUnitDisabled(UnitType.MIRV);
@@ -120,6 +122,7 @@ export class UnitDisplay extends LitElement implements Layer {
     this._samLauncher = player.totalUnitLevels(UnitType.SAMLauncher);
     this._factories = player.totalUnitLevels(UnitType.Factory);
     this._warships = player.totalUnitLevels(UnitType.Warship);
+    this._submarines = player.totalUnitLevels(UnitType.Submarine);
     this.requestUpdate();
   }
 
@@ -216,6 +219,13 @@ export class UnitDisplay extends LitElement implements Layer {
               UnitType.Warship,
               "warship",
               this.keybinds["buildWarship"]?.key ?? "7",
+            )}
+            ${this.renderUnitItem(
+              warshipIcon,
+              this._submarines,
+              UnitType.Submarine,
+              "submarine",
+              this.keybinds["buildSubmarine"]?.key ?? "U",
             )}
             ${this.renderUnitItem(
               atomBombIcon,

@@ -182,6 +182,21 @@ export class MoveWarshipIntentEvent implements GameEvent {
   ) {}
 }
 
+export class MoveSubmarineIntentEvent implements GameEvent {
+  constructor(
+    public readonly unitId: number,
+    public readonly tile: number,
+  ) {}
+}
+
+export class UpdateSubmarineOrdersIntentEvent implements GameEvent {
+  constructor(
+    public readonly unitId: number,
+    public readonly attackWarships: boolean,
+    public readonly useMissiles: boolean,
+  ) {}
+}
+
 export class SendKickPlayerIntentEvent implements GameEvent {
   constructor(public readonly target: string) {}
 }
@@ -274,6 +289,12 @@ export class Transport {
 
     this.eventBus.on(MoveWarshipIntentEvent, (e) => {
       this.onMoveWarshipEvent(e);
+    });
+    this.eventBus.on(MoveSubmarineIntentEvent, (e) => {
+      this.onMoveSubmarineEvent(e);
+    });
+    this.eventBus.on(UpdateSubmarineOrdersIntentEvent, (e) => {
+      this.onUpdateSubmarineOrders(e);
     });
 
     this.eventBus.on(SendDeleteUnitIntentEvent, (e) =>
@@ -674,6 +695,25 @@ export class Transport {
       clientID: this.lobbyConfig.clientID,
       unitId: event.unitId,
       tile: event.tile,
+    });
+  }
+
+  private onMoveSubmarineEvent(event: MoveSubmarineIntentEvent) {
+    this.sendIntent({
+      type: "move_submarine",
+      clientID: this.lobbyConfig.clientID,
+      unitId: event.unitId,
+      tile: event.tile,
+    });
+  }
+
+  private onUpdateSubmarineOrders(event: UpdateSubmarineOrdersIntentEvent) {
+    this.sendIntent({
+      type: "update_submarine_orders",
+      clientID: this.lobbyConfig.clientID,
+      unitId: event.unitId,
+      attackWarships: event.attackWarships,
+      useMissiles: event.useMissiles,
     });
   }
 
