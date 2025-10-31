@@ -302,7 +302,8 @@
     "atom_bomb": "Atom Bomb",
     "hydrogen_bomb": "Hydrogen Bomb",
     "mirv": "MIRV",
-    "factory": "Factory"
+    "factory": "Factory",
+    "military_camp": "Military Camp"
   },
   "user_setting": {
     "title": "User Settings",
@@ -350,6 +351,8 @@
     "build_factory_desc": "Build a Factory under your cursor.",
     "build_defense_post": "Build Defense Post",
     "build_defense_post_desc": "Build a Defense Post under your cursor.",
+    "build_military_camp": "Build Military Camp",
+    "build_military_camp_desc": "Build a Military Camp under your cursor.",
     "build_port": "Build Port",
     "build_port_desc": "Build a Port under your cursor.",
     "build_warship": "Build Warship",
@@ -498,6 +501,7 @@
       "warship": "Captures trade ships, destroys ships and boats",
       "port": "Sends trade ships to generate gold",
       "defense_post": "Increases defenses of nearby borders",
+      "military_camp": "Expands your professional army capacity",
       "city": "Increases max population",
       "mine": "Generates gold faster as your troops approach their capacity",
       "central_bank": "Prints currency at the cost of inflating future purchases",
@@ -544,6 +548,7 @@
     "warships": "Warships",
     "cities": "Cities",
     "mines": "Mines",
+    "military_camps": "Military Camps",
     "central_banks": "Central Banks",
     "show_control": "Show Control",
     "show_units": "Show Units"
@@ -562,6 +567,7 @@
     "cities": "Cities",
     "mines": "Mines",
     "central_banks": "Central Banks",
+    "military_camps": "Military Camps",
     "factories": "Factories",
     "missile_launchers": "Missile launchers",
     "sams": "SAMs",
@@ -620,7 +626,14 @@
     "total_troops": "Total troops",
     "reserve": "Reserve",
     "garrison": "Garrison",
-    "regen": "Regeneration"
+    "regen": "Regeneration",
+    "military_ratio": "Military Commitment",
+    "military_ratio_detail": "Target {target}% • Actual {actual}% • Max {max}%",
+    "civilian_population": "Civilians: {civilians}",
+    "military_camps": "Military Camps: {count}",
+    "military_slider_hint": "Each Military Camp increases the cap by 10%.",
+    "government_democracy": "Government: Democracy (alliances enabled)",
+    "government_dictatorship": "Government: Dictatorship (alliances disabled)"
   },
   "defense_post_panel": {
     "heading": "Defense Post",

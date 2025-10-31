@@ -16,6 +16,7 @@ interface TeamEntry {
   totalWarShips: string;
   totalCities: string;
   totalMines: string;
+  totalMilitaryCamps: string;
   totalCentralBanks: string;
   totalScoreSort: number;
   players: PlayerView[];
@@ -73,6 +74,7 @@ export class TeamStats extends LitElement implements Layer {
         let totalWarShips = 0;
         let totalCities = 0;
         let totalMines = 0;
+        let totalMilitaryCamps = 0;
         let totalCentralBanks = 0;
 
         for (const p of teamPlayers) {
@@ -85,6 +87,7 @@ export class TeamStats extends LitElement implements Layer {
             totalWarShips += p.totalUnitLevels(UnitType.Warship);
             totalCities += p.totalUnitLevels(UnitType.City);
             totalMines += p.totalUnitLevels(UnitType.Mine);
+            totalMilitaryCamps += p.totalUnitLevels(UnitType.MilitaryCamp);
             totalCentralBanks += p.totalUnitLevels(UnitType.CentralBank);
           }
         }
@@ -106,6 +109,7 @@ export class TeamStats extends LitElement implements Layer {
           totalWarShips: renderNumber(totalWarShips),
           totalCities: renderNumber(totalCities),
           totalMines: renderNumber(totalMines),
+          totalMilitaryCamps: renderNumber(totalMilitaryCamps),
           totalCentralBanks: renderNumber(totalCentralBanks),
         };
       })
@@ -155,6 +159,9 @@ export class TeamStats extends LitElement implements Layer {
                     ${translateText("leaderboard.mines")}
                   </div>
                   <div class="py-1.5 text-center border-b border-slate-500">
+                    ${translateText("leaderboard.military_camps")}
+                  </div>
+                  <div class="py-1.5 text-center border-b border-slate-500">
                     ${translateText("leaderboard.central_banks")}
                   </div>
                 `
@@ -195,6 +202,9 @@ export class TeamStats extends LitElement implements Layer {
                     </div>
                     <div class="py-1.5 border-b border-slate-500">
                       ${team.totalMines}
+                    </div>
+                    <div class="py-1.5 border-b border-slate-500">
+                      ${team.totalMilitaryCamps}
                     </div>
                     <div class="py-1.5 border-b border-slate-500">
                       ${team.totalCentralBanks}

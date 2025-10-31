@@ -192,6 +192,7 @@ export enum UnitType {
   Construction = "Construction",
   Train = "Train",
   Factory = "Factory",
+  MilitaryCamp = "Military Camp",
 }
 
 export enum TrainType {
@@ -209,6 +210,7 @@ const _structureTypes: ReadonlySet<UnitType> = new Set([
   UnitType.Port,
   UnitType.Factory,
   UnitType.CentralBank,
+  UnitType.MilitaryCamp,
 ]);
 
 export function isStructureType(type: UnitType): boolean {
@@ -281,10 +283,12 @@ export interface UnitParamsMap {
   };
 
   [UnitType.Construction]: Record<string, never>;
+
+  [UnitType.MilitaryCamp]: Record<string, never>;
 }
 
 // Type helper to get params type for a specific unit type
-export type UnitParams<T extends UnitType> = UnitParamsMap[T];
+export type UnitParams<T extends keyof UnitParamsMap> = UnitParamsMap[T];
 
 export type AllUnitParams = UnitParamsMap[keyof UnitParamsMap];
 
@@ -573,6 +577,16 @@ export interface Player {
   setTroops(troops: number): void;
   addTroops(troops: number): void;
   removeTroops(troops: number): number;
+  civilianPopulation(): number;
+  addCivilians(civilians: number): void;
+  removeCivilians(civilians: number): number;
+  totalPopulation(): number;
+  militaryRatio(): number;
+  militaryRatioTarget(): number;
+  setMilitaryRatioTarget(ratio: number): void;
+  maxMilitaryRatio(): number;
+  governmentType(): "democracy" | "dictatorship";
+  updateMilitaryComposition(conversionRate: number): void;
   defensePostGarrisonedTroops(): number;
 
   // Units
