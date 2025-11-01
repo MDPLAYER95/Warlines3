@@ -36,6 +36,10 @@ export class TrainExecution implements Execution {
     return this.player;
   }
 
+  cargoCapacity(): number {
+    return this.numCars;
+  }
+
   init(mg: Game, ticks: number): void {
     this.mg = mg;
     const stations = this.railNetwork.findStationsPath(

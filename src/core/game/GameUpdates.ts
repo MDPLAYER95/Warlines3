@@ -1,5 +1,6 @@
 import { AllPlayersStats, ClientID, Winner } from "../Schemas";
 import {
+  EconomyReport,
   EmojiMessage,
   GameUpdates,
   Gold,
@@ -185,6 +186,7 @@ export interface PlayerUpdate {
   centralBankPrintsUsed: number;
   centralBankPrintsRemaining: number;
   centralBankInflationPercent: number;
+  economyReport: EconomyReport;
 }
 
 export interface AllianceView {

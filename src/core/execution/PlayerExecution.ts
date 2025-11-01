@@ -78,9 +78,9 @@ export class PlayerExecution implements Execution {
     const troopInc = this.config.troopIncreaseRate(this.player);
     this.player.addCivilians(troopInc);
     this.player.updateMilitaryComposition(POPULATION_CONVERSION_RATE);
-    const goldFromWorkers = this.config.goldAdditionRate(this.player);
-    const goldFromMines = this.mineGoldPerTick();
-    const combinedGold = goldFromWorkers + goldFromMines;
+    const baseGoldFromWorkers = this.config.goldAdditionRate(this.player);
+    const economyGold = this.runEconomyTick();
+    const combinedGold = baseGoldFromWorkers + economyGold;
     const militaryPercent = Math.min(
       50,
       Math.floor(this.player.militaryRatio() * 100),
@@ -312,41 +312,7 @@ export class PlayerExecution implements Execution {
     return this.active;
   }
 
-  private mineGoldPerTick(): bigint {
-    const mines = this.player.units(UnitType.Mine);
-    if (mines.length === 0) {
-      return 0n;
-    }
-
-    const totalMineLevels = mines.reduce((sum, mine) => sum + mine.level(), 0);
-    if (totalMineLevels <= 0) {
-      return 0n;
-    }
-
-    const maxTroops = Math.max(
-      1,
-      Math.floor(this.config.maxTroops(this.player)),
-    );
-    const troopAmount = Math.max(
-      0,
-      Math.min(maxTroops, Math.floor(this.player.troops())),
-    );
-    if (troopAmount <= 0) {
-      return 0n;
-    }
-
-    const ticksPerMinute = Math.max(
-      1,
-      Math.floor(60_000 / this.config.turnIntervalMs()),
-    );
-
-    const numerator =
-      1_000_000n * BigInt(totalMineLevels) * BigInt(troopAmount);
-    const denominator = BigInt(ticksPerMinute) * BigInt(maxTroops);
-    if (denominator === 0n) {
-      return 0n;
-    }
-
-    return (numerator + denominator / 2n) / denominator;
+  private runEconomyTick(): bigint {
+    return this.player.economy().tick();
   }
 }
