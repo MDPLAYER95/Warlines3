@@ -152,6 +152,21 @@ export interface Config {
   trainStationMaxRange(): number;
   railroadMaxSize(): number;
   safeFromPiratesCooldownMax(): number;
+  economyMineOutput(level: number): number;
+  economyFactoryThroughput(level: number): number;
+  economyPortLogistics(level: number): number;
+  economyCityWealth(level: number): number;
+  economyManufacturedGoodValue(): number;
+  economyTradeGoodValue(): number;
+  economyAllianceBonus(activeAlliances: number): number;
+  economyCustomsDuty(rel: "self" | "team" | "ally" | "other"): number;
+  economyAlliedStructureShare(): number;
+  economyTrainCargoValue(
+    type: UnitType,
+    stationLevel: number,
+    cars: number,
+  ): number;
+  economyStationShare(type: UnitType): number;
   defensePostRange(): number;
   SAMCooldown(): number;
   SiloCooldown(): number;

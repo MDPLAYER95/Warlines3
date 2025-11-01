@@ -26,6 +26,7 @@ import {
   MessageType,
   MutableAlliance,
   Player,
+  PlayerEconomy,
   PlayerID,
   PlayerInfo,
   PlayerProfile,
@@ -47,6 +48,7 @@ import {
   GameUpdateType,
   PlayerUpdate,
 } from "./GameUpdates";
+import { PlayerEconomyImpl } from "./PlayerEconomyImpl";
 import {
   bestShoreDeploymentSource,
   canBuildTransportShip,
@@ -91,6 +93,7 @@ export class PlayerImpl implements Player {
   private _totalGoldEarned: bigint = 0n;
   private centralBankPrints = 0;
   private centralBankInflationSteps = 0;
+  private economyModel: PlayerEconomy;
 
   markedTraitorTick = -1;
 
@@ -149,6 +152,7 @@ export class PlayerImpl implements Player {
     this._displayName = this._name;
     this._pseudo_random = new PseudoRandom(simpleHash(this.playerInfo.id));
     this.updateGovernmentTypeFromRatio();
+    this.economyModel = new PlayerEconomyImpl(this.mg, this);
   }
 
   largestClusterBoundingBox: { min: Cell; max: Cell } | null;
@@ -183,6 +187,7 @@ export class PlayerImpl implements Player {
       centralBankPrintsUsed: this.centralBankPrints,
       centralBankPrintsRemaining: this.centralBankPrintsRemaining(),
       centralBankInflationPercent: this.centralBankInflationPercent(),
+      economyReport: this.economy().lastReport(),
       allies: this.alliances().map((a) => a.other(this).smallID()),
       embargoes: new Set([...this.embargoes.keys()].map((p) => p.toString())),
       isTraitor: this.isTraitor(),
@@ -876,6 +881,10 @@ export class PlayerImpl implements Player {
 
   totalGoldEarned(): Gold {
     return this._totalGoldEarned;
+  }
+
+  economy(): PlayerEconomy {
+    return this.economyModel;
   }
 
   centralBankPrintsUsed(): number {
