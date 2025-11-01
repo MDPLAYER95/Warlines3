@@ -4,6 +4,7 @@ import { AllPlayersStats, ClientID, Winner } from "../Schemas";
 import { simpleHash } from "../Util";
 import { AllianceImpl } from "./AllianceImpl";
 import { AllianceRequestImpl } from "./AllianceRequestImpl";
+import { EconomyManager } from "./EconomyManager";
 import {
   Alliance,
   AllianceRequest,
@@ -80,6 +81,7 @@ export class GameImpl implements Game {
   private playerTeams: Team[];
   private botTeam: Team = ColoredTeams.Bot;
   private _railNetwork: RailNetwork = createRailNetwork(this);
+  private readonly _economy: EconomyManager;
 
   // Used to assign unique IDs to each new alliance
   private nextAllianceID: number = 0;
@@ -100,6 +102,7 @@ export class GameImpl implements Game {
     if (_config.gameConfig().gameMode === GameMode.Team) {
       this.populateTeams();
     }
+    this._economy = new EconomyManager(this);
     this.addPlayers();
   }
 
@@ -329,6 +332,7 @@ export class GameImpl implements Game {
 
   executeNextTick(): GameUpdates {
     this.updates = createGameUpdatesMap();
+    this._economy.tick(this._ticks);
     this.execs.forEach((e) => {
       if (
         (!this.inSpawnPhase() || e.activeDuringSpawnPhase()) &&
@@ -872,6 +876,9 @@ export class GameImpl implements Game {
   }
   stats(): Stats {
     return this._stats;
+  }
+  economy(): EconomyManager {
+    return this._economy;
   }
   railNetwork(): RailNetwork {
     return this._railNetwork;

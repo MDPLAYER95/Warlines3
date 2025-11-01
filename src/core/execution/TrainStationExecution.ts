@@ -1,16 +1,15 @@
-import { Execution, Game, Unit, UnitType } from "../game/Game";
+import { ScheduledShipment } from "../game/EconomyManager";
+import { Execution, Game, Unit } from "../game/Game";
 import { TrainStation } from "../game/TrainStation";
-import { PseudoRandom } from "../PseudoRandom";
-import { TrainExecution } from "./TrainExecution";
+import { LogisticsExpeditionExecution } from "./LogisticsExpeditionExecution";
 
 export class TrainStationExecution implements Execution {
   private mg: Game;
   private active: boolean = true;
-  private random: PseudoRandom;
   private station: TrainStation | null = null;
   private numCars: number = 5;
   private lastSpawnTick: number = 0;
-  private ticksCooldown: number = 10; // Minimum cooldown between two trains
+  private ticksCooldown: number = 0;
   constructor(
     private unit: Unit,
     private spawnTrains?: boolean, // If set, the station will spawn trains
@@ -24,9 +23,6 @@ export class TrainStationExecution implements Execution {
 
   init(mg: Game, ticks: number): void {
     this.mg = mg;
-    if (this.spawnTrains) {
-      this.random = new PseudoRandom(mg.ticks());
-    }
   }
 
   tick(ticks: number): void {
@@ -39,60 +35,40 @@ export class TrainStationExecution implements Execution {
     if (this.station === null) {
       // Can't create new executions on init, so it has to be done in the tick
       this.station = new TrainStation(this.mg, this.unit);
+      this.mg.economy().registerStation(this.station);
       this.mg.railNetwork().connectStation(this.station);
     }
     if (!this.station.isActive()) {
+      this.mg.economy().unregisterStation(this.station);
       this.active = false;
       return;
     }
     this.spawnTrain(this.station, ticks);
   }
 
-  private shouldSpawnTrain(): boolean {
-    const spawnRate = this.mg
-      .config()
-      .trainSpawnRate(this.unit.owner().unitCount(UnitType.Factory));
-    for (let i = 0; i < this.unit!.level(); i++) {
-      if (this.random.chance(spawnRate)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   private spawnTrain(station: TrainStation, currentTick: number) {
     if (this.mg === undefined) throw new Error("Not initialized");
     if (!this.spawnTrains) return;
-    if (this.random === undefined) throw new Error("Not initialized");
     if (currentTick < this.lastSpawnTick + this.ticksCooldown) return;
-    const cluster = station.getCluster();
-    if (cluster === null) {
+    const shipment = this.mg.economy().requestShipment(station);
+    if (!shipment) {
       return;
     }
-    const availableForTrade = cluster.availableForTrade(this.unit.owner());
-    if (availableForTrade.size === 0) {
-      return;
-    }
-    if (!this.shouldSpawnTrain()) {
-      return;
-    }
+    this.dispatchShipment(shipment);
+    this.lastSpawnTick = currentTick;
+  }
 
-    // Pick a destination randomly.
-    // Could be improved to pick a lucrative trip
-    const destination: TrainStation =
-      this.random.randFromSet(availableForTrade);
-    if (destination !== station) {
-      this.mg.addExecution(
-        new TrainExecution(
-          this.mg.railNetwork(),
-          this.unit.owner(),
-          station,
-          destination,
-          this.numCars,
-        ),
-      );
-      this.lastSpawnTick = currentTick;
-    }
+  private dispatchShipment(shipment: ScheduledShipment) {
+    this.mg.addExecution(
+      new LogisticsExpeditionExecution(
+        shipment.player,
+        shipment.path,
+        this.numCars,
+        shipment.expedition,
+        shipment.onDelivered,
+        shipment.onAbort,
+      ),
+    );
   }
 
   activeDuringSpawnPhase(): boolean {

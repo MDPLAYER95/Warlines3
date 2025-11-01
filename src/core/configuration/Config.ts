@@ -140,14 +140,24 @@ export interface Config {
   deleteUnitCooldown(): Tick;
   defaultDonationAmount(sender: Player): number;
   unitInfo(type: UnitType): UnitInfo;
-  tradeShipGold(dist: number, numPorts: number): Gold;
-  tradeShipSpawnRate(
-    numTradeShips: number,
-    numPlayerPorts: number,
-    numPlayerTradeShips: number,
-  ): number;
   trainGold(rel: "self" | "team" | "ally" | "other"): Gold;
   trainSpawnRate(numPlayerFactories: number): number;
+  mineProductionPerTick(): bigint;
+  factoryConversionPerTick(): bigint;
+  factoryConversionRatio(): bigint;
+  trainCapacityPerFactory(): bigint;
+  seaCapacityPerPort(): bigint;
+  goldBasePrice(): bigint;
+  defaultAlliedCustomsRate(): number;
+  defaultOtherCustomsRate(): number;
+  maxCustomsRate(): number;
+  routeDiversityWindow(): number;
+  routeDiversityWorldThreshold(): number;
+  routeDiversityTargetShare(): number;
+  routeDiversityPenaltyMaxPercent(): number;
+  routeDiversityPenaltyFloorPercent(): number;
+  routeDiversityBonusThreshold(): number;
+  routeDiversityBonusPercent(): number;
   trainStationMinRange(): number;
   trainStationMaxRange(): number;
   railroadMaxSize(): number;
