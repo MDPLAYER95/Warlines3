@@ -1087,6 +1087,98 @@ export class DefaultConfig implements Config {
     return 20;
   }
 
+  economyMineOutput(level: number): number {
+    const normalized = Math.max(1, level);
+    return 12 * normalized;
+  }
+
+  economyFactoryThroughput(level: number): number {
+    const normalized = Math.max(1, level);
+    return 10 * normalized;
+  }
+
+  economyPortLogistics(level: number): number {
+    const normalized = Math.max(1, level);
+    return 8 * normalized;
+  }
+
+  economyCityWealth(level: number): number {
+    const normalized = Math.max(1, level);
+    return 25_000 * normalized;
+  }
+
+  economyManufacturedGoodValue(): number {
+    return 900;
+  }
+
+  economyTradeGoodValue(): number {
+    return 650;
+  }
+
+  economyAllianceBonus(activeAlliances: number): number {
+    if (activeAlliances <= 0) {
+      return 0;
+    }
+    return Math.min(60, activeAlliances * 15);
+  }
+
+  economyCustomsDuty(rel: "self" | "team" | "ally" | "other"): number {
+    switch (rel) {
+      case "self":
+        return 0;
+      case "team":
+        return 5;
+      case "ally":
+        return 3;
+      case "other":
+      default:
+        return 18;
+    }
+  }
+
+  economyAlliedStructureShare(): number {
+    return 0.35;
+  }
+
+  economyTrainCargoValue(
+    type: UnitType,
+    stationLevel: number,
+    cars: number,
+  ): number {
+    const normalizedLevel = Math.max(1, stationLevel);
+    const normalizedCars = Math.max(1, cars);
+    const baseByType: Partial<Record<UnitType, number>> = {
+      [UnitType.City]: 3_000,
+      [UnitType.Port]: 3_600,
+      [UnitType.Factory]: 3_400,
+      [UnitType.Mine]: 2_600,
+    };
+    const cargoByType: Partial<Record<UnitType, number>> = {
+      [UnitType.City]: 1_200,
+      [UnitType.Port]: 1_500,
+      [UnitType.Factory]: 1_400,
+      [UnitType.Mine]: 900,
+    };
+    const base = baseByType[type] ?? 2_800;
+    const cargo = cargoByType[type] ?? 1_000;
+    return normalizedLevel * base + normalizedCars * cargo;
+  }
+
+  economyStationShare(type: UnitType): number {
+    switch (type) {
+      case UnitType.Port:
+        return 45;
+      case UnitType.Factory:
+        return 40;
+      case UnitType.Mine:
+        return 25;
+      case UnitType.City:
+        return 35;
+      default:
+        return 30;
+    }
+  }
+
   defensePostTargettingRange(): number {
     return 75;
   }
