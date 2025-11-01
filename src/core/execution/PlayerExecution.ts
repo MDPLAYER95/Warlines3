@@ -313,40 +313,6 @@ export class PlayerExecution implements Execution {
   }
 
   private mineGoldPerTick(): bigint {
-    const mines = this.player.units(UnitType.Mine);
-    if (mines.length === 0) {
-      return 0n;
-    }
-
-    const totalMineLevels = mines.reduce((sum, mine) => sum + mine.level(), 0);
-    if (totalMineLevels <= 0) {
-      return 0n;
-    }
-
-    const maxTroops = Math.max(
-      1,
-      Math.floor(this.config.maxTroops(this.player)),
-    );
-    const troopAmount = Math.max(
-      0,
-      Math.min(maxTroops, Math.floor(this.player.troops())),
-    );
-    if (troopAmount <= 0) {
-      return 0n;
-    }
-
-    const ticksPerMinute = Math.max(
-      1,
-      Math.floor(60_000 / this.config.turnIntervalMs()),
-    );
-
-    const numerator =
-      1_000_000n * BigInt(totalMineLevels) * BigInt(troopAmount);
-    const denominator = BigInt(ticksPerMinute) * BigInt(maxTroops);
-    if (denominator === 0n) {
-      return 0n;
-    }
-
-    return (numerator + denominator / 2n) / denominator;
+    return this.player.economy().tick();
   }
 }

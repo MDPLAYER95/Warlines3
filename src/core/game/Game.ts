@@ -22,6 +22,29 @@ export type PlayerID = string;
 export type Tick = number;
 export type Gold = bigint;
 
+export type LogisticsContext = "city" | "factory" | "mine" | "port";
+
+export interface EconomyReport {
+  miningOutput: bigint;
+  industrialOutput: bigint;
+  tradeOutput: bigint;
+  cityGold: Gold;
+  logisticsBonus: Gold;
+  logisticsByContext: Partial<Record<LogisticsContext, Gold>>;
+  allianceBonus: Gold;
+  customsPaid: Gold;
+  customsEarned: Gold;
+  netGold: Gold;
+}
+
+export interface PlayerEconomy {
+  tick(): Gold;
+  registerLogisticsBonus(amount: Gold, context: LogisticsContext): void;
+  recordCustomsPayment(amount: Gold): void;
+  recordCustomsRevenue(amount: Gold): void;
+  lastReport(): EconomyReport;
+}
+
 export const AllPlayers = "AllPlayers" as const;
 
 // export type GameUpdates = Record<GameUpdateType, GameUpdate[]>;
@@ -588,6 +611,7 @@ export interface Player {
   addGold(toAdd: Gold, tile?: TileRef): void;
   removeGold(toRemove: Gold): Gold;
   totalGoldEarned(): Gold;
+  economy(): PlayerEconomy;
   centralBankPrintsUsed(): number;
   centralBankPrintsRemaining(): number;
   centralBankInflationPercent(): number;

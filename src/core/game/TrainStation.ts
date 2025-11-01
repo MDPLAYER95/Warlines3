@@ -1,7 +1,7 @@
 import { TrainExecution } from "../execution/TrainExecution";
 import { GraphAdapter } from "../pathfinding/SerialAStar";
 import { PseudoRandom } from "../PseudoRandom";
-import { Game, Player, Unit, UnitType } from "./Game";
+import { Game, LogisticsContext, Player, Unit, UnitType } from "./Game";
 import { TileRef } from "./GameMap";
 import { GameUpdateType, RailTile, RailType } from "./GameUpdates";
 import { Railroad } from "./Railroad";
@@ -23,33 +23,19 @@ class CityStopHandler implements TrainStopHandler {
     station: TrainStation,
     trainExecution: TrainExecution,
   ): void {
-    const stationOwner = station.unit.owner();
-    const trainOwner = trainExecution.owner();
-    const goldBonus = mg.config().trainGold(rel(trainOwner, stationOwner));
-    // Share revenue with the station owner if it's not the current player
-    if (trainOwner !== stationOwner) {
-      stationOwner.addGold(goldBonus, station.tile());
-    }
-    trainOwner.addGold(goldBonus, station.tile());
+    const type = station.unit.type();
+    const context: LogisticsContext = type === UnitType.Mine ? "mine" : "city";
+    processTrainEconomy(mg, station, trainExecution, context);
   }
 }
 
 class PortStopHandler implements TrainStopHandler {
-  constructor(private random: PseudoRandom) {}
   onStop(
     mg: Game,
     station: TrainStation,
     trainExecution: TrainExecution,
   ): void {
-    const stationOwner = station.unit.owner();
-    const trainOwner = trainExecution.owner();
-    const goldBonus = mg.config().trainGold(rel(trainOwner, stationOwner));
-
-    trainOwner.addGold(goldBonus, station.tile());
-    // Share revenue with the station owner if it's not the current player
-    if (trainOwner !== stationOwner) {
-      stationOwner.addGold(goldBonus, station.tile());
-    }
+    processTrainEconomy(mg, station, trainExecution, "port");
   }
 }
 
@@ -58,18 +44,95 @@ class FactoryStopHandler implements TrainStopHandler {
     mg: Game,
     station: TrainStation,
     trainExecution: TrainExecution,
-  ): void {}
+  ): void {
+    processTrainEconomy(mg, station, trainExecution, "factory");
+  }
 }
 
 export function createTrainStopHandlers(
-  random: PseudoRandom,
+  _random: PseudoRandom,
 ): Partial<Record<UnitType, TrainStopHandler>> {
   return {
     [UnitType.City]: new CityStopHandler(),
     [UnitType.Mine]: new CityStopHandler(),
-    [UnitType.Port]: new PortStopHandler(random),
+    [UnitType.Port]: new PortStopHandler(),
     [UnitType.Factory]: new FactoryStopHandler(),
   };
+}
+
+function processTrainEconomy(
+  mg: Game,
+  station: TrainStation,
+  trainExecution: TrainExecution,
+  context: LogisticsContext,
+): void {
+  const stationOwner = station.unit.owner();
+  const trainOwner = trainExecution.owner();
+  const relationLabel = rel(trainOwner, stationOwner);
+
+  const baseGold = mg.config().trainGold(relationLabel);
+  const stationSharePercent = mg
+    .config()
+    .economyStationShare(station.unit.type());
+
+  let visitorGain = baseGold;
+  let ownerGain = 0n;
+
+  if (trainOwner !== stationOwner && stationSharePercent > 0) {
+    const share = (visitorGain * BigInt(stationSharePercent)) / 100n;
+    if (share > 0n) {
+      visitorGain -= share;
+      ownerGain += share;
+    }
+  }
+
+  if (trainOwner !== stationOwner) {
+    const customsRate = mg.config().economyCustomsDuty(relationLabel);
+    if (customsRate > 0) {
+      const customs = (visitorGain * BigInt(customsRate)) / 100n;
+      if (customs > 0n) {
+        visitorGain -= customs;
+        ownerGain += customs;
+        trainOwner.economy().recordCustomsPayment(customs);
+        stationOwner.economy().recordCustomsRevenue(customs);
+      }
+    }
+  }
+
+  const logisticGold = BigInt(
+    Math.max(
+      0,
+      mg
+        .config()
+        .economyTrainCargoValue(
+          station.unit.type(),
+          station.unit.level(),
+          trainExecution.cargoCapacity(),
+        ),
+    ),
+  );
+
+  let visitorLogistics = logisticGold;
+  let ownerLogistics = 0n;
+
+  if (trainOwner !== stationOwner && logisticGold > 0n) {
+    const logisticsShare =
+      (logisticGold * BigInt(Math.max(0, stationSharePercent))) / 100n;
+    ownerLogistics = logisticsShare;
+    visitorLogistics = logisticGold - logisticsShare;
+  }
+
+  if (visitorLogistics > 0n) {
+    trainOwner.economy().registerLogisticsBonus(visitorLogistics, context);
+  }
+  if (ownerLogistics > 0n) {
+    stationOwner.economy().registerLogisticsBonus(ownerLogistics, context);
+  }
+
+  trainOwner.addGold(visitorGain, station.tile());
+  if (ownerGain > 0n) {
+    stationOwner.addGold(ownerGain, station.tile());
+  }
 }
 
 export class TrainStation {
