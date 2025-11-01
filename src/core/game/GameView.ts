@@ -32,6 +32,7 @@ import {
   AttackUpdate,
   GameUpdateType,
   GameUpdateViewData,
+  PlayerEconomyView,
   PlayerUpdate,
   UnitUpdate,
 } from "./GameUpdates";
@@ -374,6 +375,18 @@ export class PlayerView {
   }
   gold(): Gold {
     return this.data.gold;
+  }
+
+  alliedCustomsRate(): number {
+    return this.data.customs.alliedRate;
+  }
+
+  otherCustomsRate(): number {
+    return this.data.customs.otherRate;
+  }
+
+  economy(): PlayerEconomyView {
+    return this.data.economy;
   }
 
   totalGoldEarned(): Gold {

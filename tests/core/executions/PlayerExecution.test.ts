@@ -106,40 +106,20 @@ describe("PlayerExecution", () => {
     expect(game.unitCount(UnitType.CentralBank)).toBe(0);
   });
 
-  test("Mine generates additional gold when fully staffed", () => {
-    const tile = game.ref(40, 40);
-    player.conquer(tile);
-    player.buildUnit(UnitType.Mine, tile, {});
-
-    const maxTroops = Math.floor(game.config().maxTroops(player));
-    player.setTroops(maxTroops);
-
-    (
-      game.config() as unknown as { turnIntervalMs: () => number }
-    ).turnIntervalMs = () => 100;
-
+  test("Passive gold income is disabled", () => {
     const startingGold = player.gold();
-    executeTicks(game, 2);
-
-    const goldGained = player.gold() - startingGold;
-    expect(goldGained).toBe(1767n);
+    executeTicks(game, 5);
+    expect(player.gold()).toBe(startingGold);
   });
 
-  test("Mine does not yield gold without stationed troops", () => {
+  test("Mines no longer pay out without logistics", () => {
     const tile = game.ref(60, 60);
     player.conquer(tile);
     player.buildUnit(UnitType.Mine, tile, {});
 
-    player.setTroops(0);
-
-    (
-      game.config() as unknown as { turnIntervalMs: () => number }
-    ).turnIntervalMs = () => 100;
-
     const startingGold = player.gold();
-    executeTicks(game, 2);
+    executeTicks(game, 5);
 
-    const goldGained = player.gold() - startingGold;
-    expect(goldGained).toBe(100n);
+    expect(player.gold()).toBe(startingGold);
   });
 });

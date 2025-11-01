@@ -1,3 +1,4 @@
+import type { ExpeditionReport } from "../game/EconomyManager";
 import {
   Execution,
   Game,
@@ -7,9 +8,18 @@ import {
   UnitType,
 } from "../game/Game";
 import { TileRef } from "../game/GameMap";
-import { RailNetwork } from "../game/RailNetwork";
 import { getOrientedRailroad, OrientedRailroad } from "../game/Railroad";
 import { TrainStation } from "../game/TrainStation";
+
+export interface TrainExecutionCallbacks {
+  onComplete?: () => void;
+  onAbort?: () => void;
+}
+
+export interface TrainExecutionOptions extends TrainExecutionCallbacks {
+  expedition?: ExpeditionReport | null;
+  hasCargo?: boolean;
+}
 
 export class TrainExecution implements Execution {
   private active = true;
@@ -23,14 +33,29 @@ export class TrainExecution implements Execution {
   private stations: TrainStation[] = [];
   private currentRailroad: OrientedRailroad | null = null;
   private speed: number = 2;
+  private expedition: ExpeditionReport | null;
+  private readonly callbacks: TrainExecutionCallbacks;
+  private readonly shouldLoadCargo: boolean;
 
   constructor(
-    private railNetwork: RailNetwork,
     private player: Player,
-    private source: TrainStation,
-    private destination: TrainStation,
+    path: TrainStation[],
     private numCars: number,
-  ) {}
+    options: TrainExecutionOptions = {},
+  ) {
+    if (path.length < 2) {
+      throw new Error(
+        "TrainExecution requires a path with at least two stations",
+      );
+    }
+    this.stations = [...path];
+    this.expedition = options.expedition ?? null;
+    this.shouldLoadCargo = options.hasCargo ?? false;
+    this.callbacks = {
+      onComplete: options.onComplete,
+      onAbort: options.onAbort,
+    };
+  }
 
   public owner(): Player {
     return this.player;
@@ -38,16 +63,6 @@ export class TrainExecution implements Execution {
 
   init(mg: Game, ticks: number): void {
     this.mg = mg;
-    const stations = this.railNetwork.findStationsPath(
-      this.source,
-      this.destination,
-    );
-    if (!stations || stations.length <= 1) {
-      this.active = false;
-      return;
-    }
-
-    this.stations = stations;
     const railroad = getOrientedRailroad(this.stations[0], this.stations[1]);
     if (railroad) {
       this.currentRailroad = railroad;
@@ -63,6 +78,9 @@ export class TrainExecution implements Execution {
       return;
     }
     this.train = this.createTrainUnits(spawn);
+    if (this.shouldLoadCargo || this.expedition) {
+      this.loadCargo();
+    }
   }
 
   tick(ticks: number): void {
@@ -70,7 +88,7 @@ export class TrainExecution implements Execution {
       throw new Error("Not initialized");
     }
     if (!this.train.isActive() || !this.activeSourceOrDestination()) {
-      this.deleteTrain();
+      this.deleteTrain(true);
       return;
     }
 
@@ -79,7 +97,7 @@ export class TrainExecution implements Execution {
       this.updateCarsPositions(tile);
     } else {
       this.targetReached();
-      this.deleteTrain();
+      this.deleteTrain(false);
     }
   }
 
@@ -102,17 +120,22 @@ export class TrainExecution implements Execution {
     this.cars.forEach((car: Unit) => {
       car.setReachedTarget();
     });
+    if (this.mg !== null && this.expedition !== null) {
+      this.mg.economy().completeExpedition(this.expedition);
+      this.expedition = null;
+    }
+    this.callbacks.onComplete?.();
   }
 
   private createTrainUnits(tile: TileRef): Unit {
     const train = this.player.buildUnit(UnitType.Train, tile, {
-      targetUnit: this.destination.unit,
+      targetUnit: this.stations[this.stations.length - 1].unit,
       trainType: TrainType.Engine,
     });
     // Tail is also an engine, just for cosmetics
     this.cars.push(
       this.player.buildUnit(UnitType.Train, tile, {
-        targetUnit: this.destination.unit,
+        targetUnit: this.stations[this.stations.length - 1].unit,
         trainType: TrainType.Engine,
       }),
     );
@@ -127,7 +150,7 @@ export class TrainExecution implements Execution {
     return train;
   }
 
-  private deleteTrain() {
+  private deleteTrain(notifyAbort: boolean) {
     this.active = false;
     if (this.train?.isActive()) {
       this.train.delete(false);
@@ -136,6 +159,9 @@ export class TrainExecution implements Execution {
       if (car.isActive()) {
         car.delete(false);
       }
+    }
+    if (notifyAbort) {
+      this.callbacks.onAbort?.();
     }
   }
 
