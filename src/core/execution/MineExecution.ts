@@ -56,13 +56,8 @@ export class MineExecution implements Execution {
       return;
     }
 
-    const nearbyFactory = this.mg.hasUnitNearby(
-      this.mine.tile()!,
-      this.mg.config().trainStationMaxRange(),
-      UnitType.Factory,
-    );
-    if (nearbyFactory) {
-      this.mg.addExecution(new TrainStationExecution(this.mine));
+    if (!this.mine.hasTrainStation()) {
+      this.mg.addExecution(new TrainStationExecution(this.mine, true));
     }
   }
 }

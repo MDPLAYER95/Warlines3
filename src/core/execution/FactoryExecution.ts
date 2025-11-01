@@ -54,8 +54,13 @@ export class FactoryExecution implements Execution {
 
       this.game.addExecution(new TrainStationExecution(this.factory, true));
       for (const { unit } of structures) {
+        if (unit === this.factory) {
+          continue;
+        }
         if (!unit.hasTrainStation()) {
-          this.game.addExecution(new TrainStationExecution(unit));
+          const shouldSpawn =
+            unit.type() === UnitType.Mine || unit.type() === UnitType.Factory;
+          this.game.addExecution(new TrainStationExecution(unit, shouldSpawn));
         }
       }
     }
