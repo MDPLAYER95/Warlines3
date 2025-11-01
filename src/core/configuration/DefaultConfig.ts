@@ -415,6 +415,70 @@ export class DefaultConfig implements Config {
     }
   }
 
+  mineProductionPerTick(): bigint {
+    return 400n;
+  }
+
+  factoryConversionPerTick(): bigint {
+    return 400n;
+  }
+
+  factoryConversionRatio(): bigint {
+    return 1n;
+  }
+
+  trainCapacityPerFactory(): bigint {
+    return 2_000n;
+  }
+
+  seaCapacityPerPort(): bigint {
+    return 1_500n;
+  }
+
+  goldBasePrice(): bigint {
+    return 8n;
+  }
+
+  defaultAlliedCustomsRate(): number {
+    return 0.05;
+  }
+
+  defaultOtherCustomsRate(): number {
+    return 0.1;
+  }
+
+  maxCustomsRate(): number {
+    return 0.4;
+  }
+
+  routeDiversityWindow(): number {
+    return 10;
+  }
+
+  routeDiversityWorldThreshold(): number {
+    return 8;
+  }
+
+  routeDiversityTargetShare(): number {
+    return 0.35;
+  }
+
+  routeDiversityPenaltyMaxPercent(): number {
+    return 40;
+  }
+
+  routeDiversityPenaltyFloorPercent(): number {
+    return 60;
+  }
+
+  routeDiversityBonusThreshold(): number {
+    return 0.6;
+  }
+
+  routeDiversityBonusPercent(): number {
+    return 10;
+  }
+
   trainStationMinRange(): number {
     return 15;
   }
@@ -423,50 +487,6 @@ export class DefaultConfig implements Config {
   }
   railroadMaxSize(): number {
     return 120;
-  }
-
-  tradeShipGold(dist: number, numPorts: number): Gold {
-    const baseGold = Math.floor(100_000 + 100 * dist);
-    const numPortBonus = numPorts - 1;
-    // Hyperbolic decay, midpoint at 5 ports, 3x bonus max.
-    const bonus = 1 + 2 * (numPortBonus / (numPortBonus + 5));
-    return BigInt(Math.floor(baseGold * bonus));
-  }
-
-  // Probability of trade ship spawn = 1 / tradeShipSpawnRate
-  tradeShipSpawnRate(
-    numTradeShips: number,
-    numPlayerPorts: number,
-    numPlayerTradeShips: number,
-  ): number {
-    // Geometric mean of base spawn rate and port multiplier
-    const combined = Math.sqrt(
-      this.tradeShipBaseSpawn(numTradeShips, numPlayerTradeShips) *
-        this.tradeShipPortMultiplier(numPlayerPorts),
-    );
-
-    return Math.floor(25 / combined);
-  }
-
-  private tradeShipBaseSpawn(
-    numTradeShips: number,
-    numPlayerTradeShips: number,
-  ): number {
-    if (numPlayerTradeShips < 3) {
-      // If other players have many ports, then they can starve out smaller players.
-      // So this prevents smaller players from being completely starved out.
-      return 1;
-    }
-    const decayRate = Math.LN2 / 10;
-    return 1 - sigmoid(numTradeShips, decayRate, 55);
-  }
-
-  private tradeShipPortMultiplier(numPlayerPorts: number): number {
-    // Hyperbolic decay function with midpoint at 10 ports
-    // Expected trade ship spawn rate is proportional to numPlayerPorts * multiplier
-    // Gradual decay prevents scenario where more ports => fewer ships
-    const decayRate = 1 / 10;
-    return 1 / (1 + decayRate * numPlayerPorts);
   }
 
   unitInfo(type: UnitType): UnitInfo {
@@ -989,11 +1009,8 @@ export class DefaultConfig implements Config {
     return Math.max(0, cappedPopulation - totalPopulation);
   }
 
-  goldAdditionRate(player: Player): Gold {
-    if (player.type() === PlayerType.Bot) {
-      return 50n;
-    }
-    return 100n;
+  goldAdditionRate(_player: Player): Gold {
+    return 0n;
   }
 
   nukeMagnitudes(unitType: UnitType): NukeMagnitude {

@@ -1,5 +1,6 @@
 import { Config } from "../configuration/Config";
 import { AllPlayersStats, ClientID } from "../Schemas";
+import type { EconomyManager } from "./EconomyManager";
 import { GameMap, TileRef } from "./GameMap";
 import {
   GameUpdate,
@@ -588,6 +589,10 @@ export interface Player {
   addGold(toAdd: Gold, tile?: TileRef): void;
   removeGold(toRemove: Gold): Gold;
   totalGoldEarned(): Gold;
+  alliedCustomsRate(): number;
+  otherCustomsRate(): number;
+  setAlliedCustomsRate(rate: number): void;
+  setOtherCustomsRate(rate: number): void;
   centralBankPrintsUsed(): number;
   centralBankPrintsRemaining(): number;
   centralBankInflationPercent(): number;
@@ -700,7 +705,6 @@ export interface Player {
   // Misc
   toUpdate(): PlayerUpdate;
   playerProfile(): PlayerProfile;
-  tradingPorts(port: Unit): Unit[];
   // WARNING: this operation is expensive.
   bestTransportShipSpawn(tile: TileRef): TileRef | false;
 }
@@ -785,6 +789,7 @@ export interface Game extends GameMap {
   numTilesWithFallout(): number;
   // Optional as it's not initialized before the end of spawn phase
   stats(): Stats;
+  economy(): EconomyManager;
 
   addUpdate(update: GameUpdate): void;
   railNetwork(): RailNetwork;

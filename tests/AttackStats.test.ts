@@ -1,7 +1,7 @@
 import { AttackExecution } from "../src/core/execution/AttackExecution";
 import { SpawnExecution } from "../src/core/execution/SpawnExecution";
 import { Game, Player, PlayerInfo, PlayerType } from "../src/core/game/Game";
-import { GOLD_INDEX_WAR, GOLD_INDEX_WORK } from "../src/core/StatsSchemas";
+import { GOLD_INDEX_WAR } from "../src/core/StatsSchemas";
 import { setup } from "./util/Setup";
 
 let game: Game;
@@ -67,10 +67,9 @@ function expectWarGoldStatIsIncreasedAfterKill(
 
   // Verify that all defender's gold was recorded as war gold in the attacker's stats
   expect(attackerStats?.gold?.[GOLD_INDEX_WAR]).toBeDefined();
-  expect(defenderStats?.gold?.[GOLD_INDEX_WORK]).toBeDefined();
-  expect(attackerStats?.gold?.[GOLD_INDEX_WAR]).toBe(
-    defenderStats?.gold?.reduce((acc, g) => acc + g, 0n),
-  );
+  const defenderGoldEntries = defenderStats?.gold ?? [];
+  const defenderGoldTotal = defenderGoldEntries.reduce((acc, g) => acc + g, 0n);
+  expect(attackerStats?.gold?.[GOLD_INDEX_WAR]).toBe(defenderGoldTotal);
 }
 
 function performAttack(game: Game, attacker: Player, defender: Player) {

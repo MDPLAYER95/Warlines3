@@ -62,7 +62,7 @@ export class MineExecution implements Execution {
       UnitType.Factory,
     );
     if (nearbyFactory) {
-      this.mg.addExecution(new TrainStationExecution(this.mine));
+      this.mg.addExecution(new TrainStationExecution(this.mine, true));
     }
   }
 }
