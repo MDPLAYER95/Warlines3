@@ -9,7 +9,7 @@
     "close": "Sluiten"
   },
   "main": {
-    "title": "OpenFront (ALFA)",
+    "title": "WarLines (ALFA)",
     "join_discord": "Word lid van de Discord!",
     "login_discord": "Login met Discord",
     "checking_login": "Inlog controleren...",
@@ -569,8 +569,8 @@
       "cursor": "Cursor",
       "hand": "Hand",
       "radiation": "Straling",
-      "openfront_qr": "OpenFront.io QR-code",
-      "openfront": "OpenFront",
+      "openfront_qr": "WarLines.io QR-code",
+      "openfront": "WarLines",
       "t_rex": "T-Rex",
       "embelem": "Embleem",
       "grogu_head": "Grogu-hoofd",

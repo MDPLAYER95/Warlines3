@@ -9,7 +9,7 @@
     "close": "Kapat"
   },
   "main": {
-    "title": "OpenFront (ALFA)",
+    "title": "WarLines (ALFA)",
     "join_discord": "Discord'a katılın!",
     "login_discord": "Discord'la giriş yap",
     "checking_login": "Giriş kontrol ediliyor...",
@@ -461,8 +461,8 @@
     "not_enough_money": "Yeterli para yok"
   },
   "win_modal": {
-    "support_openfront": "OpenFront'u Destekle!",
-    "territory_pattern": "OpenFront'u desteklemek için bölge deseni satın al!",
+    "support_openfront": "WarLines'u Destekle!",
+    "territory_pattern": "WarLines'u desteklemek için bölge deseni satın al!",
     "died": "Öldün",
     "your_team": "Takımınız kazandı!",
     "other_team": "{team} takımı kazandı!",
@@ -618,8 +618,8 @@
       "cursor": "İmleç",
       "hand": "El",
       "radiation": "Radyasyon",
-      "openfront_qr": "OpenFront.io QR Kodu",
-      "openfront": "OpenFront",
+      "openfront_qr": "WarLines.io QR Kodu",
+      "openfront": "WarLines",
       "t_rex": "T-Rex",
       "embelem": "Amblem",
       "contributor": "Katkıda Bulunan",

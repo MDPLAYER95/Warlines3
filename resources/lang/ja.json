@@ -9,7 +9,7 @@
     "close": "閉じる"
   },
   "main": {
-    "title": "OpenFront (ALPHA)",
+    "title": "WarLines (ALPHA)",
     "join_discord": "Discordサーバーに参加!",
     "login_discord": "Discordでログイン",
     "checking_login": "ログイン中...",
@@ -466,8 +466,8 @@
     "not_enough_money": "資金不足"
   },
   "win_modal": {
-    "support_openfront": "OpenFront を支援！",
-    "territory_pattern": "領地パターンを購入することで OpenFront を支援できます！",
+    "support_openfront": "WarLines を支援！",
+    "territory_pattern": "領地パターンを購入することで WarLines を支援できます！",
     "died": "あなたは死んでしまった",
     "your_team": "あなたのチームの勝利！",
     "other_team": "{team}チームが勝利しました。",
@@ -625,7 +625,7 @@
       "hand": "手",
       "radiation": "放射線模様",
       "openfront_qr": "Openfront.ioのQRコード",
-      "openfront": "OpenFront",
+      "openfront": "WarLines",
       "t_rex": "ティラノサウルス模様",
       "embelem": "紋章模様",
       "contributor": "貢献者",

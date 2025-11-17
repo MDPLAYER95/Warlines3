@@ -9,7 +9,7 @@
     "close": "Закрыть"
   },
   "main": {
-    "title": "OpenFront (АЛЬФА)",
+    "title": "WarLines (АЛЬФА)",
     "join_discord": "Присоединяйтесь к Discord!",
     "login_discord": "Войти через Discord",
     "checking_login": "Проверка авторизации...",
@@ -466,8 +466,8 @@
     "not_enough_money": "Недостаточно средств"
   },
   "win_modal": {
-    "support_openfront": "Поддержите OpenFront!",
-    "territory_pattern": "Купите узор территории, чтобы поддержать OpenFront!",
+    "support_openfront": "Поддержите WarLines!",
+    "territory_pattern": "Купите узор территории, чтобы поддержать WarLines!",
     "died": "Вы погибли",
     "your_team": "Ваша команда победила!",
     "other_team": "Команда «{team}» победила!",
@@ -624,8 +624,8 @@
       "cursor": "Указатель",
       "hand": "Рука",
       "radiation": "Радиация",
-      "openfront_qr": "QR-код OpenFront.io",
-      "openfront": "OpenFront",
+      "openfront_qr": "QR-код WarLines.io",
+      "openfront": "WarLines",
       "t_rex": "Тиранозавр",
       "embelem": "Эмблема",
       "contributor": "Соучастник",

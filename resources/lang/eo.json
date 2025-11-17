@@ -9,7 +9,7 @@
     "close": "Fermi"
   },
   "main": {
-    "title": "OpenFront (ALFA)",
+    "title": "WarLines (ALFA)",
     "join_discord": "Kunigu la Discord-servilon !",
     "login_discord": "Ensaluti kun Diskordo",
     "checking_login": "Kontrolado de la ensaluto...",
@@ -466,8 +466,8 @@
     "not_enough_money": "Ne sufiĉe da mono"
   },
   "win_modal": {
-    "support_openfront": "Subtenu OpenFront!",
-    "territory_pattern": "Aĉetu territorian ŝablonon por subteni OpenFront!",
+    "support_openfront": "Subtenu WarLines!",
+    "territory_pattern": "Aĉetu territorian ŝablonon por subteni WarLines!",
     "died": "Vi mortiĝis",
     "your_team": "Via teamo venkis!",
     "other_team": "{team} teamo venkis!",
@@ -624,8 +624,8 @@
       "cursor": "Kursoro",
       "hand": "Mano",
       "radiation": "Radiado",
-      "openfront_qr": "OpenFront.io QR-kodo",
-      "openfront": "OpenFront",
+      "openfront_qr": "WarLines.io QR-kodo",
+      "openfront": "WarLines",
       "t_rex": "Tiranosaŭro",
       "embelem": "Emblemo",
       "contributor": "Kontribuanto",

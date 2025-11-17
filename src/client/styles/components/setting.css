@@ -1,8 +1,8 @@
 .settings-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 12px;
+  gap: 18px;
+  padding: 16px;
   align-items: center;
 }
 
@@ -10,15 +10,21 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  background: #1e1e1e;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 12px 20px;
+  background: linear-gradient(
+    155deg,
+    rgba(15, 23, 42, 0.8),
+    rgba(15, 23, 42, 0.6)
+  );
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 20px;
+  padding: 18px 24px;
   width: 360px !important;
   max-width: 360px !important;
   min-width: 360px !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-  transition: background 0.3s ease;
+  box-shadow:
+    0 18px 40px rgba(2, 6, 23, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: var(--transition);
   gap: 12px;
 }
 
@@ -120,7 +126,13 @@
 }
 
 .setting-item:hover {
-  background: #2a2a2a;
+  background: linear-gradient(
+    155deg,
+    rgba(249, 115, 22, 0.18),
+    rgba(15, 23, 42, 0.75)
+  );
+  border-color: rgba(249, 115, 22, 0.55);
+  transform: translateY(-2px);
 }
 
 .setting-item.easter-egg:hover {
@@ -140,9 +152,9 @@
 }
 
 .setting-label {
-  color: #f0f0f0;
-  font-size: 15px;
-  font-weight: 500;
+  color: var(--fontColorLight);
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .setting-input {
@@ -177,9 +189,13 @@
 .setting-input.slider {
   -webkit-appearance: none;
   width: 180px;
-  height: 10px;
-  background: linear-gradient(to right, #2196f3 50%, #444 50%);
-  border-radius: 5px;
+  height: 12px;
+  background: linear-gradient(
+    to right,
+    rgba(249, 115, 22, 0.75) 50%,
+    rgba(30, 41, 59, 0.9) 50%
+  );
+  border-radius: 999px;
   outline: none;
   transition: background 0.3s;
 }
@@ -190,21 +206,25 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #fff;
-  border: 2px solid #2196f3;
+  background: #0f172a;
+  border: 3px solid rgba(249, 115, 22, 0.8);
   cursor: pointer;
 }
 
 .setting-input.slider::-moz-range-track {
-  background-color: #444;
-  height: 10px;
-  border-radius: 5px;
+  background-color: rgba(30, 41, 59, 0.9);
+  height: 12px;
+  border-radius: 999px;
 }
 
 .setting-input.slider::-moz-range-progress {
-  background-color: #2196f3;
-  height: 10px;
-  border-radius: 5px;
+  background: linear-gradient(
+    90deg,
+    rgba(249, 115, 22, 0.8),
+    rgba(251, 146, 60, 0.9)
+  );
+  height: 12px;
+  border-radius: 999px;
 }
 
 .setting-input.slider:focus {
@@ -214,17 +234,17 @@
 .slider-value {
   width: 100%;
   text-align: center;
-  font-size: 13px;
-  color: #aaa;
+  font-size: 0.8rem;
+  color: var(--fontColorMuted);
 }
 
 .setting-input.number {
   width: 80px;
   padding: 6px 8px;
-  border: 1px solid #aaa;
-  border-radius: 6px;
-  background-color: #ffffff;
-  color: #000000;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 12px;
+  background-color: rgba(15, 23, 42, 0.6);
+  color: var(--fontColorLight);
 }
 
 .switch {
@@ -252,8 +272,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #d9534f;
-  transition: 0.4s;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  transition: var(--transition);
   border-radius: 34px;
 }
 
@@ -264,13 +285,18 @@
   width: 20px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
-  transition: 0.4s;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  transition: var(--transition);
   border-radius: 50%;
 }
 
 .switch input:checked + .slider-round {
-  background-color: #4caf50;
+  background: linear-gradient(
+    135deg,
+    rgba(249, 115, 22, 0.25),
+    rgba(59, 130, 246, 0.2)
+  );
+  border-color: rgba(249, 115, 22, 0.55);
 }
 
 .switch input:checked + .slider-round::before {
@@ -283,8 +309,8 @@
 }
 
 .setting-description {
-  font-size: 12px;
-  color: #888;
+  font-size: 0.8rem;
+  color: var(--fontColorMuted);
   margin-top: 2px;
   white-space: normal;
   word-break: break-word;
@@ -307,20 +333,20 @@
 }
 
 .setting-key {
-  background-color: black;
-  color: white;
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--fontColorLight);
   font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 6px;
+  padding: 6px 14px;
+  border-radius: 10px;
   font-family: monospace;
   font-size: 0.875rem;
-  box-shadow: 0 2px 0 #444;
+  box-shadow: 0 4px 12px rgba(2, 6, 23, 0.65);
   white-space: nowrap;
   user-select: none;
   outline: none;
 }
 
 .setting-key:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
+  outline: 2px solid rgba(249, 115, 22, 0.65);
+  outline-offset: 3px;
 }
